@@ -46,7 +46,7 @@ div.inavailable
 	font-weight: bold;
 	height: 240px;
 	font-size: 1.1em;
-	background-image: url(../images/preview_video.png);
+	background-image: url(images/preview_video.png);
 	margin-bottom: 6px;
 }
 
@@ -92,14 +92,14 @@ ul.controls a:hover { background-position: 0 -25px; }
 
 ul.controls li.play a
 {
-	background-image: url(../images/controls-play.png);
+	background-image: url(images/controls-play.png);
 	width: 21px;
 	margin-left: 0;
 }
 
 ul.controls li.play.pause a
 {
-	background-image: url(../images/controls-pause.png);
+	background-image: url(images/controls-pause.png);
 	width: 21px;
 	margin-left: 0;
 }
@@ -116,7 +116,7 @@ div.playerinfo { font-size: xx-small; }
 
 ul.controls li.sound a
 {
-	background-image: url(../images/controls-soundon.png);
+	background-image: url(images/controls-soundon.png);
 	width: 23px;
 	background-repeat: no-repeat;
 	float: right;
@@ -125,7 +125,7 @@ ul.controls li.sound a
 
 ul.controls li.screen a
 {
-	background-image: url(../images/controls-fullscreen.png);
+	background-image: url(images/controls-fullscreen.png);
 	width: 23px;
 	margin: 0 4px;
 	background-repeat: no-repeat;

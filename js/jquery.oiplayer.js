@@ -32,8 +32,8 @@ jQuery.fn.oiplayer = function(conf) {
         var self = this;
         var config = jQuery.extend({    // example configuration
             server : 'http://www.openimages.eu',
-            jar : '/player/cortado-ovt-stripped-wm_r38710.jar',
-            flash : '/player/flowplayer-3.1.1.swf',
+            jar : '/oiplayer/cortado-ovt-stripped-wm_r38710.jar',
+            flash : '/oiplayer/flowplayer-3.1.1.swf',
             controls : true
         }, conf);
             
