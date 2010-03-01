@@ -1,7 +1,7 @@
 /*
  * OIPlayer - jQuery plugin to control and serve alternatives for the html5 video- and audiotag.
  *
- * Copyright (c) 2009 André van Toly
+ * Copyright (c) 2009-2010 André van Toly
  * Licensed under GPL http://www.gnu.org/licenses/gpl.html
  *
  * Inits and controls video- or audioplayer based on the html5 video- or audiotag. Depends on jquery. 
@@ -15,7 +15,7 @@
  * mediatags in one go. You will have to wrap each mediatag in a div or some other element and feed it
  * to the plugin.
  *
- * @version: 0.4
+ * @version: 0.5
  * @params:
  *   id - id of the element that contains the media tag
  *   config - configuration parameters
@@ -24,7 +24,7 @@
  *       'flash' : location of flowplayer.swf
  *       'controls' : to show and use controls or not
  *
- * @changes: jQuery plugin, controls on/of
+ * @changes: moved all files to one directory
 */
 
 jQuery.fn.oiplayer = function(conf) {
@@ -32,8 +32,8 @@ jQuery.fn.oiplayer = function(conf) {
         var self = this;
         var config = jQuery.extend({    // example configuration
             server : 'http://www.openimages.eu',
-            jar : '/oiplayer/cortado-ovt-stripped-wm_r38710.jar',
-            flash : '/oiplayer/flowplayer-3.1.1.swf',
+            jar : '/oiplayer/plugins/cortado-ovt-stripped-wm_r38710.jar',
+            flash : '/oiplayer/plugins/flowplayer-3.1.1.swf',
             controls : true
         }, conf);
             
@@ -52,6 +52,7 @@ jQuery.fn.oiplayer = function(conf) {
             //console.log("info: " + player.info);
             
             var poster = createPoster(self, player); // using self (complete input) for MSIE
+            console.log(poster);
             if ($.browser.msie || player.myname == 'flowplayer') { 
                 $('p.oiplayer-warn').hide(); // MSIE places stuff partly outside mediatag
                 $(div).find('div.oiplayer-flash').hide(); // .remove() would indefinitely loop MSIE
@@ -367,8 +368,8 @@ Player.prototype._init = function(el, url, config) {
     if (this.controls == undefined) this.controls = false;
     this.width  = $(this.player).attr('width');
     this.height = $(this.player).attr('height');
-    if (this.width  == undefined) this.width  = $("head meta[name=media-width]").attr("content");
-    if (this.height == undefined) this.height = $("head meta[name=media-height]").attr("content");
+    if (typeof(this.width)  == "undefined") this.width  = $("head meta[name=media-width]").attr("content");
+    if (typeof(this.height) == "undefined") this.height = $("head meta[name=media-height]").attr("content");
     this.duration = $("head meta[name=media-duration]").attr("content"); // not a mediatag attr.
     this.state = 'init';
     this.pos = 0;
