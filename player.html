@@ -4,11 +4,11 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <title>OIPlayer jQuery Plugin - Open Images Platform</title>
-  <script src="js/jquery-1.3.2.min.js" type="text/javascript"><!-- help ie --></script>
-  <script src="plugins/flowplayer-3.1.4.min.js" type="text/javascript"><!-- help ie --></script>
-  <script src="js/jquery.oiplayer.js" type="text/javascript"><!-- help ie --></script>
-  <script src="js/play.js" type="text/javascript"><!-- help ie --></script>
-  <link href="css/oiplayer.css" rel="stylesheet" type="text/css" />
+  <script src="/~andre/oiplayer/js/jquery-1.3.2.min.js" type="text/javascript"><!-- help ie --></script>
+  <script src="/~andre/oiplayer/plugins/flowplayer-3.1.4.min.js" type="text/javascript"><!-- help ie --></script>
+  <script src="/~andre/oiplayer/js/jquery.oiplayer.js" type="text/javascript"><!-- help ie --></script>
+  <script src="/~andre/oiplayer/js/play.js" type="text/javascript"><!-- help ie --></script>
+  <link href="/~andre/oiplayer/css/oiplayer.css" rel="stylesheet" type="text/css" />
 </head>
 <body class="oiplayer-example">
 
@@ -29,28 +29,44 @@
     The poster attribute was added later.
   </p>
   <h2>Howto</h2>
-  <ul>
+  <ol>
     <li>
       Enable this plugin on all HTML5 video or audio tags in your page, for example 
-      in its main column &lt;div class="main" /&gt; of your website with:
-<pre>
-$(document).ready(function() {
-    $('div.main').oiplayer({
-        'server' : 'http://192.168.1.4:8080/', /* msie (or windows java) has issues with just a dir */
-        'jar' : 'plugins/cortado-ovt-stripped-wm_r38710.jar',
-        'flash' : 'plugins/flowplayer-3.1.1.swf',
-        'controls' : true
-    });
-});
-</pre>
+      in its main column &lt;div class="main" /&gt; of your website.
+      This enables the player including the controls to play and pause etc.
+      <pre>
+      $(document).ready(function() {
+          $('div.main').oiplayer({ 'controls' : true });
+      });
+      </pre>
     </li>
     <li>
       Make the fallback mechanism work by installing <a href="http://www.flowplayer.org">Flowplayer</a> 
       and Cortado in the plugins directory. 
       Flowplayer needs the Flash plugin and plays h.264, flv and mp4 files when they are correctly encoded. 
       Cortado is a Java applet that plays Ogg video and audio (ogv, aga).
+      <ul>
+        <li>server: webserver (msie (or windows java) has issues with finding directories)</li>
+        <li>jar: location of Cortado jar</li>
+        <li>flash: location of Flowplayer and its files</li>
+      </ul>
+      <pre>
+      $(document).ready(function() {
+          $('div.main').oiplayer({
+              'server' : 'http://localhost',
+              'jar' : '/oiplayer/cortado-ovt-stripped-wm_r38710.jar',
+              'flash' : '/oiplayer/plugins/flowplayer-3.1.1.swf',
+              'controls' : true
+          });
+      });
+      </pre>
     </li>
-  </ul>
+    <li>
+      You will probably get a 'Not allowed' with Cortado since it is often not allowed to play 
+      files from different hosts by some browsers. Be sure to copy your files to the host
+      from where your pages are served.
+    </li>
+  </ol>
   
 
 </div>
