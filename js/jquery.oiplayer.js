@@ -101,6 +101,7 @@ jQuery.fn.oiplayer = function(conf) {
                         if (player.type == 'video') {
                             $(div).find('img.oipreview').remove();
                         }
+                        $(div).find('div.oiplayer-flash').show();
                         $(div).append(player.player);
                         player.play();
                         if ($(ctrls).find('li.pause').length == 0) {
@@ -365,10 +366,8 @@ Player.prototype._init = function(el, url, config) {
     if (this.autobuffer == undefined) this.autobuffer = false;
     this.controls = $(this.player).attr('controls');
     if (this.controls == undefined) this.controls = false;
-    this.width  = $(this.player).attr('width');
-    this.height = $(this.player).attr('height');
-    if (typeof(this.width)  == "undefined") this.width  = $("head meta[name=media-width]").attr("content");
-    if (typeof(this.height) == "undefined") this.height = $("head meta[name=media-height]").attr("content");
+    this.width  = $(this.player).attr('width') > 0 ? $(this.player).attr('width') : 320;
+    this.height = $(this.player).attr('height') > 0 ? $(this.player).attr('height') : 240;;
     this.duration = $("head meta[name=media-duration]").attr("content"); // not a mediatag attr.
     this.state = 'init';
     this.pos = 0;
