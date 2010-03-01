@@ -1,0 +1,82 @@
+<jsp:root version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"
+    xmlns:oip="urn:jsptagdir:/WEB-INF/tags/oip">
+
+  <oip:html
+      cacheable="false"
+      styleClass="media-item"
+      >
+
+    <jsp:attribute name="head">
+      <script src="${mm:link('/style/js/typewatch.js')}" type="text/javascript"><!-- help ie --></script>
+      <script src="${mm:link('/style/js/mmtag.js')}" type="text/javascript"><!-- help ie --></script>
+      <script src="${mm:link('/player/flowplayer-3.1.1.min.js')}" type="text/javascript"><!-- help ie --></script>
+      <script src="${mm:link('/style/js/player.js')}" type="text/javascript"><!-- help ie --></script>
+      <script src="${mm:link('/style/js/play.js.jsp')}" type="text/javascript"><!-- help ie --></script>
+      <link href="${mm:link('/style/css/player.css')}" rel="stylesheet" type="text/css" />
+    </jsp:attribute>
+    <jsp:attribute name="body">
+
+      <div class="main-column">
+        <mm:node number="498">
+
+  <mm:import id="mediaurls">
+    <mm:listfunction name="filteredurls">
+      <c:if test="${_.available}">
+        <source src="${mm:escape('text/xml', _.URL)}" type="${_.format.mimeType}; codecs=${mm:escape('lowercase', _.codec)}"><jsp:text> </jsp:text></source>
+      </c:if>
+    </mm:listfunction>
+  </mm:import>
+
+      <div id="vplayer">
+        <video
+               controls="false"
+               width="320"
+               height="240"
+               poster="player/player-debril.png"
+               autobuffer="false">
+    <!-- mm:listfunction name="filteredurls">
+      <c:if test="${_.available}">
+        <source src="${mm:escape('text/xml', _.URL)}" type="${_.format.mimeType}; codecs=${mm:escape('lowercase', _.codec)}"><jsp:text> </jsp:text></source>
+      </c:if>
+    </mm:listfunction -->
+    <source src="http://openbeelden1.tuxic.nl/beta/files//011049.848.WEEKNUMMER303-HRE0000CC8E.ogv" type="video/ogg" ><jsp:text> </jsp:text></source>
+          <p>
+            Your need a browser that understands the html5 video tag to play this media item.
+            Firefox 3.1 nightly builds, Opera experimental builds and Safari (with XiphQT for Ogg)
+            installed can understand the video tag with varying degrees of success.
+          </p>
+        </video>
+      </div>
+      <div id="playercontrols">
+        <ul>
+          <li id="play"><a href="#">play</a></li>
+          <li id="position"> 
+            <c:choose>
+              <c:when test="${!empty length}">
+                <mm:time time="$length" inputformat="S" format="mm:ss" />
+              </c:when>
+              <c:otherwise>00:00</c:otherwise>
+            </c:choose>
+          </li>
+          <li class="playerinfo">  <!-- empty --> </li>
+        </ul>
+        
+      </div>
+
+
+
+        </mm:node>
+      </div>
+      
+      <div class="right-column">
+        <h2>Rechterkolom</h2>
+      </div>
+    
+    </jsp:attribute>
+  </oip:html>
+</jsp:root>

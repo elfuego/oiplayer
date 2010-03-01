@@ -1,0 +1,134 @@
+/**
+* @author   Open Images Platform
+* @since    May 2009
+* @name     Stylesheet to style the player
+* @version  '$Id$'
+*/
+
+#clientcaps	/* used by MSIE Java plugin detection, sigh :-( */
+{
+	behavior: url(#default#clientCaps);
+	display: none;
+}
+
+div.oiplayer
+{
+	position: relative;
+	margin: 0 0 12px 0;
+	padding: 0;
+	height: 240px;
+}
+
+div.oiplayer img.oipreview
+{
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	z-index: 9;
+}
+
+div.oiplayer div.oiplayer-flash
+{
+	position: relative;
+}
+
+div.oiplayer audio, #msie_cortadoplayer_oiplayer
+{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 320px;
+	z-index: 8;
+}
+
+div.inavailable
+{
+	font-weight: bold;
+	height: 240px;
+	font-size: 1.1em;
+	background-image: url(../images/preview_video.png);
+	margin-bottom: 6px;
+}
+
+div.inavailable p
+{
+	width: 80%;
+	padding-top: 100px;
+	text-align: center;
+	font-size: 1.4em;
+	margin: 0 auto;
+}
+
+ul.controls
+{
+	width: 320px;
+	height: 25px;
+	margin-bottom: 6px;
+	margin: 10px 0;
+	height: 25px;
+	list-style: none;
+	display: inline;
+	overflow: hidden;
+}
+
+ul.controls li
+{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: inline;
+}
+
+ul.controls a
+{
+	float: left;
+	padding: 25px 0 0 0;
+	overflow: hidden;
+	height: 0 !important;
+    height /**/: 25px;  /* for IE5/Win */
+}
+
+ul.controls a:hover { background-position: 0 -25px; }
+
+ul.controls li.play a
+{
+	background-image: url(../images/controls-play.png);
+	width: 21px;
+	margin-left: 0;
+}
+
+ul.controls li.play.pause a
+{
+	background-image: url(../images/controls-pause.png);
+	width: 21px;
+	margin-left: 0;
+}
+
+ul.controls li.position
+{
+	width: 24px;
+	margin: 0 0 0 10px;
+	font-family: Monaco, Courier, monospaced;
+	line-height: 2em;
+}
+
+div.playerinfo { font-size: xx-small; }
+
+ul.controls li.sound a
+{
+	background-image: url(../images/controls-soundon.png);
+	width: 23px;
+	background-repeat: no-repeat;
+	float: right;
+	margin: 0 4px;
+}
+
+ul.controls li.screen a
+{
+	background-image: url(../images/controls-fullscreen.png);
+	width: 23px;
+	margin: 0 4px;
+	background-repeat: no-repeat;
+	float: right;
+}
+
