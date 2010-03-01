@@ -5,6 +5,12 @@
 * @version  '$Id$'
 */
 
+body.oiplayer-example
+{
+	font-size: small;
+	font-family: Helvetica, sans-serif;
+}
+
 #clientcaps	/* used by MSIE Java plugin detection, sigh :-( */
 {
 	behavior: url(#default#clientCaps);

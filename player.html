@@ -9,23 +9,49 @@
   <script src="js/jquery.oiplayer.js" type="text/javascript"><!-- help ie --></script>
   <script src="js/play.js" type="text/javascript"><!-- help ie --></script>
   <link href="css/oiplayer.css" rel="stylesheet" type="text/css" />
-  
-  <meta name="media-width" content="320" />
-  <meta name="media-height" content="240" />
-
 </head>
-<body>
+<body class="oiplayer-example">
 
 <div class="main">
-  <h1>Storm</h1>
-  
-  <div id="clientcaps">  </div>
+  <h1>OIPlayer</h1>
+  <h2>Example video: Storm</h2>
+  <div id="clientcaps">  </div> <!-- div#clientcaps is needed for Java detection in MSIE -->
   
   <video controls="controls" poster="http://www.openbeelden.nl/images/18489/WEEKNUMMER364-HRE0000D9C6.png">
     <source type="video/ogg; codecs=theora" src="http://www.openbeelden.nl/files/09/9734.9730.WEEKNUMMER364-HRE0000D9C6.ogv"> </source>
     <source type="video/ogg; codecs=theora" src="http://www.openbeelden.nl/files/09/9737.9730.WEEKNUMMER364-HRE0000D9C6.ogv"> </source>
     <source type="video/mp4; codecs=unknown" src="http://www.openbeelden.nl/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4"> </source>
   </video>
+  
+  <p>
+    The above video-tag is copied from Open Images: 
+    <a href="http://www.openbeelden.nl/media/9728/Storm">http://www.openbeelden.nl/media/9728/Storm</a>.
+    The poster attribute was added later.
+  </p>
+  <h2>Howto</h2>
+  <ul>
+    <li>
+      Enable this plugin on all HTML5 video or audio tags in your page, for example 
+      in its main column &lt;div class="main" /&gt; of your website with:
+<pre>
+$(document).ready(function() {
+    $('div.main').oiplayer({
+        'server' : 'http://192.168.1.4:8080/', /* msie (or windows java) has issues with just a dir */
+        'jar' : 'plugins/cortado-ovt-stripped-wm_r38710.jar',
+        'flash' : 'plugins/flowplayer-3.1.1.swf',
+        'controls' : true
+    });
+});
+</pre>
+    </li>
+    <li>
+      Make the fallback mechanism work by installing <a href="http://www.flowplayer.org">Flowplayer</a> 
+      and Cortado in the plugins directory. 
+      Flowplayer needs the Flash plugin and plays h.264, flv and mp4 files when they are correctly encoded. 
+      Cortado is a Java applet that plays Ogg video and audio (ogv, aga).
+    </li>
+  </ul>
+  
 
 </div>
 
