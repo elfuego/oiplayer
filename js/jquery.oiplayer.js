@@ -52,7 +52,6 @@ jQuery.fn.oiplayer = function(conf) {
             //console.log("info: " + player.info);
             
             var poster = createPoster(self, player); // using self (complete input) for MSIE
-            console.log(poster);
             if ($.browser.msie || player.myname == 'flowplayer') { 
                 $('p.oiplayer-warn').hide(); // MSIE places stuff partly outside mediatag
                 $(div).find('div.oiplayer-flash').hide(); // .remove() would indefinitely loop MSIE
