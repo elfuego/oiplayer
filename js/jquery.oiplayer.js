@@ -424,7 +424,7 @@ CortadoPlayer.prototype = new Player();
 CortadoPlayer.prototype.init = function(el, url, config) {
     this._init(el, url, config);
     this.url = url;
-    var jar = config.jar;
+    var jar = config.server + config.jar;
     var usevideo = true;
     var useheight = this.height;
     if (this.type == 'audio') {
