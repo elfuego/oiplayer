@@ -4,11 +4,11 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <title>OIPlayer jQuery Plugin - Open Images Platform</title>
-  <script src="/~andre/oiplayer/js/jquery-1.3.2.min.js" type="text/javascript"><!-- help ie --></script>
-  <script src="/~andre/oiplayer/plugins/flowplayer-3.1.4.min.js" type="text/javascript"><!-- help ie --></script>
-  <script src="/~andre/oiplayer/js/jquery.oiplayer.js" type="text/javascript"><!-- help ie --></script>
-  <script src="/~andre/oiplayer/js/play.js" type="text/javascript"><!-- help ie --></script>
-  <link href="/~andre/oiplayer/css/oiplayer.css" rel="stylesheet" type="text/css" />
+  <script src="js/jquery-1.3.2.min.js" type="text/javascript"><!-- help ie --></script>
+  <script src="plugins/flowplayer-3.1.4.min.js" type="text/javascript"><!-- help ie --></script>
+  <script src="js/jquery.oiplayer.js" type="text/javascript"><!-- help ie --></script>
+  <script src="js/play.js" type="text/javascript"><!-- help ie --></script>
+  <link href="css/oiplayer.css" rel="stylesheet" type="text/css" />
 </head>
 <body class="oiplayer-example">
 
@@ -17,14 +17,15 @@
   <h2>Example video: Storm</h2>
   <div id="clientcaps">  </div> <!-- div#clientcaps is needed for Java detection in MSIE -->
   
-  <video controls="controls" poster="http://www.openbeelden.nl/images/18489/WEEKNUMMER364-HRE0000D9C6.png">
-    <source type="video/ogg; codecs=theora" src="http://www.openbeelden.nl/files/09/9734.9730.WEEKNUMMER364-HRE0000D9C6.ogv"> </source>
-    <source type="video/ogg; codecs=theora" src="http://www.openbeelden.nl/files/09/9737.9730.WEEKNUMMER364-HRE0000D9C6.ogv"> </source>
-    <source type="video/mp4; codecs=unknown" src="http://www.openbeelden.nl/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4"> </source>
+  <video controls="controls" poster="http://www.openimages.eu/images/18489/WEEKNUMMER364-HRE0000D9C6.png">
+    <source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/9734.9730.WEEKNUMMER364-HRE0000D9C6.ogv"> </source>
+    <source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/9737.9730.WEEKNUMMER364-HRE0000D9C6.ogv"> </source>
+    <source type="video/mp4; codecs=unknown" src="http://www.openimages.eu/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4"> </source>
   </video>
   
   <p>
-    This (silent) movie is on Open Images <a href="http://www.openbeelden.nl/media/9728/Storm">http://www.openbeelden.nl/media/9728/Storm</a>.
+    This (silent) movie is on Open Images 
+    <a href="http://www.openimages.eu/media/9728/Storm">http://www.openimages.eu/media/9728/Storm</a>.
     I copied the video-tag and added a poster attribute to the tag.
   </p>
   <h2>Howto</h2>
@@ -51,18 +52,22 @@
       <pre>
       $(document).ready(function() {
           $('body.oiplayer-example').oiplayer({
-              'server' : 'http://localhost',
-              'jar' : '/oiplayer/cortado-ovt-stripped-wm_r38710.jar',
-              'flash' : '/oiplayer/plugins/flowplayer-3.1.1.swf',
+              'server' : 'http://www.openimages.eu',
+              'jar' : '/player/cortado-ovt-stripped-wm_r38710.jar',
+              'flash' : '/player/flowplayer-3.1.1.swf',
               'controls' : true
           });
       });
       </pre>
     </li>
+    <li>To have MSIE detect Java support you need this div somewhere (juts once) in your page:
+      <pre>&lt;div id="clientcaps"&gt;  &lt;/div&gt;</pre>
+    </li>
     <li>
       You will probably get a 'Not allowed' with Cortado since it is often not allowed to play 
       files from different hosts by some browsers. Be sure to copy your files to the host
-      from where your pages are served.
+      from where your pages are served. Or use the Cortado jar from www.openimages.eu when you are 
+      playing movies from there.
     </li>
   </ol>
   
