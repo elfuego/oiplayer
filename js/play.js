@@ -8,9 +8,9 @@
 
 $(document).ready(function() {
     $('body.oiplayer-example').oiplayer({
-        'server' : 'http://localhost', /* msie (or windows java) has issues with just a dir */
-        'jar' : '/oiplayer/cortado-ovt-stripped-wm_r38710.jar',
-        'flash' : '/oiplayer/plugins/flowplayer-3.1.1.swf',
-        'controls' : true
+        server : 'http://www.openimages.eu', /* msie (or windows java) has issues with just a dir */
+        jar : '/player/cortado-ovt-stripped-wm_r38710.jar',
+        flash : '/player/flowplayer-3.1.1.swf',
+        controls : true
     });
 });
