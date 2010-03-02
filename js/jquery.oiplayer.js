@@ -15,7 +15,6 @@
  * mediatags in one go. You will have to wrap each mediatag in a div or some other element and feed it
  * to the plugin.
  *
- * @version: 0.5
  * @params:
  *   id - id of the element that contains the media tag
  *   config - configuration parameters
@@ -25,6 +24,7 @@
  *       'controls' : to show and use controls or not
  *
  * @changes: moved all files to one directory
+ * @version: '$Id$'
 */
 
 jQuery.fn.oiplayer = function(conf) {

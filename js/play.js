@@ -2,12 +2,12 @@
   Javascript to init and configure OIPlayer.
   
   @author: André van Toly
-  @version: '$Id: andre $'
+  @version: '$Id$'
   @changes: moved all oiplayer stuff to one directory
 */
 
 $(document).ready(function() {
-    $('.main').oiplayer({
+    $('body.oiplayer-example').oiplayer({
         'server' : 'http://localhost', /* msie (or windows java) has issues with just a dir */
         'jar' : '/oiplayer/cortado-ovt-stripped-wm_r38710.jar',
         'flash' : '/oiplayer/plugins/flowplayer-3.1.1.swf',

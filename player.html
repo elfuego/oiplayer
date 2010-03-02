@@ -24,25 +24,23 @@
   </video>
   
   <p>
-    The above video-tag is copied from Open Images: 
-    <a href="http://www.openbeelden.nl/media/9728/Storm">http://www.openbeelden.nl/media/9728/Storm</a>.
-    The poster attribute was added later.
+    This (silent) movie is on Open Images <a href="http://www.openbeelden.nl/media/9728/Storm">http://www.openbeelden.nl/media/9728/Storm</a>.
+    I copied the video-tag and added a poster attribute to the tag.
   </p>
   <h2>Howto</h2>
   <ol>
     <li>
-      Enable this plugin on all HTML5 video or audio tags in your page, for example 
-      in its main column &lt;div class="main" /&gt; of your website.
-      This enables the player including the controls to play and pause etc.
+      Enable the jQuery plugin on all HTML5 video or audio tags. 
+      In this example on all pages with a body with class 'oiplayerexample'.
       <pre>
       $(document).ready(function() {
-          $('div.main').oiplayer({ 'controls' : true });
+          $('body.oiplayer-example').oiplayer({ 'controls' : true });
       });
       </pre>
     </li>
     <li>
-      Make the fallback mechanism work by installing <a href="http://www.flowplayer.org">Flowplayer</a> 
-      and Cortado in the plugins directory. 
+      OIPlayer has a fallback mechanism that can be made to work 
+      by installing <a href="http://www.flowplayer.org">Flowplayer</a> and Cortado. 
       Flowplayer needs the Flash plugin and plays h.264, flv and mp4 files when they are correctly encoded. 
       Cortado is a Java applet that plays Ogg video and audio (ogv, aga).
       <ul>
@@ -52,7 +50,7 @@
       </ul>
       <pre>
       $(document).ready(function() {
-          $('div.main').oiplayer({
+          $('body.oiplayer-example').oiplayer({
               'server' : 'http://localhost',
               'jar' : '/oiplayer/cortado-ovt-stripped-wm_r38710.jar',
               'flash' : '/oiplayer/plugins/flowplayer-3.1.1.swf',

@@ -21,6 +21,8 @@ body.oiplayer-example > div.main
 	padding: 1px 1em;
 }
 
+body.oiplayer-example > div.main ol { padding-left: 20px; }
+
 #clientcaps	/* used by MSIE Java plugin detection, sigh :-( */
 {
 	behavior: url(#default#clientCaps);
