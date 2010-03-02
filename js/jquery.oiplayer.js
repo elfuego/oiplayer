@@ -498,7 +498,7 @@ MSCortadoPlayer.prototype = new CortadoPlayer();
 MSCortadoPlayer.prototype.init = function(el, url, config) {
     this._init(el, url, config);
     /* msie (or windows java) can only load an applet from the root of a site, not a directory or context */
-    var jar = config.server + config.jar; 
+    var jar = config.server + config.jar;
     var usevideo = true;
     var useheight = this.height;
     if (this.type == 'audio') { 
@@ -539,7 +539,7 @@ function FlowPlayer() {
 FlowPlayer.prototype = new Player();
 FlowPlayer.prototype.init = function(el, url, config) {
     this._init(el, url, config);
-    var flwplayer = config.flash;
+    var flwplayer = config.server + config.flash;
     var duration = (this.duration == undefined ? 0 : Math.round(this.duration));
     
     var div = document.createElement('div'); // TODO: add (random) id: adding flowplayer and returning it impossible without id
