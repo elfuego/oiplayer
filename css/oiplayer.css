@@ -5,49 +5,53 @@
 * @version  '$Id$'
 */
 
-body.oiplayer-example
-{
-	font-size: small;
-	font-family: Helvetica, sans-serif;
-	background-color: #efefef;
-	line-height: 1.4em;
-}
-
-body.oiplayer-example > div.main
-{
-	width: 620px;
-	margin: 0 auto;
-	background-color: #fff;
-	padding: 1px 1em;
-}
-
-body.oiplayer-example > div.main ol { padding-left: 20px; }
-
-#clientcaps	/* used by MSIE Java plugin detection, sigh :-( */
+/* MSIE Java plugin detection, sigh :-( */
+#clientcaps
 {
 	behavior: url(#default#clientCaps);
 	display: none;
 }
 
-div.oiplayer
+div.oiplayer { width: 320px; }
+div.oiplayer.fullscreen
 {
-	position: relative;
-	margin: 0 0 12px 0;
-	padding: 0;
-	height: 240px;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #fff;
 }
 
-div.oiplayer img.oipreview
+div.oiplayer > div.player,
+div.oiplayer div.oiplayer-flash
+{
+	position: relative;
+	height: 240px;
+	margin: 0 0 8px 0;
+	padding: 0;
+}
+
+/* div.oiplayer div.oiplayer-flash { position: relative; } */
+
+div.oiplayer > div.controls
+{
+	height: 24px;
+	margin: 0;
+	position: relative;
+	top: 0px;	/* make -32px to float on top video */
+	left: 0;
+	z-index: 99;
+	background-image: url(images/controls-whitie.png);
+	background-repeat: repeat;
+}
+
+div.oiplayer > div.player > img
 {
 	position: absolute;
 	margin: 0;
 	padding: 0;
 	z-index: 9;
-}
-
-div.oiplayer div.oiplayer-flash
-{
-	position: relative;
 }
 
 div.oiplayer audio, #msie_cortadoplayer_oiplayer
@@ -77,12 +81,9 @@ div.inavailable p
 	margin: 0 auto;
 }
 
+/* controls */
 ul.controls
 {
-	width: 320px;
-	height: 25px;
-	margin-bottom: 6px;
-	margin: 10px 0;
 	height: 25px;
 	list-style: none;
 	display: inline;
@@ -99,7 +100,6 @@ ul.controls li
 
 ul.controls a
 {
-	float: left;
 	padding: 25px 0 0 0;
 	overflow: hidden;
 	height: 0 !important;
@@ -112,41 +112,113 @@ ul.controls li.play a
 {
 	background-image: url(images/controls-play.png);
 	width: 21px;
-	margin-left: 0;
+	margin-left: -2px;
+	float: left;
 }
 
 ul.controls li.play.pause a
 {
 	background-image: url(images/controls-pause.png);
 	width: 21px;
-	margin-left: 0;
+	margin-left: -2px;
+	float: left;
 }
 
 ul.controls li.position
 {
-	width: 24px;
-	margin: 0 0 0 10px;
 	font-family: Monaco, Courier, monospaced;
+	color: #555;
 	line-height: 2em;
+    margin-left: 10px;
+	float: left;
 }
 
 div.playerinfo { font-size: xx-small; }
 
 ul.controls li.sound a
 {
-	background-image: url(images/controls-soundon.png);
-	width: 23px;
-	background-repeat: no-repeat;
 	float: right;
-	margin: 0 4px;
+	background-image: url(images/controls-soundon.png);
+	background-repeat: no-repeat;
+	width: 23px;
+	margin-left: 6px;
+}
+
+ul.controls li.sound.off a
+{
+	float: right;
+	background-image: url(images/controls-soundoff.png);
+	background-repeat: no-repeat;
+	width: 23px;
+	margin-left: 6px;
 }
 
 ul.controls li.screen a
 {
-	background-image: url(images/controls-fullscreen.png);
-	width: 23px;
-	margin: 0 4px;
-	background-repeat: no-repeat;
 	float: right;
+	background-image: url(images/controls-fullscreen.png);
+	background-repeat: no-repeat;
+	width: 23px;
+	margin-left: 6px;
 }
 
+ul.controls li.slider
+{
+	float: left;
+	margin-left: 18px;
+	background: url(images/controls-slidestart.png) top left no-repeat;
+	width: 160px;
+}
+
+ul.controls li.slider > div { width: 150px; }
+
+/* ### jquery-ui ### */
+.ui-slider { position: relative; }
+
+.ui-slider-horizontal .ui-slider-handle {
+    top: 0;
+}
+
+.ui-slider .ui-slider-handle
+{
+	cursor: pointer;
+	height: 25px;
+	position: absolute;
+	width: 11px;
+	z-index: 2;
+}
+
+.ui-widget-content
+{
+	border: 0;
+	background: url(images/controls-slidelong.png) top right no-repeat;
+	height: 25px;
+	margin-left: 10px;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default
+{
+	border: 0;
+	background-color: transparent;
+	background: url(images/controls-position.png) top left no-repeat;
+	margin-left: -10px;
+}
+
+/* ### example html ### */
+body.oiplayer-example
+{
+	font-size: small;
+	font-family: Helvetica, sans-serif;
+	background-color: #efefef;
+	line-height: 1.4em;
+}
+
+body.oiplayer-example > div.main
+{
+	width: 620px;
+	margin: 0 auto;
+	background-color: #fff;
+	padding: 1px 1em;
+}
+
+body.oiplayer-example > div.main ol { padding-left: 20px; }
