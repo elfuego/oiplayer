@@ -47,20 +47,19 @@ jQuery.fn.oiplayer = function(conf) {
             }
             
             $(mt).wrap('<div class="oiplayer"><div class="player"></div></div>');
-            var div = $(mt).parent('div.player');
+            var div = $(mt).closest('div.oiplayer');
+            
             var player = createPlayer(mt, sources, config);
-            //console.log("info: " + player.info);
+            $(div).find('div.player').hide(); // .remove() would indefinitely loop MSIE
             
             var poster = createPoster(self, player); // using self (complete input) for MSIE
-            if ($.browser.msie || player.myname == 'flowplayer') { 
-                $('p.oiplayer-warn').hide(); // MSIE places stuff partly outside mediatag
-                $(div).find('div.oiplayer-flash').hide(); // .remove() would indefinitely loop MSIE
-            } else {
-                $(div).empty();
-            }
             $(div).prepend(poster);
-
-            /* click preview: play */
+            //console.log("info: " + player.info);
+            
+            if ($.browser.msie) { 
+                //$('p.oiplayer-warn').hide(); // MSIE places stuff partly outside mediatag
+            }
+            
             $(div).find('img.oipreview').click(function(ev) {
                 ev.preventDefault();
                 if (player.type == 'video') {
@@ -68,8 +67,7 @@ jQuery.fn.oiplayer = function(conf) {
                 } else {
                     $(div).find('img.oipreview').css("z-index", "1");
                 }
-                $(div).find('div.oiplayer-flash').show();
-                $(div).append(player.player);
+                $(div).find('div.player').show();
                 $(player.player).css("z-index", "9");
                 player.play();
                 if (config.controls == true) {
@@ -81,14 +79,14 @@ jQuery.fn.oiplayer = function(conf) {
             });     
             
             if (config.controls == true) {
-                $(div).after(createControls());
+                $(div).append(createControls());
             
                 /* click play/pause button */
-                var ctrls = $(div).next('div.controls');
+                var ctrls = $(div).find('ul.controls');
                 var timer = $(ctrls).find('li.position');
+                //console.log("init: " + player.state);
                 $(ctrls).find('li.play a').click(function(ev) {
                     ev.preventDefault();
-                    console.log("click");
                     if (player.state == 'pause') {
                         player.play();
                         if ($(ctrls).find('li.pause').length == 0) {
@@ -102,8 +100,7 @@ jQuery.fn.oiplayer = function(conf) {
                         if (player.type == 'video') {
                             $(div).find('img.oipreview').remove();
                         }
-                        $(div).find('div.oiplayer-flash').show();
-                        $(div).append(player.player);
+                        $(div).find('div.player').show();
                         player.play();
                         if ($(ctrls).find('li.pause').length == 0) {
                             $(ctrls).find('li.play').addClass('pause');
@@ -113,8 +110,10 @@ jQuery.fn.oiplayer = function(conf) {
                     //console.log("player state: " + player.state);
                 });
                 $(ctrls).find('li.sound a').click(function(ev){
-                    player.mute();
-                    $(ctrls).find('li.sound').toggleClass('off');
+                    if (player.state != 'init') {
+                        player.mute();
+                        $(ctrls).find('li.sound').toggleClass('off');
+                    }
                 });
             }
 
@@ -560,8 +559,12 @@ FlowPlayer.prototype.init = function(el, url, config) {
     var duration = (this.duration == undefined ? 0 : Math.round(this.duration));
     
     var div = document.createElement('div'); // TODO: add (random) id: adding flowplayer and returning it impossible without id
-    $(el).parent('div.player').html(div);
+    /*
+    $(el).closest('div.player').html(div);
     $(div).addClass('oiplayer-flash');
+    */
+    $(el).closest('div.oiplayer').html(div);
+    $(div).addClass('player');
     this.player = $f(div, { src : flwplayer, width : this.width, height : this.height }, {
         clip: {
             url: this.url,

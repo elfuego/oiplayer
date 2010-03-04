@@ -18,8 +18,10 @@
   <div id="clientcaps">  </div> <!-- div#clientcaps is needed for Java detection in MSIE -->
   
   <video controls="controls" poster="http://www.openimages.eu/images/18489/WEEKNUMMER364-HRE0000D9C6.png">
+<!-- 
     <source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/9734.9730.WEEKNUMMER364-HRE0000D9C6.ogv"> </source>
     <source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/9737.9730.WEEKNUMMER364-HRE0000D9C6.ogv"> </source>
+ -->
     <source type="video/mp4; codecs=unknown" src="http://www.openimages.eu/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4"> </source>
   </video>
   
@@ -42,7 +44,8 @@
     </li>
     <li>
       Enable the jQuery plugin on all HTML5 video or audio tags. 
-      In this example on all pages with a body with class 'oiplayerexample' (see f.e. 'js/play.js').
+      In this example on all pages with a body with class 'oiplayerexample' 
+      (see f.e. '<a href="js/play.js">js/play.js</a>').
       <pre>
       $(document).ready(function() {
           $('body.oiplayer-example').oiplayer({ 'controls' : true });
