@@ -8,7 +8,7 @@
   <script src="plugins/flowplayer-3.1.4.min.js" type="text/javascript"><!-- help ie --></script>
   <script src="js/jquery.oiplayer.js" type="text/javascript"><!-- help ie --></script>
   <script src="js/play.js" type="text/javascript"><!-- help ie --></script>
-  <link href="css/oiplayer.css" rel="stylesheet" type="text/css" />
+  <link href="css/oiplayer2.css" rel="stylesheet" type="text/css" />
 </head>
 <body class="oiplayer-example">
 
@@ -18,9 +18,12 @@
   <div id="clientcaps">  </div> <!-- div#clientcaps is needed for Java detection in MSIE -->
   
   <video controls="controls" poster="http://www.openimages.eu/images/18489/WEEKNUMMER364-HRE0000D9C6.png">
+    <source type="video/ogg; codecs=theora" src="presto.ogv"> </source>
+<!-- 
     <source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/9734.9730.WEEKNUMMER364-HRE0000D9C6.ogv"> </source>
     <source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/9737.9730.WEEKNUMMER364-HRE0000D9C6.ogv"> </source>
     <source type="video/mp4; codecs=unknown" src="http://www.openimages.eu/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4"> </source>
+ -->
   </video>
   
   <p>
@@ -31,8 +34,18 @@
   <h2>Howto</h2>
   <ol>
     <li>
+      Copy the 'oiplayer' directory to your site. Include these css and javascript
+      files in the head of your html document. 
+      <pre>
+      &lt;script src="js/jquery-1.3.2.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
+      &lt;script src="plugins/flowplayer-3.1.4.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
+      &lt;script src="js/jquery.oiplayer.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
+      &lt;link href="css/oiplayer.css" rel="stylesheet" type="text/css" /&gt;
+      </pre>
+    </li>
+    <li>
       Enable the jQuery plugin on all HTML5 video or audio tags. 
-      In this example on all pages with a body with class 'oiplayerexample'.
+      In this example on all pages with a body with class 'oiplayerexample' (see f.e. 'js/play.js').
       <pre>
       $(document).ready(function() {
           $('body.oiplayer-example').oiplayer({ 'controls' : true });
@@ -41,7 +54,9 @@
     </li>
     <li>
       OIPlayer has a fallback mechanism that can be made to work 
-      by installing <a href="http://www.flowplayer.org">Flowplayer</a> and Cortado. 
+      by installing <a href="http://www.flowplayer.org">Flowplayer</a> and 
+      <a href="http://en.wikipedia.org/wiki/Cortado_%28software%29">Cortado</a>
+      (<a href="http://downloads.xiph.org/releases/cortado/?C=M;O=D">download</a>). 
       Flowplayer needs the Flash plugin and plays h.264, flv and mp4 files when they are correctly encoded. 
       Cortado is a Java applet that plays Ogg video and audio (ogv, aga).
       <ul>
@@ -49,6 +64,8 @@
         <li>jar: location of Cortado jar</li>
         <li>flash: location of Flowplayer and its files</li>
       </ul>
+      These examples point to files on www.openimages.eu and should normally work with our
+      media files.
       <pre>
       $(document).ready(function() {
           $('body.oiplayer-example').oiplayer({
@@ -60,7 +77,7 @@
       });
       </pre>
     </li>
-    <li>To have MSIE detect Java support you need this div somewhere (juts once) in your page:
+    <li>To have MSIE detect Java support you need this div somewhere (just once) in your page:
       <pre>&lt;div id="clientcaps"&gt;  &lt;/div&gt;</pre>
     </li>
     <li>

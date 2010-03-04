@@ -46,8 +46,8 @@ jQuery.fn.oiplayer = function(conf) {
                 sources = $(self).find('source');
             }
             
-            $(mt).wrap('<div class="oiplayer"></div>');
-            var div = $(mt).parent('div.oiplayer');
+            $(mt).wrap('<div class="oiplayer"><div class="player"></div></div>');
+            var div = $(mt).parent('div.player');
             var player = createPlayer(mt, sources, config);
             //console.log("info: " + player.info);
             
@@ -84,10 +84,11 @@ jQuery.fn.oiplayer = function(conf) {
                 $(div).after(createControls());
             
                 /* click play/pause button */
-                var ctrls = $(div).next('ul.controls');
+                var ctrls = $(div).next('div.controls');
                 var timer = $(ctrls).find('li.position');
-                $(ctrls).find('li.play').click(function(ev) {
+                $(ctrls).find('li.play a').click(function(ev) {
                     ev.preventDefault();
+                    console.log("click");
                     if (player.state == 'pause') {
                         player.play();
                         if ($(ctrls).find('li.pause').length == 0) {
@@ -110,6 +111,10 @@ jQuery.fn.oiplayer = function(conf) {
                         $.oiplayer.follow(player, timer);
                     }
                     //console.log("player state: " + player.state);
+                });
+                $(ctrls).find('li.sound a').click(function(ev){
+                    player.mute();
+                    $(ctrls).find('li.sound').toggleClass('off');
                 });
             }
 
@@ -282,10 +287,11 @@ jQuery.fn.oiplayer = function(conf) {
     }
         
     function createControls() {
-        var html = '<ul class="controls">' + 
+        var html = '<div class="controls"><ul class="controls">' + 
                       '<li class="play"><a href="#play">play</a></li>' +
                       '<li class="position">00:00</li>' +
-                   '</ul>';
+                      '<li class="sound"><a href="#sound">sound</a></li>' + 
+                   '</ul></div>';
         return html;
     }
     
@@ -351,6 +357,7 @@ function Player() {
     this.myname = "super";
 }
 Player.prototype.init = function(el, url, config) { }
+Player.prototype.mute = function() { }
 Player.prototype.play = function() { }
 Player.prototype.pause = function() { }
 Player.prototype.position = function() { }
@@ -400,6 +407,13 @@ MediaPlayer.prototype.play = function() {
 MediaPlayer.prototype.pause = function() {
     this.player.pause();
     this.state = 'pause';
+}
+MediaPlayer.prototype.mute = function() {
+    if (this.player.muted) {
+        this.player.muted = false;
+    } else {
+        this.player.muted = true;
+    }
 }
 MediaPlayer.prototype.position = function() {
     try {
@@ -483,6 +497,9 @@ CortadoPlayer.prototype.pause = function() {
 //         this.player.doStop();
 //     } catch(err) { }
 }
+CortadoPlayer.prototype.mute = function() {
+    alert("Not supported by Cortado?");
+}
 CortadoPlayer.prototype.position = function() {
     this.pos = this.player.getPlayPosition();
     return this.pos;
@@ -543,7 +560,7 @@ FlowPlayer.prototype.init = function(el, url, config) {
     var duration = (this.duration == undefined ? 0 : Math.round(this.duration));
     
     var div = document.createElement('div'); // TODO: add (random) id: adding flowplayer and returning it impossible without id
-    $(el).parent('div.oiplayer').html(div);
+    $(el).parent('div.player').html(div);
     $(div).addClass('oiplayer-flash');
     this.player = $f(div, { src : flwplayer, width : this.width, height : this.height }, {
         clip: {
@@ -569,6 +586,13 @@ FlowPlayer.prototype.play = function() {
 FlowPlayer.prototype.pause = function() {
     if (this.player.getState() == 3) this.player.pause();
     this.state = 'pause';
+}
+FlowPlayer.prototype.mute = function() {
+    if (this.player.getStatus().muted == true) {
+        this.player.unmute();
+    } else {
+        this.player.mute();
+    }
 }
 FlowPlayer.prototype.position = function() {
     this.pos = this.player.getTime();
