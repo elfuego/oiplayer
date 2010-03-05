@@ -48,9 +48,8 @@ jQuery.fn.oiplayer = function(conf) {
             
             $(mt).wrap('<div class="oiplayer"><div class="player"></div></div>');
             var div = $(mt).closest('div.oiplayer');
-            
             var player = createPlayer(mt, sources, config);
-            $(div).find('div.player').hide(); // .remove() would indefinitely loop MSIE
+            $(div).find('div.player').hide();
             
             var poster = createPoster(self, player); // using self (complete input) for MSIE
             $(div).prepend(poster);
@@ -68,6 +67,11 @@ jQuery.fn.oiplayer = function(conf) {
                     $(div).find('img.oipreview').css("z-index", "1");
                 }
                 $(div).find('div.player').show();
+                var info = player.info;
+                if (info.indexOf("flash") < 0) {
+                    $(div).find('div.player').empty();
+                }
+                $(div).find('div.player').append(player.player);
                 $(player.player).css("z-index", "9");
                 player.play();
                 if (config.controls == true) {
@@ -101,6 +105,12 @@ jQuery.fn.oiplayer = function(conf) {
                             $(div).find('img.oipreview').remove();
                         }
                         $(div).find('div.player').show();
+                        var info = player.info;
+                        if (info.indexOf("flash") < 0) {
+                            $(div).find('div.player').empty();
+                        }
+                        $(div).find('div.player').append(player.player);
+                        $(player.player).css("z-index", "9");
                         player.play();
                         if ($(ctrls).find('li.pause').length == 0) {
                             $(ctrls).find('li.play').addClass('pause');
@@ -153,9 +163,6 @@ jQuery.fn.oiplayer = function(conf) {
         } else {
             player = new Player();
         }
-        player.type = el.tagName.toLowerCase();
-        player.player = el;
-        player.url = selectedPlayer.url;
         player.info = selectedPlayer.type + ":" + selectedPlayer.url;
         player.init(el, selectedPlayer.url, config);
         return player;
@@ -363,7 +370,9 @@ Player.prototype.position = function() { }
 Player.prototype.info = function() { }
 
 Player.prototype._init = function(el, url, config) {
+    this.player = el;
     this.url = url;
+    this.type = el.tagName.toLowerCase(); // video or audio
     this.poster = $(this.player).attr('poster');
     //console.log("this.poster: " + this.poster);
     this.autoplay = $(this.player).attr('autoplay');
@@ -389,8 +398,7 @@ MediaPlayer.prototype.init = function(el, url, config) {
     this._init(el, url, config); // just init and pass it along
     this.url = url;
     var self = this;
-    //console.log(this.player);
-    var timer = $(el).find('ul.controls li.position');
+    var timer = $(el).next('ul.controls li.position');
     this.player.addEventListener("playing", 
                                   function(ev) {
                                       self.state = 'play';
@@ -559,10 +567,6 @@ FlowPlayer.prototype.init = function(el, url, config) {
     var duration = (this.duration == undefined ? 0 : Math.round(this.duration));
     
     var div = document.createElement('div'); // TODO: add (random) id: adding flowplayer and returning it impossible without id
-    /*
-    $(el).closest('div.player').html(div);
-    $(div).addClass('oiplayer-flash');
-    */
     $(el).closest('div.oiplayer').html(div);
     $(div).addClass('player');
     this.player = $f(div, { src : flwplayer, width : this.width, height : this.height }, {

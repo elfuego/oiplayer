@@ -23,10 +23,11 @@ div.oiplayer.fullscreen
 	background-color: #fff;
 }
 
-div.oiplayer > div.player {
+div.oiplayer > div.player
+{
 	position: relative;
 	height: 240px;
-	margin: 0 0 8px 0;
+	margin: 0 0 6px 0;
 	padding: 0;
 }
 
