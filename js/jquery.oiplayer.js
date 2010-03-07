@@ -23,7 +23,7 @@
  *       'flash' : location of flowplayer.swf
  *       'controls' : to show and use controls or not
  *
- * @changes: moved all files to one directory
+ * @changes: added seek, fullscreen and mute
  * @version: '$Id$'
 */
 
@@ -49,11 +49,10 @@ jQuery.fn.oiplayer = function(conf) {
             $(mt).wrap('<div class="oiplayer"><div class="player"></div></div>');
             var div = $(mt).closest('div.oiplayer');
             var player = createPlayer(mt, sources, config);
-            $(div).find('div.player').hide();
-            
-            var poster = createPoster(self, player); // using self (complete input) for MSIE
-            $(div).prepend(poster);
             //console.log("info: " + player.info);
+            var poster = createPoster(self, player);
+            $(div).find('div.player').hide();
+            $(div).prepend(poster);
             
             if ($.browser.msie) { 
                 //$('p.oiplayer-warn').hide(); // MSIE places stuff partly outside mediatag
@@ -61,34 +60,14 @@ jQuery.fn.oiplayer = function(conf) {
             
             $(div).find('img.oipreview').click(function(ev) {
                 ev.preventDefault();
-                if (player.type == 'video') {
-                    $(div).find('img.oipreview').remove();
-                } else {
-                    $(div).find('img.oipreview').css("z-index", "1");
-                }
-                $(div).find('div.player').show();
-                var info = player.info;
-                if (info.indexOf("flash") < 0) {
-                    $(div).find('div.player').empty();
-                }
-                $(div).find('div.player').append(player.player);
-                $(player.player).css("z-index", "9");
-                player.play();
-                if (config.controls == true) {
-                    $.oiplayer.follow(player, timer);
-                    if ($(ctrls).find('li.pause').length == 0) {
-                        $(ctrls).find('li.play').addClass('pause');
-                    }
-                }
+                start(player, div);
             });     
             
             if (config.controls == true) {
                 $(div).append(createControls());
-            
-                /* click play/pause button */
                 var ctrls = $(div).find('ul.controls');
                 var timer = $(ctrls).find('li.position');
-                //console.log("init: " + player.state);
+                
                 $(ctrls).find('li.play a').click(function(ev) {
                     ev.preventDefault();
                     if (player.state == 'pause') {
@@ -101,21 +80,7 @@ jQuery.fn.oiplayer = function(conf) {
                         player.pause();
                         $(ctrls).find('li.play').removeClass('pause');
                     } else {
-                        if (player.type == 'video') {
-                            $(div).find('img.oipreview').remove();
-                        }
-                        $(div).find('div.player').show();
-                        var info = player.info;
-                        if (info.indexOf("flash") < 0) {
-                            $(div).find('div.player').empty();
-                        }
-                        $(div).find('div.player').append(player.player);
-                        $(player.player).css("z-index", "9");
-                        player.play();
-                        if ($(ctrls).find('li.pause').length == 0) {
-                            $(ctrls).find('li.play').addClass('pause');
-                        }
-                        $.oiplayer.follow(player, timer);
+                        start(player, div);
                     }
                     //console.log("player state: " + player.state);
                 });
@@ -125,6 +90,10 @@ jQuery.fn.oiplayer = function(conf) {
                         $(ctrls).find('li.sound').toggleClass('off');
                     }
                 });
+                $(ctrls).find('li.screen a').click(function(ev){
+                    ev.preventDefault();
+                    fullscreen(player, div);
+                });
             }
 
         });
@@ -132,9 +101,79 @@ jQuery.fn.oiplayer = function(conf) {
         return this; // plugin convention
     });
     
+    /* Mainly user interface stuff on first start of playing */
+    function start(player, div) {
+        if (player.type == 'video') {
+            $(div).find('img.oipreview').remove();
+        } else {
+            $(div).find('img.oipreview').css("z-index", "1");
+        }
+        $(div).find('div.player').show();
+        if (player.info.indexOf("flash") < 0) {
+            $(div).find('div.player').empty();
+        }
+        $(div).find('div.player').append(player.player);
+        // for audio? $(player.player).css("z-index", "9");
+        player.play();
+        if (player.config.controls == true) {
+            var ctrls = $(div).find('ul.controls');
+            var timer = $(ctrls).find('li.position');
+            if ($(ctrls).find('li.pause').length == 0) {
+                $(ctrls).find('li.play').addClass('pause');
+            }
+            $.oiplayer.follow(player, timer);
+        }
+    }
+
+    function fullscreen(player, div) {
+        if (typeof(player.owidth) == "undefined") {
+            player.owidth = player.width;
+            player.oheight = player.height;
+        }
+        var window_w = $(window).width();
+        var window_h = $(window).height() - 25;
+        var multi_w = window_w / player.owidth;
+        var multi_h = window_h / player.oheight;
+        var half = 0;
+        if (player.width != player.owidth) {
+            player.width = player.owidth;
+            player.height = player.oheight;
+        } else if (multi_h < multi_w) {
+            player.width = player.owidth * multi_h;
+            player.height = window_h;
+            half = (window_w - player.width) / 2;
+        } else {
+            player.width = window_w;
+            player.height = player.oheight * multi_w;
+        }
+        
+        $(div).toggleClass('fullscreen');
+        $(div).find('div.player').width(player.width);
+        $(div).find('div.controls').width(player.width);
+        $(div).find('img.oipreview').width(player.width);
+        $(div).find('img.oipreview').height(player.height);
+        $(div).find('img.oipreview').css('margin-left', half);
+        $(player.player).width(player.width);
+        $(player.player).height(player.height);
+        var pos;
+        if (player.info.indexOf('flash') > -1) {
+            pos = parseInt(player.position());
+            //player.player.getScreen().animate({width:player.width,height:player.height});
+            player.player.unload();
+            player.player.play();
+        }
+        
+        $('div.player').find('object').attr("width", player.width);
+        $('div.player').find('object').attr("height", player.height);
+        if (player.info.indexOf('flash') > -1) {
+            setTimeout(function() { player.seek(pos) }, 1000);   // give fp time to reinitialize
+        }
+    }
+    
     /* 
      * Create player
      * @param el        video or audio element
+     * @param source    source tags
      * @param config    configuration
      * @return Player
      */
@@ -294,9 +333,10 @@ jQuery.fn.oiplayer = function(conf) {
         
     function createControls() {
         var html = '<div class="controls"><ul class="controls">' + 
-                      '<li class="play"><a href="#play">play</a></li>' +
+                      '<li class="play"><a title="play" href="#play">play</a></li>' +
                       '<li class="position">00:00</li>' +
-                      '<li class="sound"><a href="#sound">sound</a></li>' + 
+                      '<li class="sound"><a title="mute" href="#sound">mute</a></li>' + 
+                      '<li class="screen"><a title="fullscreen" href="#fullscreen">fullscreen</a></li>' + 
                    '</ul></div>';
         return html;
     }
@@ -367,11 +407,13 @@ Player.prototype.mute = function() { }
 Player.prototype.play = function() { }
 Player.prototype.pause = function() { }
 Player.prototype.position = function() { }
+Player.prototype.seek = function(p) { }
 Player.prototype.info = function() { }
 
 Player.prototype._init = function(el, url, config) {
     this.player = el;
     this.url = url;
+    this.config = config;
     this.type = el.tagName.toLowerCase(); // video or audio
     this.poster = $(this.player).attr('poster');
     //console.log("this.poster: " + this.poster);
@@ -431,6 +473,12 @@ MediaPlayer.prototype.position = function() {
     }
     return -1;
 }
+MediaPlayer.prototype.seek = function(pos) {
+    this.player.currentTime = pos;   // float
+    if (!this.player.paused) {
+        this.player.play();
+    }
+}
 MediaPlayer.prototype.info = function() {
     /*  duration able in webkit, 
         unable in mozilla without: https://developer.mozilla.org/en/Configuring_servers_for_Ogg_media
@@ -486,14 +534,7 @@ CortadoPlayer.prototype.init = function(el, url, config) {
 }
 
 CortadoPlayer.prototype.play = function() {
-    if (this.state == 'pause') {
-        // impossible when duration is unknown (and not really smooth in cortado)
-        // console.log("pos: " + this.pos + " pos as double: " + this.duration / this.pos);
-        // this.player.doSeek(this.duration / this.pos);
-        this.player.doPlay();
-    } else {
-        this.player.doPlay();
-    }
+    this.player.doPlay();
     this.state = 'play';
 }
 CortadoPlayer.prototype.pause = function() {
@@ -505,11 +546,17 @@ CortadoPlayer.prototype.pause = function() {
 //     } catch(err) { }
 }
 CortadoPlayer.prototype.mute = function() {
-    alert("Not supported by Cortado?");
+    alert("Sorry. Not supported by Cortado?");
 }
 CortadoPlayer.prototype.position = function() {
     this.pos = this.player.getPlayPosition();
     return this.pos;
+}
+CortadoPlayer.prototype.seek = function(pos) {
+    // doSeek(double pos); seek to a new position, must be between 0.0 and 1.0.
+    // impossible when duration is unknown (and not really smooth in cortado?)
+    // seems to be broke anyway (read similar in some MediaWiki cvs posts)
+    this.player.doSeek(pos / this.duration);
 }
 CortadoPlayer.prototype.info = function() {
     //return "Playing: " + this.url";
@@ -569,7 +616,7 @@ FlowPlayer.prototype.init = function(el, url, config) {
     var div = document.createElement('div'); // TODO: add (random) id: adding flowplayer and returning it impossible without id
     $(el).closest('div.oiplayer').html(div);
     $(div).addClass('player');
-    this.player = $f(div, { src : flwplayer, width : this.width, height : this.height }, {
+    this.player = $f(div, { src: flwplayer, width: this.width, height: this.height }, {
         clip: {
             url: this.url,
             autoPlay: this.autoplay,
@@ -605,8 +652,9 @@ FlowPlayer.prototype.position = function() {
     this.pos = this.player.getTime();
     return this.pos;
 }
+FlowPlayer.prototype.seek = function(pos) {
+    this.player.seek(pos);
+}
 FlowPlayer.prototype.info = function() {
     //return "Playing: " + this.url;
 }
-
-
