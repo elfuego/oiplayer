@@ -21,7 +21,7 @@
  *       'server' : server url (think only for ie)
  *       'jar' : JAR file of Cortado
  *       'flash' : location of flowplayer.swf
- *       'controls' : to show and use controls or not
+ *       'controls' : to show and use controls or not (make sure to include jquery-ui-1.7.2.slider.js when true)
  *
  * @changes: added seek, fullscreen and mute
  * @version: '$Id$'
@@ -36,7 +36,7 @@ jQuery.fn.oiplayer = function(conf) {
             flash : '/player/plugins/flowplayer-3.1.1.swf',
             controls : true
         }, conf);
-            
+        
         var mediatags = $(this).find('video, audio');
         $.each(mediatags, function(i, mt) {
             var sources = $(mt).find('source');
@@ -57,7 +57,7 @@ jQuery.fn.oiplayer = function(conf) {
             if ($.browser.msie) { 
                 //$('p.oiplayer-warn').hide(); // MSIE places stuff partly outside mediatag
             }
-            
+
             $(div).find('img.oipreview').click(function(ev) {
                 ev.preventDefault();
                 start(player, div);
@@ -75,7 +75,8 @@ jQuery.fn.oiplayer = function(conf) {
                         if ($(ctrls).find('li.pause').length == 0) {
                             $(ctrls).find('li.play').addClass('pause');
                         }
-                        $.oiplayer.follow(player, timer);
+                        var slider = $(ctrls).find("li.slider > div");
+                        $.oiplayer.follow(player, timer, slider);
                     } else if (player.state == 'play') {
                         player.pause();
                         $(ctrls).find('li.play').removeClass('pause');
@@ -84,6 +85,7 @@ jQuery.fn.oiplayer = function(conf) {
                     }
                     //console.log("player state: " + player.state);
                 });
+                
                 $(ctrls).find('li.sound a').click(function(ev){
                     if (player.state != 'init') {
                         player.mute();
@@ -94,6 +96,26 @@ jQuery.fn.oiplayer = function(conf) {
                     ev.preventDefault();
                     fullscreen(player, div);
                 });
+                
+                console.log("duration: " + player.duration + ", start: " + player.start);
+                if (player.duration) {  // else no use
+                    $(ctrls).find("li.slider > div").slider({
+                            animate: 'fast',
+                            range: 'min',
+                            value: (player.start ? player.start : 0),
+                            max: Math.floor(player.duration),
+                            step: 1
+                    });
+                    $(ctrls).find("li.slider > div").bind('slide', function(ev, ui) {
+                        newPos(player, ui.value);
+                    });
+                    $(ctrls).find("li.slider > div").bind('slidechange', function(ev, ui) {
+                        if (ev.originalEvent.type == "mouseup") { 
+                            newPos(player, ui.value);
+                        }
+                    });
+                }
+
             }
 
         });
@@ -101,6 +123,12 @@ jQuery.fn.oiplayer = function(conf) {
         return this; // plugin convention
     });
     
+    function newPos(player, pos) {
+        player.seek(pos);
+        $('li.position').text($.oiplayer.totime(pos));
+        $('#value').text("positie: " + pos);
+    }
+
     /* Mainly user interface stuff on first start of playing */
     function start(player, div) {
         if (player.type == 'video') {
@@ -121,7 +149,8 @@ jQuery.fn.oiplayer = function(conf) {
             if ($(ctrls).find('li.pause').length == 0) {
                 $(ctrls).find('li.play').addClass('pause');
             }
-            $.oiplayer.follow(player, timer);
+            var slider = $(ctrls).find("li.slider > div");
+            $.oiplayer.follow(player, timer, slider);
         }
     }
 
@@ -131,7 +160,7 @@ jQuery.fn.oiplayer = function(conf) {
             player.oheight = player.height;
         }
         var window_w = $(window).width();
-        var window_h = $(window).height() - 25;
+        var window_h = $(window).height() - 35;
         var multi_w = window_w / player.owidth;
         var multi_h = window_h / player.oheight;
         var half = 0;
@@ -298,17 +327,6 @@ jQuery.fn.oiplayer = function(conf) {
         }
     }
 
-    function findTag(el) {
-        var o = new Object();
-        o.type = "video";
-        o.element = $(el).find('video')[0];
-        if (o.element == undefined) {
-            o.type = "audio";
-            o.element = $(el).find('audio')[0];
-        }
-        return o;
-    }
-    
     function supportMimetype(mt) {
         var support = false;    /* navigator.mimeTypes is unsupported by MSIE ! */
         if (navigator.mimeTypes && navigator.mimeTypes.length > 0) {
@@ -334,6 +352,7 @@ jQuery.fn.oiplayer = function(conf) {
     function createControls() {
         var html = '<div class="controls"><ul class="controls">' + 
                       '<li class="play"><a title="play" href="#play">play</a></li>' +
+                      '<li class="slider"> <div> </div> </li>' +
                       '<li class="position">00:00</li>' +
                       '<li class="sound"><a title="mute" href="#sound">mute</a></li>' + 
                       '<li class="screen"><a title="fullscreen" href="#fullscreen">fullscreen</a></li>' + 
@@ -341,7 +360,7 @@ jQuery.fn.oiplayer = function(conf) {
         return html;
     }
     
-    function showInfo() {
+    function showInfo(player) {
         var text = player.info;
         var id = player.id;
         if ($('#' + id).find('div.playerinfo').length > 0) $('#' + id).find('div.playerinfo').remove();
@@ -359,23 +378,39 @@ $.oiplayer = {
     /* 
      * Updates the provided html element with progress time of player
      * @param player Object of player
-     * @param el     HTML element
+     * @param el     HTML element to display status
+     * @param slider jquery.ui.slider to update
      */
-    follow: function (player, el) {
-        var pos = player.duration;
+    follow: function (player, el, slider) {
+        var pos = 0;
         var progress = null;
+        var sec = player.start;
+        var now;
+        var i = 0;
         clearInterval(progress);
         progress = setInterval(function() {
                 pos = player.position();
-                if (!isNaN(pos) && pos > 0) {
-                    $(el).text(toTime(pos));
+                sec = Math.floor(pos);
+                //console.log("n: " + now + ", s: " + sec + ", pos: " + pos);
+                if (!isNaN(pos) && pos > 0 && sec != now) {
+                    $(el).text( $.oiplayer.totime(pos) );
+                    $(slider).slider('option', 'value', sec);
+                    i = 0;
+                    now = sec;
                 }
-                if (pos == undefined) {
+                if (now == sec) {
+                    i++;
+                }
+                if (pos == undefined || i > 9) {
+                    console.log("stopping... " + i);
+                    player.pause(); // maybe stop?
                     clearInterval(progress);
                     return;
                 }
             }, 200);
-
+    },
+    
+    totime: function (pos) {
         function toTime(sec) {
             var h = Math.floor(sec / 3600);
             var min = Math.floor(sec / 60);
@@ -386,14 +421,16 @@ $.oiplayer = {
             }
             return addZero(min) + ":" + addZero(sec);
         }
-        
+    
         function addZero(time) {
             time = parseInt(time, 10);
             return time < 10 ? "0" + time : time;
         }
-
+        return toTime(pos);
     }
 }
+
+
 
 //  ------------------------------------------------------------------------------------------------
 //  Prototypes of several players
@@ -425,7 +462,8 @@ Player.prototype._init = function(el, url, config) {
     if (this.controls == undefined) this.controls = false;
     this.width  = $(this.player).attr('width') > 0 ? $(this.player).attr('width') : 320;
     this.height = $(this.player).attr('height') > 0 ? $(this.player).attr('height') : 240;;
-    this.duration = $("head meta[name=media-duration]").attr("content"); // not a mediatag attr.
+    //this.duration = $("head meta[name=media-duration]").attr("content"); // not a mediatag attr.
+    this.duration = $(el).find("span.duration").text(); // not a mediatag attr.
     this.state = 'init';
     this.pos = 0;
     
@@ -441,12 +479,21 @@ MediaPlayer.prototype.init = function(el, url, config) {
     this.url = url;
     var self = this;
     var timer = $(el).next('ul.controls li.position');
+    var slider = $(el).next('ul.controls li.slider > div');
     this.player.addEventListener("playing", 
-                                  function(ev) {
-                                      self.state = 'play';
-                                      $.oiplayer.follow(self, timer);
-                                  },
-                                  false);
+        function(ev) {
+            self.state = 'play';
+            $.oiplayer.follow(self, timer, slider);
+        }, false);
+
+    this.player.addEventListener("durationchange", 
+        function(ev) {
+            // console.log("dur: " + self.player.duration);
+            /* bug in FF? still NaN after durationchange */
+            if (!isNaN(self.player.duration) && self.player.duration > 0) {
+                self.duration = self.player.duration;
+            }   
+        }, false);
     return this.player;
 }
 MediaPlayer.prototype.play = function() {
@@ -476,7 +523,7 @@ MediaPlayer.prototype.position = function() {
 MediaPlayer.prototype.seek = function(pos) {
     this.player.currentTime = pos;   // float
     if (!this.player.paused) {
-        this.player.play();
+        //this.player.play();
     }
 }
 MediaPlayer.prototype.info = function() {
@@ -613,6 +660,13 @@ FlowPlayer.prototype.init = function(el, url, config) {
     var flwplayer = config.server + config.flash;
     var duration = (this.duration == undefined ? 0 : Math.round(this.duration));
     
+    var ctrls;
+    if (this.controls) {
+        ctrls = { height: 24, autoHide: 'always', hideDelay: 2000, fullscreen: false };
+    } else {
+        ctrls = null;
+    }
+    
     var div = document.createElement('div'); // TODO: add (random) id: adding flowplayer and returning it impossible without id
     $(el).closest('div.oiplayer').html(div);
     $(div).addClass('player');
@@ -625,7 +679,7 @@ FlowPlayer.prototype.init = function(el, url, config) {
             autoBuffering: this.autobuffer,
             bufferLength: 5
         },
-        plugins: { controls: { height: 24, autoHide: 'always', hideDelay: 2000, fullscreen: false } }
+        plugins: { controls: ctrls }
     });
     return this.player;
 }
