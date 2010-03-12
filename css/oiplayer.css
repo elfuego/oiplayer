@@ -13,21 +13,14 @@
 }
 
 div.oiplayer { width: 320px; }
-div.oiplayer.fullscreen
-{
-	width: 100%;
-	height: 100%;
-	position: absolute;
-	top: 0;
-	left: 0;
-	background-color: #fff;
-}
-
+div.oiplayer span.duration, div.oiplayer span.start { display: none; }
 div.oiplayer > div.player
 {
+/*
 	position: relative;
 	height: 240px;
-	margin: 0 0 6px 0;
+*/
+	margin: 0;
 	padding: 0;
 }
 
@@ -35,29 +28,35 @@ div.oiplayer > div.controls
 {
 	height: 24px;
 	margin: 0;
+/*
 	position: relative;
-	top: 0px;	/* make -32px to float on top video */
+	top: 0px;
 	left: 0;
 	z-index: 99;
+*/
 	background-image: url(images/controls-whitie.png);
 	background-repeat: repeat;
 }
 
 div.oiplayer > div.player > img
 {
+/*
 	position: absolute;
 	margin: 0;
 	padding: 0;
 	z-index: 9;
+*/
 }
 
 div.oiplayer audio, #msie_cortadoplayer_oiplayer
 {
+	width: 320px;
+/*
 	position: absolute;
 	bottom: 0;
 	left: 0;
-	width: 320px;
 	z-index: 8;
+*/
 }
 
 div.inavailable
@@ -79,7 +78,7 @@ div.inavailable p
 }
 
 /* controls */
-ul.controls
+div.oiplayer ul.controls
 {
 	height: 25px;
 	list-style: none;
@@ -87,7 +86,7 @@ ul.controls
 	overflow: hidden;
 }
 
-ul.controls li
+div.oiplayer ul.controls li
 {
 	margin: 0;
 	padding: 0;
@@ -95,7 +94,7 @@ ul.controls li
 	display: inline;
 }
 
-ul.controls a
+div.oiplayer ul.controls a
 {
 	padding: 25px 0 0 0;
 	overflow: hidden;
@@ -103,102 +102,139 @@ ul.controls a
     height /**/: 25px;  /* for IE5/Win */
 }
 
-ul.controls a:hover { background-position: 0 -25px; }
+div.oiplayer ul.controls a:hover { background-position: 0 -25px; }
 
-ul.controls li.play a
+div.oiplayer ul.controls li.play a
 {
 	background-image: url(images/controls-play.png);
 	width: 21px;
-	margin-left: -2px;
+	margin-left: -3px;
 	float: left;
 }
 
-ul.controls li.play.pause a
+div.oiplayer ul.controls li.play.pause a
 {
 	background-image: url(images/controls-pause.png);
 	width: 21px;
-	margin-left: -2px;
+	margin-left: -3px;
 	float: left;
 }
+div.oiplayer.fullscreen ul.controls li.play a,
+div.oiplayer.fullscreen ul.controls li.pause a { margin-left: 1px; }
 
-ul.controls li.position
-{
-	font-family: Monaco, Courier, monospaced;
-	color: #555;
-	line-height: 2em;
-    margin-left: 10px;
-	float: left;
-}
+div.oiplayer div.playerinfo { font-size: xx-small; }
 
-div.playerinfo { font-size: xx-small; }
-
-ul.controls li.sound a
+div.oiplayer ul.controls li.sound a
 {
 	float: right;
 	background-image: url(images/controls-soundon.png);
 	background-repeat: no-repeat;
 	width: 23px;
-	margin-left: 6px;
+	margin-left: 7px;
 }
 
-ul.controls li.sound.off a
+div.oiplayer ul.controls li.sound.off a
 {
 	float: right;
 	background-image: url(images/controls-soundoff.png);
 	background-repeat: no-repeat;
 	width: 23px;
-	margin-left: 6px;
+	margin-left: 7px;
 }
 
-ul.controls li.screen a
+div.oiplayer.fullscreen ul.controls li.sound a, 
+div.oiplayer.fullscreen ul.controls li.sound.off a { margin-right: 3px; }
+
+div.oiplayer ul.controls li.screen a
 {
 	float: right;
 	background-image: url(images/controls-fullscreen.png);
 	background-repeat: no-repeat;
 	width: 23px;
-	margin-left: 6px;
+	margin-left: 7px;
 }
 
-ul.controls li.slider
+div.oiplayer ul.controls li.position
+{
+	font-family: Monaco, Courier, monospaced;
+	color: #555;
+	line-height: 2em;
+    margin-left: 7px;
+    width: 53px;
+	float: left;
+}
+
+/* ### jquery-ui and slider ### */
+div.oiplayer ul.controls li.slider
 {
 	float: left;
-	margin-left: 18px;
-	background: url(images/controls-slidestart.png) top left no-repeat;
-	width: 160px;
+	width: 153px;
+	margin-left: 7px;
+	background: url(images/slider11-left.png) left -25px no-repeat;
+	padding-left: 10px;
+}
+div.oiplayer ul.controls li.slider.changed { background: url(images/slider11-left.png) left -50px no-repeat; }
+
+div.oiplayer ul.controls li.slider div.slider div.ui-slider
+{
+	border: 0;
+	width: 100%;
+	background: url(images/slider11-long.png) right -25px no-repeat;
+	height: 25px;
 }
 
-ul.controls li.slider > div { width: 150px; }
+div.oiplayer .ui-slider { position: relative; }
 
-/* ### jquery-ui ### */
-.ui-slider { position: relative; }
+div.oiplayer .ui-slider-horizontal .ui-slider-handle { top: 0; }
 
-.ui-slider-horizontal .ui-slider-handle {
-    top: 0;
-}
-
-.ui-slider .ui-slider-handle
+div.oiplayer .ui-slider .ui-slider-handle
 {
 	cursor: pointer;
 	height: 25px;
 	position: absolute;
-	width: 11px;
+	width: 13px;
 	z-index: 2;
 }
 
-.ui-widget-content
+div.oiplayer li.slider div.ui-slider-range
 {
-	border: 0;
-	background: url(images/controls-slidelong.png) top right no-repeat;
 	height: 25px;
-	margin-left: 10px;
+	background: url(images/slider11-long.png) right -50px no-repeat;
 }
-
-.ui-state-default, .ui-widget-content .ui-state-default
+div.oiplayer .ui-state-default, div.oiplayer .ui-widget-content .ui-state-default
 {
 	border: 0;
 	background-color: transparent;
-	background: url(images/controls-position.png) top left no-repeat;
+	background: url(images/slider11-pos.png) left -75px no-repeat;
 	margin-left: -10px;
+}
+div.oiplayer ul.controls a.ui-slider-handle:hover { background-position: 0 -100px; }
+
+.ui-state-default:focus, .ui-widget-content .ui-state-default:focus { outline: none; } 
+
+
+/* fullscreen */
+div.oiplayer.fullscreen
+{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #fff;
+}
+
+div.oiplayer.fullscreen > img.oipreview { margin: 0 auto; }
+div.oiplayer.fullscreen > div.player,
+div.oiplayer.fullscreen > div.controls { margin: 0 auto; }
+
+div.oiplayer.fullscreen > div.controls
+{
+	/*position: fixed;*/
+	bottom: 0;
+	/*left: 0;*/
+	width: 100%;
+	margin: 0 auto;
 }
 
 /* ### example html ### */
@@ -219,4 +255,4 @@ body.oiplayer-example > div.main
 }
 
 body.oiplayer-example > div.main ol { padding-left: 20px; }
-body.oiplayer-example > div.main p.license { font-size: 0.8em; }
+body.oiplayer-example > div.main p.license { font-size: 0.85em; }
