@@ -14,7 +14,8 @@
 
 div.oiplayer { width: 320px; }
 div.oiplayer span.duration, div.oiplayer span.start { display: none; }
-div.oiplayer > div.player
+div.oiplayer > div.player,
+div.oiplayer > div.player > object
 {
 	/*position: relative;*/
 	margin: 0;

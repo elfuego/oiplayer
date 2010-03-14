@@ -137,7 +137,7 @@ jQuery.fn.oiplayer = function(conf) {
         } else {
             $(div).find('.preview').css("z-index", "1");
         }
-        $(div).find('div.player').show();
+        $(div).find('div.player').show().height(player.height).width(player.width);
         if (player.info.indexOf("flash") < 0) {
             $(div).find('div.player').empty();
         }
@@ -168,23 +168,20 @@ jQuery.fn.oiplayer = function(conf) {
             player.width = player.owidth;
             player.height = player.oheight;
         } else if (multi_h < multi_w) {
-            player.width = player.owidth * multi_h;
+            player.width = Math.round(player.owidth * multi_h);
             player.height = window_h;
-            half = (window_w - player.width) / 2;
+            half = Math.floor((window_w - player.width) / 2);
         } else {
             player.width = window_w;
-            player.height = player.oheight * multi_w;
+            player.height = Math.round(player.oheight * multi_w);
         }
         
         $(div).toggleClass('fullscreen');
-        $(div).find('div.player').width(player.width);
+        $(div).find('div.player').width(player.width).height(player.height);
         $(div).find('div.controls').width(player.width);
         $(div).find('div.controls li.slider').width(player.width - 170);
-        $(div).find('.preview').width(player.width);
-        $(div).find('.preview').height(player.height);
-        $(div).find('.preview').css('margin-left', half);
-        $(player.player).width(player.width);
-        $(player.player).height(player.height);
+        $(div).find('.preview').width(player.width).height(player.height).css('margin-left', half);
+        $(player.player).width(player.width).height(player.height);
         var pos;
         if (player.info.indexOf('flash') > -1) {
             pos = parseInt(player.position());
@@ -193,8 +190,7 @@ jQuery.fn.oiplayer = function(conf) {
             player.player.play();
         }
         
-        $('div.player').find('object').attr("width", player.width);
-        $('div.player').find('object').attr("height", player.height);
+        $('div.player').find('object').attr("width", player.width).attr("height", player.height);
         if (player.info.indexOf('flash') > -1) {
             setTimeout(function() { player.seek(pos) }, 1500);   // give fp time to reinitialize
         }
