@@ -349,7 +349,6 @@ jQuery.fn.oiplayer = function(conf) {
 
     function createPoster(el, player) {
         var src = player.poster;
-        console.log("t: " + player.type + ", " + src);
         if (!src && player.type == 'audio') { // for audio-tags (no attribute poster)
             var img = $(el).find('img')[0];
             src = $(img).attr('src');
