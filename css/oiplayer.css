@@ -16,10 +16,7 @@ div.oiplayer { width: 320px; }
 div.oiplayer span.duration, div.oiplayer span.start { display: none; }
 div.oiplayer > div.player
 {
-/*
-	position: relative;
-	height: 240px;
-*/
+	/*position: relative;*/
 	margin: 0;
 	padding: 0;
 }
@@ -27,8 +24,8 @@ div.oiplayer > div.player
 div.oiplayer > div.controls
 {
 	height: 24px;
-	margin: 0;
-/*
+	margin: 4px 0 0 0;
+	/*
 	position: relative;
 	top: 0px;
 	left: 0;
@@ -48,6 +45,10 @@ div.oiplayer > div.player > img
 */
 }
 
+div.oiplayer > div.preview { cursor: pointer; }
+div.oiplayer > div.preview.video { background: url(images/preview_video.png) left top repeat; }
+div.oiplayer > div.preview.audio { background: url(images/preview_audio.png) left top repeat; }
+
 div.oiplayer audio, #msie_cortadoplayer_oiplayer
 {
 	width: 320px;
@@ -59,7 +60,7 @@ div.oiplayer audio, #msie_cortadoplayer_oiplayer
 */
 }
 
-div.inavailable
+div.oiplayer > div.inavailable
 {
 	font-weight: bold;
 	height: 240px;
@@ -224,7 +225,7 @@ div.oiplayer.fullscreen
 	background-color: #fff;
 }
 
-div.oiplayer.fullscreen > img.oipreview { margin: 0 auto; }
+div.oiplayer.fullscreen > img.preview { margin: 0 auto; }
 div.oiplayer.fullscreen > div.player,
 div.oiplayer.fullscreen > div.controls { margin: 0 auto; }
 

@@ -58,7 +58,7 @@ jQuery.fn.oiplayer = function(conf) {
                 //$('p.oiplayer-warn').hide(); // MSIE places stuff partly outside mediatag
             }
 
-            $(div).find('img.oipreview').click(function(ev) {
+            $(div).find('.preview').click(function(ev) {
                 ev.preventDefault();
                 start(player, div);
             });     
@@ -133,9 +133,9 @@ jQuery.fn.oiplayer = function(conf) {
     /* Mainly user interface stuff on first start of playing */
     function start(player, div) {
         if (player.type == 'video') {
-            $(div).find('img.oipreview').remove();
+            $(div).find('.preview').remove();
         } else {
-            $(div).find('img.oipreview').css("z-index", "1");
+            $(div).find('.preview').css("z-index", "1");
         }
         $(div).find('div.player').show();
         if (player.info.indexOf("flash") < 0) {
@@ -180,9 +180,9 @@ jQuery.fn.oiplayer = function(conf) {
         $(div).find('div.player').width(player.width);
         $(div).find('div.controls').width(player.width);
         $(div).find('div.controls li.slider').width(player.width - 170);
-        $(div).find('img.oipreview').width(player.width);
-        $(div).find('img.oipreview').height(player.height);
-        $(div).find('img.oipreview').css('margin-left', half);
+        $(div).find('.preview').width(player.width);
+        $(div).find('.preview').height(player.height);
+        $(div).find('.preview').css('margin-left', half);
         $(player.player).width(player.width);
         $(player.player).height(player.height);
         var pos;
@@ -349,12 +349,17 @@ jQuery.fn.oiplayer = function(conf) {
 
     function createPoster(el, player) {
         var src = player.poster;
-        if (src == undefined) { // for audio-tags (no attribute poster)
+        console.log("t: " + player.type + ", " + src);
+        if (!src && player.type == 'audio') { // for audio-tags (no attribute poster)
             var img = $(el).find('img')[0];
             src = $(img).attr('src');
             $(img).remove();
         }
-        return '<img src="' + src + '" alt="" class="oipreview" width="' + player.width + '" height="' + player.height + '" />';
+        if (!src) {
+            return '<div class="preview ' + player.type + '" style="width:' + player.width + 'px;height:' + player.height + 'px;"></div>'
+        } else {
+            return '<img src="' + src + '" width="' + player.width + '" height="' + player.height + '" alt="click to play" title="click to play" class="preview" />';
+        }
     }
         
     function createControls() {
@@ -369,10 +374,9 @@ jQuery.fn.oiplayer = function(conf) {
     }
     
     function showInfo(player) {
-        var text = player.info;
         var id = player.id;
         if ($('#' + id).find('div.playerinfo').length > 0) $('#' + id).find('div.playerinfo').remove();
-        $('#' + id).append('<div class="playerinfo">' + text + '</div>');
+        $('#' + id).append('<div class="playerinfo">' + player.info + '</div>');
     }
     
     /*
