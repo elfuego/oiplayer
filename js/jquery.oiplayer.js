@@ -27,16 +27,16 @@
  * @version: '$Id$'
 */
 
-jQuery.fn.oiplayer = function(conf) {
-    return this.each(function() {
-        var self = this;
-        var config = jQuery.extend({    // example configuration
-            server : 'http://www.openimages.eu',
-            jar : '/player/cortado-ovt-stripped-wm_r38710.jar',
-            flash : '/player/plugins/flowplayer-3.1.1.swf',
-            controls : true
-        }, conf);
-        
+jQuery.fn.oiplayer = function(settings) {
+    var config = {
+        server : 'http://www.openimages.eu',
+        jar : '/player/cortado-ovt-stripped-wm_r38710.jar',
+        flash : '/player/plugins/flowplayer-3.1.1.swf',
+        controls : true
+    };
+    if (settings) $.extend(config, settings);
+    var players = new Array();
+    this.each(function() {
         var mediatags = $(this).find('video, audio');
         $.each(mediatags, function(i, mt) {
             var sources = $(mt).find('source');
@@ -49,7 +49,8 @@ jQuery.fn.oiplayer = function(conf) {
             $(mt).wrap('<div class="oiplayer"><div class="player"></div></div>');
             var div = $(mt).closest('div.oiplayer');
             var player = createPlayer(mt, sources, config);
-            //console.log("info: " + player.info);
+            $(div).addClass(player.type);
+            //console.log("info: " + player.info);            
             var poster = createPoster(self, player);
             $(div).find('div.player').hide();
             $(div).prepend(poster);
@@ -57,64 +58,78 @@ jQuery.fn.oiplayer = function(conf) {
             if ($.browser.msie) { 
                 //$('p.oiplayer-warn').hide(); // MSIE places stuff partly outside mediatag
             }
-
-            $(div).find('.preview').click(function(ev) {
-                ev.preventDefault();
-                start(player, div);
-            });     
             
             if (config.controls) {
                 $(div).append(createControls());
-                var ctrls = $(div).find('ul.controls');
+            }
+            
+            players.push(player);
+
+        }); // end for each
+        
+        /* html ready, bind controls */
+        $.each(players, function(i, pl) {
+            var el;
+            if (pl.myname == 'flowplayer') {
+                el = $(pl.player.getParent()).closest('div.oiplayer');
+            } else {
+                el = $(pl.player).closest('div.oiplayer');
+            }
+            
+            $(el).find('.preview').click(function(ev) {
+                ev.preventDefault();
+                start(pl, el);
+            });
                 
+            if (config.controls) {
+                var ctrls = $(el).find('ul.controls');
                 $(ctrls).find('li.play a').click(function(ev) {
                     ev.preventDefault();
-                    if (player.state == 'pause') {
-                        player.play();
+                    if (pl.state == 'pause') {
+                        pl.play();
                         if ($(ctrls).find('li.pause').length == 0) {
                             $(ctrls).find('li.play').addClass('pause');
                         }
                         var slider = $(ctrls).find("div.slider > div");
-                        $.oiplayer.follow(player, ctrls);
-                    } else if (player.state == 'play') {
-                        player.pause();
+                        $.oiplayer.follow(pl, ctrls);
+                    } else if (pl.state == 'play') {
+                        pl.pause();
                         $(ctrls).find('li.play').removeClass('pause');
                     } else {
-                        start(player, div);
+                        start(pl, el);
                     }
-                    //console.log("player state: " + player.state);
+                    //console.log("player state: " + pl.state);
                 });
-                
+
                 $(ctrls).find('li.sound a').click(function(ev){
-                    if (player.state != 'init') {
-                        player.mute();
+                    if (pl.state != 'init') {
+                        pl.mute();
                         $(ctrls).find('li.sound').toggleClass('off');
                     }
                 });
                 $(ctrls).find('li.screen a').click(function(ev){
                     ev.preventDefault();
-                    fullscreen(player, div);
+                    fullscreen(pl, el);
                 });
                 
-                //console.log("duration: " + player.duration + ", start: " + player.start);
-                if (player.duration) {  // else no use
+                if (pl.duration) {  // else no use
                     $(ctrls).find("div.slider > div").slider({
                             animate: 'fast',
                             range: 'min',
-                            value: (player.start ? player.start : 0),
-                            max: Math.round(player.duration)
+                            value: (pl.start ? pl.start : 0),
+                            max: Math.round(pl.duration)
                     });
                     $(ctrls).find("div.slider > div").bind('slide', function(ev, ui) {
-                        newPos(player, ctrls, ui.value);
+                        newPos(pl, ctrls, ui.value);
                     });
                     $(ctrls).find("div.slider > div").bind('slidechange', function(ev, ui) {
                         if (ev.originalEvent.type == "mouseup") { 
-                            newPos(player, ctrls, ui.value);
+                            newPos(pl, ctrls, ui.value);
                         }
                     });
                 }
-            }
-
+                
+            } // config.controls
         });
         
         return this; // plugin convention
@@ -191,7 +206,7 @@ jQuery.fn.oiplayer = function(conf) {
         }
         
         $('div.player').find('object').attr("width", player.width).attr("height", player.height);
-        if (player.info.indexOf('flash') > -1) {
+        if (player.myname == 'flowplayer') {
             setTimeout(function() { player.seek(pos) }, 1500);   // give fp time to reinitialize
         }
     }
@@ -732,3 +747,4 @@ FlowPlayer.prototype.seek = function(pos) {
 FlowPlayer.prototype.info = function() {
     //return "Playing: " + this.url;
 }
+
