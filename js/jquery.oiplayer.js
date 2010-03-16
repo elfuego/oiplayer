@@ -35,6 +35,7 @@ jQuery.fn.oiplayer = function(settings) {
         controls : true
     };
     if (settings) $.extend(config, settings);
+    var self = this;
     var players = new Array();
     this.each(function() {
         var mediatags = $(this).find('video, audio');
@@ -50,9 +51,13 @@ jQuery.fn.oiplayer = function(settings) {
             var div = $(mt).closest('div.oiplayer');
             var player = createPlayer(mt, sources, config);
             $(div).addClass(player.type);
-            //console.log("info: " + player.info);            
-            var poster = createPoster(self, player);
+            if (player.myname.indexOf('cortado') > -1) {
+                $(div).find('div.player').empty();
+                $(div).find('div.player').append(player.player);
+            }
             $(div).find('div.player').hide();
+            
+            var poster = createPoster(div, player);
             $(div).prepend(poster);
             
             if ($.browser.msie) { 
@@ -69,16 +74,10 @@ jQuery.fn.oiplayer = function(settings) {
         
         /* html ready, bind controls */
         $.each(players, function(i, pl) {
-            var el;
-            if (pl.myname == 'flowplayer') {
-                el = $(pl.player.getParent()).closest('div.oiplayer');
-            } else {
-                el = $(pl.player).closest('div.oiplayer');
-            }
-            
+            var el = $.oiplayer.div(pl);
             $(el).find('.preview').click(function(ev) {
                 ev.preventDefault();
-                start(pl, el);
+                start(pl);
             });
                 
             if (config.controls) {
@@ -96,7 +95,7 @@ jQuery.fn.oiplayer = function(settings) {
                         pl.pause();
                         $(ctrls).find('li.play').removeClass('pause');
                     } else {
-                        start(pl, el);
+                        start(pl);
                     }
                     //console.log("player state: " + pl.state);
                 });
@@ -120,11 +119,11 @@ jQuery.fn.oiplayer = function(settings) {
                             max: Math.round(pl.duration)
                     });
                     $(ctrls).find("div.slider > div").bind('slide', function(ev, ui) {
-                        newPos(pl, ctrls, ui.value);
+                        pos(pl, ui.value);
                     });
                     $(ctrls).find("div.slider > div").bind('slidechange', function(ev, ui) {
                         if (ev.originalEvent.type == "mouseup") { 
-                            newPos(pl, ctrls, ui.value);
+                            pos(pl, ui.value);
                         }
                     });
                 }
@@ -135,8 +134,9 @@ jQuery.fn.oiplayer = function(settings) {
         return this; // plugin convention
     });
     
-    function newPos(player, ctrls, pos) {
+    function pos(player, pos) {
         player.seek(pos);
+        var ctrls = $( $.oiplayer.div(player) ).find('ul.controls');
         $(ctrls).find('li.position').text( $.oiplayer.totime(pos) );
         if (pos > 0) {
             $(ctrls).find('li.slider').addClass("changed");
@@ -146,20 +146,17 @@ jQuery.fn.oiplayer = function(settings) {
     }
 
     /* Mainly user interface stuff on first start of playing */
-    function start(player, div) {
+    function start(player) {
+        var div = $.oiplayer.div(player);
         if (player.type == 'video') {
             $(div).find('.preview').remove();
         } else {
             $(div).find('.preview').css("z-index", "1");
         }
         $(div).find('div.player').show().height(player.height).width(player.width);
-        if (player.info.indexOf("flash") < 0) {
-            $(div).find('div.player').empty();
-        }
-        $(div).find('div.player').append(player.player);
         // for audio? $(player.player).css("z-index", "9");
         player.play();
-        if (player.config.controls == true) {
+        if (player.config.controls) {
             var ctrls = $(div).find('ul.controls');
             var timer = $(ctrls).find('li.position');
             if ($(ctrls).find('li.pause').length == 0) {
@@ -169,7 +166,8 @@ jQuery.fn.oiplayer = function(settings) {
         }
     }
 
-    function fullscreen(player, div) {
+    function fullscreen(player) {
+        var div = $.oiplayer.div(player);
         if (typeof(player.owidth) == "undefined") {
             player.owidth = player.width;
             player.oheight = player.height;
@@ -198,13 +196,12 @@ jQuery.fn.oiplayer = function(settings) {
         $(div).find('.preview').width(player.width).height(player.height).css('margin-left', half);
         $(player.player).width(player.width).height(player.height);
         var pos;
-        if (player.info.indexOf('flash') > -1) {
+        if (player.myname == 'flowplayer') {
             pos = parseInt(player.position());
             //player.player.getScreen().animate({width:player.width,height:player.height});
             player.player.unload();
             player.player.play();
         }
-        
         $('div.player').find('object').attr("width", player.width).attr("height", player.height);
         if (player.myname == 'flowplayer') {
             setTimeout(function() { player.seek(pos) }, 1500);   // give fp time to reinitialize
@@ -446,6 +443,17 @@ $.oiplayer = {
                     return;
                 }
             }, 200);
+    },
+    
+    /* 
+     * Returns div player is wrapped in
+     */
+    div: function(player) {
+        if (player.myname == 'flowplayer') {
+            return $(player.player.getParent()).closest('div.oiplayer');
+        } else {
+            return $(player.player).closest('div.oiplayer');
+        }        
     },
     
     totime: function (pos) {
