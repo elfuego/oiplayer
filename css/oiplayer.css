@@ -27,14 +27,14 @@ div.oiplayer > div.player > object
 div.oiplayer.audio > div.player
 {
 	position: absolute;
-	bottom: 0;
+	top: 0;
 	left: 0;
 	z-index: 9;
 }
 div.oiplayer.audio > div.player > audio
 {
 	position: absolute;
-	bottom: 28px;
+	bottom: 0;
 	left: 0;
 	width: 100%;
 }

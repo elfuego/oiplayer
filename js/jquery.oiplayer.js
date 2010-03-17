@@ -67,7 +67,7 @@ jQuery.fn.oiplayer = function(settings) {
             if (config.controls) {
                 $(div).append(createControls());
             }
-            
+            //$.oiplayer.msg(player, player.info);
             players.push(player);
 
         }); // end for each
@@ -150,7 +150,7 @@ jQuery.fn.oiplayer = function(settings) {
         if (player.type == 'video') {
             $(div).find('.preview').remove();
         } else {
-            $(div).find('.preview').css("z-index", "1");
+            //$(div).find('.preview').css("z-index", "1");
         }
         $(div).find('div.player').show().height(player.height).width(player.width);
         player.play();
@@ -162,6 +162,7 @@ jQuery.fn.oiplayer = function(settings) {
             }
             $.oiplayer.follow(player);
         }
+        //$.oiplayer.msg(player, "Playing... " + player.info);
     }
 
     function fullscreen(player) {
