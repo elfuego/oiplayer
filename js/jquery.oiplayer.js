@@ -89,7 +89,6 @@ jQuery.fn.oiplayer = function(settings) {
                         if ($(ctrls).find('li.pause').length == 0) {
                             $(ctrls).find('li.play').addClass('pause');
                         }
-                        var slider = $(ctrls).find("div.slider > div");
                         $.oiplayer.follow(pl);
                     } else if (pl.state == 'play') {
                         pl.pause();
@@ -101,7 +100,7 @@ jQuery.fn.oiplayer = function(settings) {
                 });
 
                 $(ctrls).find('li.sound a').click(function(ev){
-                    if (pl.state != 'init') {
+                    if (pl.state != 'init' && pl.state != 'ended') {
                         pl.mute();
                         $(ctrls).find('li.sound').toggleClass('muted');
                     }
@@ -154,7 +153,6 @@ jQuery.fn.oiplayer = function(settings) {
             $(div).find('.preview').css("z-index", "1");
         }
         $(div).find('div.player').show().height(player.height).width(player.width);
-        // for audio? $(player.player).css("z-index", "9");
         player.play();
         if (player.config.controls) {
             var ctrls = $(div).find('ul.controls');
