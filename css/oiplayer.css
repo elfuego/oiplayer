@@ -51,22 +51,10 @@ div.oiplayer > div.controls
 	background-repeat: repeat; */
 }
 
-div.oiplayer > div.player > img
-{
-/*
-	position: absolute;
-	margin: 0;
-	padding: 0;
-	z-index: 9;
-*/
-}
-
-div.oiplayer > div.preview { cursor: pointer; }
+div.oiplayer > .preview { cursor: pointer; }
+div.oiplayer > img.preview { display: block; }
 div.oiplayer > div.preview.video { background: url(images/preview_video.png) left top repeat; }
-div.oiplayer > div.preview.audio
-{
-	background: url(images/preview_audio.png) left top repeat;
-}
+div.oiplayer > div.preview.audio { background: url(images/preview_audio.png) left top repeat; }
 
 div.oiplayer.audio, #msie_cortadoplayer_oiplayer
 {
