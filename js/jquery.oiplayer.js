@@ -21,7 +21,7 @@
  *       'server' : server url (think only for ie)
  *       'jar' : JAR file of Cortado
  *       'flash' : location of flowplayer.swf
- *       'controls' : to show and use controls or not (make sure to include jquery-ui-1.7.2.slider.js when true)
+ *       'controls' : use oiplayer controls or not (make sure to include jquery-ui-1.7.2.slider.js for progress slider)
  *
  * @changes: added seek, fullscreen and mute
  * @version: '$Id$'
@@ -90,7 +90,7 @@ jQuery.fn.oiplayer = function(settings) {
                             $(ctrls).find('li.play').addClass('pause');
                         }
                         var slider = $(ctrls).find("div.slider > div");
-                        $.oiplayer.follow(pl, ctrls);
+                        $.oiplayer.follow(pl);
                     } else if (pl.state == 'play') {
                         pl.pause();
                         $(ctrls).find('li.play').removeClass('pause');
@@ -103,7 +103,7 @@ jQuery.fn.oiplayer = function(settings) {
                 $(ctrls).find('li.sound a').click(function(ev){
                     if (pl.state != 'init') {
                         pl.mute();
-                        $(ctrls).find('li.sound').toggleClass('off');
+                        $(ctrls).find('li.sound').toggleClass('muted');
                     }
                 });
                 $(ctrls).find('li.screen a').click(function(ev){
@@ -162,7 +162,7 @@ jQuery.fn.oiplayer = function(settings) {
             if ($(ctrls).find('li.pause').length == 0) {
                 $(ctrls).find('li.play').addClass('pause');
             }
-            $.oiplayer.follow(player, ctrls);
+            $.oiplayer.follow(player);
         }
     }
 
@@ -365,7 +365,7 @@ jQuery.fn.oiplayer = function(settings) {
         if (!src) {
             return '<div class="preview ' + player.type + '" style="width:' + player.width + 'px;height:' + player.height + 'px;"></div>'
         } else {
-            return '<img src="' + src + '" width="' + player.width + '" height="' + player.height + '" alt="click to play" title="click to play" class="preview" />';
+            return '<img  class="preview" src="' + src + '" width="' + player.width + '" height="' + player.height + '" alt="click to play" title="click to play" />';
         }
     }
         
@@ -378,12 +378,6 @@ jQuery.fn.oiplayer = function(settings) {
                       '<li class="screen"><a title="fullscreen" href="#fullscreen">fullscreen</a></li>' + 
                    '</ul></div>';
         return html;
-    }
-    
-    function showInfo(player) {
-        var id = player.id;
-        if ($('#' + id).find('div.playerinfo').length > 0) $('#' + id).find('div.playerinfo').remove();
-        $('#' + id).append('<div class="playerinfo">' + player.info + '</div>');
     }
     
     /*
@@ -415,14 +409,15 @@ $.oiplayer = {
      * @param player Object of player
      * @param ctrls  controls to update
      */
-    follow: function (player, ctrls) {
+    follow: function (player) {
+        var ctrls = $( $.oiplayer.div(player) ).find('ul.controls');
         var pos = 0;
         var progress = null;
         var sec = player.start;
         var now;
         var i = 0;
+        
         clearInterval(progress);
-
         progress = setInterval(function() {
                 pos = player.position();
                 sec = Math.floor(pos);
@@ -436,7 +431,7 @@ $.oiplayer = {
                 }
                 if (pos < 1) { $(ctrls).find('li.slider').removeClass('changed'); }
                 if (now == sec) { i++; }
-                if (pos == undefined || i > 9) {
+                if (i > 10) {
                     //console.log("stopping... " + i);
                     player.pause(); // maybe stop?
                     clearInterval(progress);
@@ -456,6 +451,14 @@ $.oiplayer = {
         }        
     },
     
+    msg: function(player, msg) {
+        //$( $.oiplayer.div(player) ).append('<div class="oiplayerinfo">' + msg + '</div>');
+        $('<div class="oiplayerinfo"></div>').text(msg).hide().appendTo( $.oiplayer.div(player) ).fadeIn();
+    },
+    
+    /* 
+     * Returns div the player is wrapped in
+     */
     totime: function (pos) {
         function toTime(sec) {
             var h = Math.floor(sec / 3600);
@@ -499,7 +502,6 @@ Player.prototype._init = function(el, url, config) {
     this.config = config;
     this.type = el.tagName.toLowerCase(); // video or audio
     this.poster = $(this.player).attr('poster');
-    //console.log("this.poster: " + this.poster);
     this.autoplay = $(this.player).attr('autoplay');
     if (this.autoplay == undefined) this.autoplay = false;
     this.autobuffer = $(this.player).attr('autobuffer');
@@ -521,22 +523,41 @@ MediaPlayer.prototype = new Player();
 MediaPlayer.prototype.init = function(el, url, config) {
     this._init(el, url, config); // just init and pass it along
     this.url = url;
-    var self = this;
-    var ctrls = $(el).next('ul.controls');
-    this.player.addEventListener("playing", 
-        function(ev) {
-            self.state = 'play';
-            $.oiplayer.follow(self, ctrls);
-        }, false);
-
-    this.player.addEventListener("durationchange", 
-        function(ev) {
-            //console.log("durationchange: " + self.player.duration);
-            /* bug in FF 3.5? still NaN after durationchange */
-            if (!isNaN(self.player.duration) && self.player.duration > 0) {
-                self.duration = self.player.duration;
-            }   
-        }, false);
+    if (config.controls) {
+        var self = this;
+        this.player.addEventListener("durationchange", 
+            function(ev) {
+                //console.log("durationchange: " + self.player.duration);
+                /* bug in FF 3.5? still NaN after durationchange */
+                if (!isNaN(self.player.duration) && self.player.duration > 0) {
+                    self.duration = self.player.duration;
+                }   
+            }, false);
+        this.player.addEventListener("playing", 
+            function(ev) {
+                self.state = 'play';
+                $.oiplayer.follow(self);
+                $( $.oiplayer.div(self) ).find('li.play').addClass('pause');
+            }, false);
+        this.player.addEventListener("pause", 
+            function(ev) {
+                self.state = 'pause';
+                $( $.oiplayer.div(self) ).find('li.play').removeClass('pause');
+            }, false);
+        this.player.addEventListener("volumechange", 
+            function(ev) {
+                if (self.player.muted) { 
+                    $( $.oiplayer.div(self) ).find('li.sound').addClass('muted');
+                } else {
+                    $( $.oiplayer.div(self) ).find('li.sound').removeClass('muted');
+                }
+            }, false);
+        this.player.addEventListener("ended", 
+            function(ev) {
+                self.state = 'ended';
+                $( $.oiplayer.div(self) ).find('li.play').removeClass('pause');
+            }, false);
+    }
     return this.player;
 }
 MediaPlayer.prototype.play = function() {
@@ -565,9 +586,9 @@ MediaPlayer.prototype.position = function() {
 }
 MediaPlayer.prototype.seek = function(pos) {
     this.player.currentTime = pos;   // float
-    if (!this.player.paused) {
-        //this.player.play();
-    }
+    /* if (!this.player.paused) {
+        this.player.play();
+    } */
 }
 MediaPlayer.prototype.info = function() {
     /*  duration able in webkit, 
@@ -636,7 +657,7 @@ CortadoPlayer.prototype.pause = function() {
 //     } catch(err) { }
 }
 CortadoPlayer.prototype.mute = function() {
-    alert("Sorry. Not supported by Cortado?");
+    $.oiplayer.msg(this, "Sorry. Cortado does not this with Javascript.");
 }
 CortadoPlayer.prototype.position = function() {
     this.pos = this.player.getPlayPosition();
@@ -710,7 +731,7 @@ FlowPlayer.prototype.init = function(el, url, config) {
         ctrls = null;
     }
     
-    var div = document.createElement('div'); // TODO: add (random) id: adding flowplayer and returning it impossible without id
+    var div = document.createElement('div'); // TODO: (?) add (random) id: adding flowplayer and returning it impossible without id
     $(el).closest('div.oiplayer').html(div);
     $(div).addClass('player');
     this.player = $f(div, { src: flwplayer, width: this.width, height: this.height }, {
@@ -724,6 +745,33 @@ FlowPlayer.prototype.init = function(el, url, config) {
         },
         plugins: { controls: ctrls }
     });
+    
+    if (config.controls) {
+        var self = this;
+        this.player.onMute(function() {
+            $( $.oiplayer.div(self) ).find('li.sound').addClass('muted');
+        });
+        this.player.onUnmute(function() {
+            $( $.oiplayer.div(self) ).find('li.sound').removeClass('muted');
+        });
+        var clip = this.player.getCommonClip();
+        clip.onStart(function() {
+            $( $.oiplayer.div(self) ).find('li.play').addClass('pause');
+            self.state = 'play';
+        });
+        clip.onPause(function() {
+            $( $.oiplayer.div(self) ).find('li.play').removeClass('pause');
+            self.state = 'pause';
+        });
+        clip.onResume(function() {
+            $( $.oiplayer.div(self) ).find('li.play').addClass('pause');
+            self.state = 'play';
+        });
+        clip.onFinish(function() {
+            $( $.oiplayer.div(self) ).find('li.play').removeClass('pause');
+            self.state = 'ended';
+        });
+    }
     return this.player;
 }
 FlowPlayer.prototype.play = function() {
