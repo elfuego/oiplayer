@@ -21,17 +21,20 @@
  *       'server' : server url (think only for ie)
  *       'jar' : JAR file of Cortado
  *       'flash' : location of flowplayer.swf
- *       'controls' : use oiplayer controls or not (make sure to include jquery-ui-1.7.2.slider.js for progress slider)
+ *       'controls' : Use oiplayer controls or not (make sure to include jquery-ui-1.7.2.slider.js for progress slider).
+                      Simply 'true' means show me controls below player.
+                      Value 'top' will add a css class of that name and will hide/show controls on top of the player window.
+                      Add a css class of your own to edit the appearance of the controls (f.e. 'top dark').
  *
- * @changes: added seek, fullscreen and mute
+ * @changes: added seek, fullscreen and mute, more control over appearance of controls
  * @version: '$Id$'
 */
 
 jQuery.fn.oiplayer = function(settings) {
     var config = {
         server : 'http://www.openimages.eu',
-        jar : '/player/cortado-ovt-stripped-wm_r38710.jar',
-        flash : '/player/plugins/flowplayer-3.1.1.swf',
+        jar : '/oiplayer/cortado-ovt-stripped-wm_r38710.jar',
+        flash : '/oiplayer/plugins/flowplayer-3.1.5.swf',
         controls : true
     };
     if (settings) $.extend(config, settings);
@@ -66,6 +69,13 @@ jQuery.fn.oiplayer = function(settings) {
             
             if (config.controls) {
                 $(div).append(createControls());
+                 if (config.controls != true) {
+                     $(div).find('div.controls').addClass(config.controls);
+                     if (config.controls.indexOf('top') > -1) {
+                         $(div).find('div.controls').addClass('top');
+                         $(div).find('div.controls').hide();
+                     }
+                 }
             }
             //$.oiplayer.msg(player, player.info);
             players.push(player);
@@ -126,7 +136,18 @@ jQuery.fn.oiplayer = function(settings) {
                         }
                     });
                 }
-                
+
+                /* show/hide */
+                if ($(el).find('div.controls').is('.top')) {
+                    $(el).hover(
+                        function() { 
+                            $(el).find('div.controls').fadeIn(); 
+                        },
+                        function() {
+                            $(el).find('div.controls').fadeOut('slow');
+                        }
+                    );
+                }
             } // config.controls
         });
         
