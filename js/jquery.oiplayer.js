@@ -53,7 +53,7 @@ jQuery.fn.oiplayer = function(settings) {
             $(mt).wrap('<div class="oiplayer"><div class="player"></div></div>');
             var div = $(mt).closest('div.oiplayer');
             var player = createPlayer(mt, sources, config);
-            $(div).addClass(player.type);
+            $(div).width(player.width).height(player.height).addClass(player.type);
             if (player.myname.indexOf('cortado') > -1) {
                 $(div).find('div.player').empty();
                 $(div).find('div.player').append(player.player);
@@ -69,13 +69,17 @@ jQuery.fn.oiplayer = function(settings) {
             
             if (config.controls) {
                 $(div).append(createControls());
-                 if (config.controls != true) {
-                     $(div).find('div.controls').addClass(config.controls);
-                     if (config.controls.indexOf('top') > -1) {
-                         $(div).find('div.controls').addClass('top');
-                         $(div).find('div.controls').hide();
-                     }
-                 }
+                if (config.controls != true) {
+                    $(div).find('div.controls').width(player.width).addClass(config.controls);
+                    $(div).find('li.slider').width(player.width - 182).addClass(config.controls);
+                    if (config.controls.indexOf('top') > -1) {
+                        $(div).find('div.controls').addClass('top');
+                        $(div).find('div.controls').hide();
+                        $(div).height(player.height);
+                    } else {
+                        //$(div).height(player.height + 25);
+                    }
+                }
             }
             //$.oiplayer.msg(player, player.info);
             players.push(player);
@@ -204,20 +208,33 @@ jQuery.fn.oiplayer = function(settings) {
             player.width = player.owidth;
             player.height = player.oheight;
         } else if (multi_h < multi_w) {
+            $(div).width('100%').height('100%');
             player.width = Math.round(player.owidth * multi_h);
             player.height = window_h;
-            half = Math.floor((window_w - player.width) / 2);
+            half = Math.round((window_w - player.width) / 2);
         } else {
+            $(div).width('100%').height('100%');
             player.width = window_w;
             player.height = Math.round(player.oheight * multi_w);
         }
         
-        $(div).toggleClass('fullscreen');
-        $(div).find('div.player').width(player.width).height(player.height);
-        $(div).find('div.controls').width(player.width).css('margin-left', half);
-        $(div).find('div.controls li.slider').width(player.width - 170);
-        $(div).find('.preview').width(player.width).height(player.height).css('margin-left', half);
+        $(div).toggleClass('fullscreen').width('100%').height('100%');
         $(player.player).width(player.width).height(player.height);
+        
+        if ($(div).is('.fullscreen')) {
+            $(div).find('div.player').width(player.width).height(player.height).css('margin-left', half);
+            $(div).find('.preview').width(player.width).height(player.height).css('margin-left', half);
+            
+            $(div).find('div.controls').width(player.width).css('margin-left', half);
+            $(div).find('div.controls li.slider').width(player.width - 182);
+        } else {
+            $(div).find('div.player').width(player.width).height(player.height).css('margin-left', '0');
+            $(div).find('.preview').width(player.width).height(player.height).css('margin-left', '0');
+            
+            $(div).find('div.controls').width(player.width).css('margin-left', '0');
+            $(div).find('div.controls li.slider').width(player.width - 182);
+        }
+        
         var pos;
         if (player.myname == 'flowplayer') {
             pos = parseInt(player.position());
