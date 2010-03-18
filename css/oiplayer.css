@@ -254,6 +254,14 @@ body.oiplayer-example
 	line-height: 1.4em;
 }
 
+body.oiplayer-example a:link { color: #c00; }
+body.oiplayer-example a:visited { color: #333; }
+body.oiplayer-example a:hover, body.oiplayer-example a:active
+{
+	color: #c00;
+	text-decoration: underline;
+}
+
 body.oiplayer-example > div.main
 {
 	width: 640px;

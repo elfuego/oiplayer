@@ -29,11 +29,10 @@
     video: <a href="http://www.openbeelden.nl/users/beeldengeluid">Beeld en Geluid</a> licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/nl/deed.en">Creative Commons - Attribution-Share Alike</a>
   </p>
   <p>
-    This video on Open Images <a href="http://www.openimages.eu/media/9728/Storm">http://www.openimages.eu/media/9728/Storm</a>.
-    I copied the video-tag and added a poster attribute to it. OIPlayer 'attaches' itself
-    basically on all video and/or audio tags it encounters. Besides the general configuration of the
-    plugin itself, it uses for each individual tag the attributes the respective tag has 
-    like poster, width, controls, autoplay etc.
+    This video on Open Images <a href="http://www.openimages.eu/media/9728/Storm">http://www.openimages.eu/media/9728/Storm</a>.<br />
+    OIPlayer 'attaches' itself to all video and/or audio tags it encounters. 
+    Besides the general configuration of the plugin itself, it uses for each individual tag the 
+    attributes the respective tag has like poster, width, controls, autoplay etc.
   </p>
   <h3>Features</h3>
   <ul>
@@ -79,7 +78,7 @@
     </li>
     <li>
       Enable the jQuery plugin on all HTML5 video or audio tags in a page with a body with 
-      class 'oiplayerexample'. Here I used '<a href="js/play.js">js/play.js</a>'.
+      class 'oiplayerexample'. For this example I used '<a href="js/play.js">js/play.js</a>'.
 <pre>
 $(document).ready(function() {
     $('body.oiplayer-example').oiplayer();
@@ -91,13 +90,14 @@ $(document).ready(function() {
       by installing <a href="http://www.flowplayer.org">Flowplayer</a> and 
       <a href="http://en.wikipedia.org/wiki/Cortado_%28software%29">Cortado</a>
       (<a href="http://downloads.xiph.org/releases/cortado/?C=M;O=D">download</a>). 
-      Flowplayer needs the Flash plugin and plays h.264, flv and mp4 files when they are correctly encoded. 
+      Flowplayer needs the Flash plugin and plays h.264, flv and mp4. 
       Cortado is a Java applet that plays Ogg video and audio (ogv, oga).
       <ul>
         <li>server: web server (msie (or windows java) has issues with finding directories)</li>
         <li>jar: location of Cortado jar</li>
         <li>flash: location of Flowplayer and its files</li>
-        <li>controls: Use oiplayer controls or not (make sure you include jquery-ui-1.7.2.slider.js for progress slider).
+        <li>controls: Use oiplayer controls or not 
+          (make sure you include jquery-ui-1.7.2.slider.js for the progress slider):
            <ul>   
               <li>Simply 'true' means show controls below player.</li>
               <li>Value 'top' will add a class of that name and will hide/show controls on top of the player window.</li>
