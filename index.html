@@ -46,7 +46,7 @@
     <li>Mute/unmute button</li>
     <li>Full 'screen' button (full window really)</li>
     <li>
-      Slider controllabe with arrow keys 
+      Slider controllable with arrow keys 
       (requires <a href="http://jqueryui.com/demos/slider/">jquery.ui.slider.js</a>)
     </li>
   </ul>
@@ -64,7 +64,7 @@
     <a href="http://scm.mmbase.org/view/openimages/trunk/src/main/webapp/oiplayer/">http://scm.mmbase.org/view/openimages/trunk/src/main/webapp/oiplayer/</a>.
     It is licensed under <a href="http://www.gnu.org/licenses/gpl.html">GPL</a>.
   </p>
-  <h2>Howto</h2>
+  <h2>How-to</h2>
   <ol>
     <li>
       Copy the 'oiplayer' directory to your site. Include these Javascript and css
@@ -94,7 +94,7 @@ $(document).ready(function() {
       Flowplayer needs the Flash plugin and plays h.264, flv and mp4 files when they are correctly encoded. 
       Cortado is a Java applet that plays Ogg video and audio (ogv, oga).
       <ul>
-        <li>server: webserver (msie (or windows java) has issues with finding directories)</li>
+        <li>server: web server (msie (or windows java) has issues with finding directories)</li>
         <li>jar: location of Cortado jar</li>
         <li>flash: location of Flowplayer and its files</li>
         <li>controls: Use oiplayer controls or not (make sure you include jquery-ui-1.7.2.slider.js for progress slider).
@@ -105,8 +105,8 @@ $(document).ready(function() {
             </ul>
         </li>
       </ul>
-      These examples point to files on www.openimages.eu and should normally work with our
-      media files.
+      These examples point to files on <a href="http://www.openimages.eu">www.openimages.eu</a> 
+      and should normally work with our media files.
 <pre>
 $(document).ready(function() {
     $('body.oiplayer-example').oiplayer({
@@ -122,13 +122,11 @@ $(document).ready(function() {
       Especially when OIPlayer needs to fallback to Cortado or Flowplayer, your browser has no way to
       detect the duration of the media it should play. Since the html5 media tags have no attributes for 
       duration and starttime you can add that information using two classes on the mediatag. In this 
-      case 'oip_ea_duration_101' and 'oip_ea_start_0', the last part meaning the number of seconds.
+      case 'oip_ea_duration_101' (length is 101 seconds) and 'oip_ea_start_0' (start at 0 seconds).
       When you don't include these the progress slider will not appear.
 <pre>
-&lt;video class="oip_ea_duration_101 oip_ea_start_0"
-  poster="http://www.openimages.eu/images/18489/WEEKNUMMER364-HRE0000D9C6.png"&gt;
-  &lt;source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/9734.9730.WEEKNUMMER364-HRE0000D9C6.ogv"&gt; &lt;/source&gt;
-  &lt;source type="video/mp4; codecs=unknown" src="http://www.openimages.eu/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4"&gt; &lt;/source&gt;
+&lt;video class="oip_ea_duration_101 oip_ea_start_0"&gt;
+  ... source tags here ...
 &lt;/video&gt;      
 </pre>
     </li>
@@ -136,7 +134,7 @@ $(document).ready(function() {
       <pre>&lt;div id="clientcaps"&gt;  &lt;/div&gt;</pre>
     </li>
     <li>
-      You may ecnounter a 'Not allowed' with Cortado since it is often not allowed to play 
+      You may encounter a 'Not allowed' with Cortado since it is often not allowed to play 
       files from different hosts by some browsers. Be sure to copy your files to the host
       from where your pages are served. Or use the Cortado jar from www.openimages.eu when you are 
       playing movies from there.

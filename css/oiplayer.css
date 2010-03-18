@@ -248,7 +248,7 @@ div.oiplayer.fullscreen > div.controls { margin: 0 auto; }
 /* ### example html ### */
 body.oiplayer-example
 {
-	font-size: small;
+	font-size: 0.85em;
 	font-family: Helvetica, sans-serif;
 	background-color: #efefef;
 	line-height: 1.4em;
@@ -256,7 +256,7 @@ body.oiplayer-example
 
 body.oiplayer-example > div.main
 {
-	width: 620px;
+	width: 640px;
 	margin: 0 auto;
 	background-color: #fff;
 	padding: 1px 1em;
