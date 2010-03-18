@@ -43,12 +43,17 @@ div.oiplayer > div.controls
 {
 	height: 24px;
 	margin: 4px 0 0 0;
-	/* position: absolute;
+}
+
+div.oiplayer > div.controls.top
+{
+	position: absolute;
 	bottom: 0;
-	left: 0;
 	z-index: 99;
 	background-image: url(images/controls-whitie.png);
-	background-repeat: repeat; */
+	background-repeat: repeat;
+    height: 24px;
+	padding: 3px 4px;
 }
 
 div.oiplayer > .preview { cursor: pointer; }
@@ -237,17 +242,8 @@ div.oiplayer.fullscreen
 }
 
 div.oiplayer.fullscreen > img.preview { margin: 0 auto; }
-div.oiplayer.fullscreen > div.player,
+div.oiplayer.fullscreen > div.player { margin: 0 auto; }
 div.oiplayer.fullscreen > div.controls { margin: 0 auto; }
-
-div.oiplayer.fullscreen > div.controls
-{
-	/*position: fixed;*/
-	bottom: 0;
-	/*left: 0;*/
-	width: 100%;
-	margin: 0 auto;
-}
 
 /* ### example html ### */
 body.oiplayer-example

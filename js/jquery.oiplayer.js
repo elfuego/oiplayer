@@ -193,7 +193,10 @@ jQuery.fn.oiplayer = function(settings) {
             player.oheight = player.height;
         }
         var window_w = $(window).width();
-        var window_h = $(window).height() - 35;
+        var window_h = $(window).height();
+        if (! $(div).find('div.controls').is('.top')) {
+            window_h = window_h - 35;
+        }
         var multi_w = window_w / player.owidth;
         var multi_h = window_h / player.oheight;
         var half = 0;
@@ -211,7 +214,7 @@ jQuery.fn.oiplayer = function(settings) {
         
         $(div).toggleClass('fullscreen');
         $(div).find('div.player').width(player.width).height(player.height);
-        $(div).find('div.controls').width(player.width);
+        $(div).find('div.controls').width(player.width).css('margin-left', half);
         $(div).find('div.controls li.slider').width(player.width - 170);
         $(div).find('.preview').width(player.width).height(player.height).css('margin-left', half);
         $(player.player).width(player.width).height(player.height);
