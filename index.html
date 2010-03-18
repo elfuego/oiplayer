@@ -6,7 +6,7 @@
   <title>OIPlayer jQuery Plugin - Open Images Platform</title>
   <script src="js/jquery-1.3.2.min.js" type="text/javascript"><!-- help ie --></script>
   <script src="plugins/flowplayer-3.1.4.min.js" type="text/javascript"><!-- help ie --></script>
-  <script src="js/jquery-ui-1.7.2.slider.min.js" type="text/javascript"> </script>
+  <script src="js/jquery-ui-1.7.2.slider.min.js" type="text/javascript"><!-- help ie --></script>
   <script src="js/jquery.oiplayer.js" type="text/javascript"><!-- help ie --></script>
   <script src="js/play.js" type="text/javascript"><!-- help ie --></script>
   <link href="css/oiplayer.css" rel="stylesheet" type="text/css" />
@@ -14,8 +14,9 @@
 <body class="oiplayer-example">
 
 <div class="main">
-  <h1>OIPlayer</h1>
-  <h2>Example video: Storm</h2>
+  <h1>OIPlayer jQuery plugin</h1>
+  <h2>HTML5 audio and video player with fallback to Java and Flash</h2>
+  
   <div id="clientcaps">  </div> <!-- div#clientcaps is needed for Java detection in MSIE -->
   
   <video class="oip_ea_duration_101 oip_ea_start_0"
@@ -23,23 +24,31 @@
     <source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/9734.9730.WEEKNUMMER364-HRE0000D9C6.ogv"> </source>
     <source type="video/mp4; codecs=unknown" src="http://www.openimages.eu/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4"> </source>
   </video>
+  
   <p class="license">
     video: <a href="http://www.openbeelden.nl/users/beeldengeluid">Beeld en Geluid</a> licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/nl/deed.en">Creative Commons - Attribution-Share Alike</a>
   </p>
   <p>
     This video on Open Images <a href="http://www.openimages.eu/media/9728/Storm">http://www.openimages.eu/media/9728/Storm</a>.
     I copied the video-tag and added a poster attribute to it. OIPlayer 'attaches' itself
-    basically on all video and/or audio tags it encounters. Besides general configuration
-    it uses for each invidivdual tag its attributes like poster, width, controls, autoplay etc.
+    basically on all video and/or audio tags it encounters. Besides the general configuration of the
+    plugin itself, it uses for each individual tag the attributes the respective tag has 
+    like poster, width, controls, autoplay etc.
   </p>
   <h3>Features</h3>
   <ul>
     <li>Plays video as well as audio</li>
-    <li>Fallback to Flowplayer (mp4, h.264) or Cortado (oga, ogv)</li>
+    <li>
+      Fallback to <a href="http://www.flowplayer.org">Flowplayer</a> (mp4, h.264) 
+      or <a href="http://en.wikipedia.org/wiki/Cortado_%28software%29">Cortado</a> (oga, ogv)
+    </li>
     <li>Play/pause button</li>
     <li>Mute/unmute button</li>
     <li>Full 'screen' button (full window really)</li>
-    <li>Slider controllabe with arrow keys (requires jquery.ui.slider.js)</li>
+    <li>
+      Slider controllabe with arrow keys 
+      (requires <a href="http://jqueryui.com/demos/slider/">jquery.ui.slider.js</a>)
+    </li>
   </ul>
   <h3>Supported browsers</h3>
   <ul>
@@ -50,30 +59,32 @@
     <li>And maybe some untested others with HTML5 support,  Flash or Java installed</li>
   </ul>
   <p>
-    OIPlayer is part of OIP and its most recent sources can be found in our SVN repository:
-    <a href="http://scm.mmbase.org/view/openimages/trunk/src/main/webapp/oiplayer/">http://scm.mmbase.org/view/openimages/trunk/src/main/webapp/oiplayer/</a>
+    OIPlayer is part of the <a href="http://www.openimages.eu/source">Open Images Platform</a> 
+    which is <a href="http://www.mmbase.org">MMBase</a> based and its most recent sources can be found in our SVN repository:
+    <a href="http://scm.mmbase.org/view/openimages/trunk/src/main/webapp/oiplayer/">http://scm.mmbase.org/view/openimages/trunk/src/main/webapp/oiplayer/</a>.
+    It is licensed under <a href="http://www.gnu.org/licenses/gpl.html">GPL</a>.
   </p>
   <h2>Howto</h2>
   <ol>
     <li>
-      Copy the 'oiplayer' directory to your site. Include these css and javascript
+      Copy the 'oiplayer' directory to your site. Include these Javascript and css
       files in the head of your html document. 
-      <pre>
-      &lt;script src="js/jquery-1.3.2.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
-      &lt;script src="plugins/flowplayer-3.1.4.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
-      &lt;script src="js/jquery.oiplayer.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
-      &lt;link href="css/oiplayer.css" rel="stylesheet" type="text/css" /&gt;
-      </pre>
+<pre>
+&lt;script src="js/jquery-1.3.2.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
+&lt;script src="plugins/flowplayer-3.1.4.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
+&lt;script src="js/jquery-ui-1.7.2.slider.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
+&lt;script src="js/jquery.oiplayer.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
+&lt;link href="css/oiplayer.css" rel="stylesheet" type="text/css" /&gt;
+</pre>
     </li>
     <li>
-      Enable the jQuery plugin on all HTML5 video or audio tags. 
-      In this example on all pages with a body with class 'oiplayerexample' 
-      (see f.e. '<a href="js/play.js">js/play.js</a>').
-      <pre>
-      $(document).ready(function() {
-          $('body.oiplayer-example').oiplayer({ 'controls' : true });
-      });
-      </pre>
+      Enable the jQuery plugin on all HTML5 video or audio tags in a page with a body with 
+      class 'oiplayerexample'. Here I used '<a href="js/play.js">js/play.js</a>'.
+<pre>
+$(document).ready(function() {
+    $('body.oiplayer-example').oiplayer();
+});
+</pre>
     </li>
     <li>
       OIPlayer has a fallback mechanism that can be made to work 
@@ -81,38 +92,57 @@
       <a href="http://en.wikipedia.org/wiki/Cortado_%28software%29">Cortado</a>
       (<a href="http://downloads.xiph.org/releases/cortado/?C=M;O=D">download</a>). 
       Flowplayer needs the Flash plugin and plays h.264, flv and mp4 files when they are correctly encoded. 
-      Cortado is a Java applet that plays Ogg video and audio (ogv, aga).
+      Cortado is a Java applet that plays Ogg video and audio (ogv, oga).
       <ul>
         <li>server: webserver (msie (or windows java) has issues with finding directories)</li>
         <li>jar: location of Cortado jar</li>
         <li>flash: location of Flowplayer and its files</li>
-        <li>controls: show controls or not</li>
+        <li>controls: Use oiplayer controls or not (make sure you include jquery-ui-1.7.2.slider.js for progress slider).
+           <ul>   
+              <li>Simply 'true' means show controls below player.</li>
+              <li>Value 'top' will add a class of that name and will hide/show controls on top of the player window.</li>
+              <li>Add a css class of your own to edit the appearance of the controls (f.e. 'top dark').</li>
+            </ul>
+        </li>
       </ul>
       These examples point to files on www.openimages.eu and should normally work with our
       media files.
-      <pre>
-      $(document).ready(function() {
-          $('body.oiplayer-example').oiplayer({
-              'server' : 'http://www.openimages.eu',
-              'jar' : '/player/cortado-ovt-stripped-wm_r38710.jar',
-              'flash' : '/player/flowplayer-3.1.1.swf',
-              'controls' : true
-          });
-      });
-      </pre>
+<pre>
+$(document).ready(function() {
+    $('body.oiplayer-example').oiplayer({
+        'server' : 'http://www.openimages.eu',
+        'jar' : '/oiplayer/cortado-ovt-stripped-wm_r38710.jar',
+        'flash' : '/oiplayer/plugins/flowplayer-3.1.5.swf',
+        'controls' : 'top'
+    });
+});
+</pre>
+    </li>
+    <li>
+      Especially when OIPlayer needs to fallback to Cortado or Flowplayer, your browser has no way to
+      detect the duration of the media it should play. Since the html5 media tags have no attributes for 
+      duration and starttime you can add that information using two classes on the mediatag. In this 
+      case 'oip_ea_duration_101' and 'oip_ea_start_0', the last part meaning the number of seconds.
+      When you don't include these the progress slider will not appear.
+<pre>
+&lt;video class="oip_ea_duration_101 oip_ea_start_0"
+  poster="http://www.openimages.eu/images/18489/WEEKNUMMER364-HRE0000D9C6.png"&gt;
+  &lt;source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/9734.9730.WEEKNUMMER364-HRE0000D9C6.ogv"&gt; &lt;/source&gt;
+  &lt;source type="video/mp4; codecs=unknown" src="http://www.openimages.eu/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4"&gt; &lt;/source&gt;
+&lt;/video&gt;      
+</pre>
     </li>
     <li>To have MSIE detect Java support you need this div somewhere (just once) in your page:
       <pre>&lt;div id="clientcaps"&gt;  &lt;/div&gt;</pre>
     </li>
     <li>
-      You will probably get a 'Not allowed' with Cortado since it is often not allowed to play 
+      You may ecnounter a 'Not allowed' with Cortado since it is often not allowed to play 
       files from different hosts by some browsers. Be sure to copy your files to the host
       from where your pages are served. Or use the Cortado jar from www.openimages.eu when you are 
       playing movies from there.
     </li>
   </ol>
-  
-
+  <address>Have fun! <a href="http://www.toly.nl">André van Toly</a></address>  
 </div>
 
 </body>
