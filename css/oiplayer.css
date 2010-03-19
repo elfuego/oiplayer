@@ -52,8 +52,8 @@ div.oiplayer > div.controls.top
 	z-index: 19;
 	background-image: url(images/controls-blackbg.png);
 	background-repeat: repeat;
-	height: 27px;
-	padding: 0;
+	height: 30px;
+	padding-top: 4px;
 	margin: 0;
 }
 div.oiplayer > div.controls.top.white { background-image: url(images/controls-whitie.png); }
