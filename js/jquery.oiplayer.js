@@ -425,13 +425,15 @@ jQuery.fn.oiplayer = function(settings) {
      */
     function extraAttributes(el) {
         var attributes = new Object();
-        var classes = $(el).attr("class").split(' ');
-        for (var i in classes) {
-            var cl = classes[i];
-            if (cl.indexOf("oip_ea_") == -1) continue;
-            var a = cl.substring("oip_ea_".length);
-            var v = a.indexOf("_");
-            attributes[a.substring(0, v)] = a.substring(v + 1);
+        if ($(el).attr("class")) {
+            var classes = $(el).attr("class").split(' ');
+            for (var i in classes) {
+                var cl = classes[i];
+                if (cl.indexOf("oip_ea_") == -1) continue;
+                var a = cl.substring("oip_ea_".length);
+                var v = a.indexOf("_");
+                attributes[a.substring(0, v)] = a.substring(v + 1);
+            }
         }
         return attributes;
     }
