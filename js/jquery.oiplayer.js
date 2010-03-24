@@ -776,7 +776,7 @@ FlowPlayer.prototype.init = function(el, url, config) {
     var div = document.createElement('div'); // TODO: (?) add (random) id: adding flowplayer and returning it impossible without id
     $(el).closest('div.oiplayer').html(div);
     $(div).addClass('player');
-    this.player = $f(div, { src: flwplayer, width: this.width, height: this.height }, {
+    this.player = $f(div, { src: flwplayer, width: this.width, height: this.height, wmode: 'opaque' }, {
         clip: {
             url: this.url,
             autoPlay: this.autoplay,
