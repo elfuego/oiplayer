@@ -93,6 +93,8 @@ div.inavailable p
 /* controls */
 div.oiplayer ul.controls
 {
+	margin: 0;
+	padding: 0;
 	height: 25px;
 	list-style: none;
 	display: inline;
