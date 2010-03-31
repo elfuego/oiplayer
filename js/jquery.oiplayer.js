@@ -14,7 +14,8 @@
  * MSIE bug (!) : currently I could find no way to makes this plugin behave correctly in MSIE on multiple
  * mediatags in one go. You will have to wrap each mediatag in a div or some other element and feed it
  * to the plugin.
- *
+ * 
+ * Uses these parameters and/or the audio/video tag attributes like height, width, poster etc.
  * @params:
  *   id - id of the element that contains the media tag
  *   config - configuration parameters
@@ -26,7 +27,7 @@
                       Value 'top' will add a css class of that name and will hide/show controls on top of the player window.
                       Add a css class of your own to edit the appearance of the controls (f.e. 'top dark').
  *
- * @changes: added seek, fullscreen and mute, more control over appearance of controls
+ * @changes: iphone compatibility
  * @version: '$Id$'
 */
 
@@ -53,33 +54,38 @@ jQuery.fn.oiplayer = function(settings) {
             $(mt).wrap('<div class="oiplayer"><div class="player"></div></div>');
             var div = $(mt).closest('div.oiplayer');
             var player = createPlayer(mt, sources, config);
-            $(div).width(player.width).height(player.height).addClass(player.type);
+            $(div).addClass(player.type);
             if (player.myname.indexOf('cortado') > -1) {
                 $(div).find('div.player').empty();
                 $(div).find('div.player').append(player.player);
             }
-            $(div).find('div.player').hide();
             
             var poster = createPoster(div, player);
             $(div).prepend(poster);
             
-            if ($.browser.msie) { 
+            //if ($.browser.msie) { 
                 //$('p.oiplayer-warn').hide(); // MSIE places stuff partly outside mediatag
-            }
+            //}
             
-            if (config.controls) {
+            $(div).width(player.width).height(player.height);
+            if (config.controls && player.url != undefined) {
                 $(div).append(createControls());
-                if (config.controls != true) {
-                    $(div).find('div.controls').width(player.width).addClass(config.controls);
-                    $(div).find('li.slider').width(player.width - 182).addClass(config.controls);
+                $(div).find('div.controls').width(player.width);
+                $(div).find('li.slider').width(player.width - 182);
+                if (config.controls != true) {  // append classes
+                    $(div).find('div.controls').addClass(config.controls);
                     if (config.controls.indexOf('top') > -1) {
-                        $(div).find('div.controls').addClass('top');
                         $(div).find('div.controls').hide();
-                        $(div).height(player.height);
                     } else {
-                        //$(div).height(player.height + 25);
+                        $(div).height(player.height + 30);
                     }
+                } else {
+                    $(div).height(player.height + 30);
                 }
+            }
+            if (player.url == undefined) {  // no compatible sources to play
+                $(div).addClass('inavailable');
+                $(div).append('<p>No compatible source found to play.</p>');
             }
             //$.oiplayer.msg(player, player.info);
             players.push(player);
@@ -145,7 +151,7 @@ jQuery.fn.oiplayer = function(settings) {
                 if ($(el).find('div.controls').is('.top')) {
                     $(el).hover(
                         function() { 
-                            $(el).find('div.controls').fadeIn(); 
+                            $(el).find('div.controls').fadeIn();
                         },
                         function() {
                             $(el).find('div.controls').fadeOut('slow');
@@ -173,12 +179,13 @@ jQuery.fn.oiplayer = function(settings) {
     function start(player) {
         var div = $.oiplayer.div(player);
         if (player.type == 'video') {
-            $(div).find('.preview').remove();
+            $(div).find('.preview').hide();
         } else {
-            //$(div).find('.preview').css("z-index", "1");
+            $(div).find('.preview').css("z-index", "1");
         }
-        $(div).find('div.player').show().height(player.height).width(player.width);
+
         player.play();
+        
         if (player.config.controls) {
             var ctrls = $(div).find('ul.controls');
             var timer = $(ctrls).find('li.position');
@@ -199,12 +206,15 @@ jQuery.fn.oiplayer = function(settings) {
         var window_w = $(window).width();
         var window_h = $(window).height();
         if (! $(div).find('div.controls').is('.top')) {
-            window_h = window_h - 35;
+            window_h = window_h - 30;
         }
         var multi_w = window_w / player.owidth;
         var multi_h = window_h / player.oheight;
         var half = 0;
         if (player.width != player.owidth) {
+            var h = player.oheight;
+            if (! $(div).find('div.controls').is('.top')) { h = h + 30; }
+            $(div).width(player.owidth).height(h);
             player.width = player.owidth;
             player.height = player.oheight;
         } else if (multi_h < multi_w) {
@@ -218,7 +228,7 @@ jQuery.fn.oiplayer = function(settings) {
             player.height = Math.round(player.oheight * multi_w);
         }
         
-        $(div).toggleClass('fullscreen').width('100%').height('100%');
+        $(div).toggleClass('fullscreen');
         $(player.player).width(player.width).height(player.height);
         
         if ($(div).is('.fullscreen')) {
@@ -280,6 +290,7 @@ jQuery.fn.oiplayer = function(settings) {
             player = new FlowPlayer();
         } else {
             player = new Player();
+            player.type = "none";
         }
         if (eas.duration != null) {
             player.duration = eas.duration;
@@ -369,10 +380,6 @@ jQuery.fn.oiplayer = function(settings) {
         var aEl = document.createElement("audio");
         if (vEl.canPlayType || aEl.canPlayType) {
             for (var i = 0; i < types.length; i++) {
-                /*
-                 http://www.whatwg.org/specs/web-apps/current-work/multipage/video.html#dom-navigator-canplaytype
-                 Firefox 3.5 is very strict about this and does not return 'probably', but does on 'maybe'.
-                */
                 if (vEl.canPlayType( types[i] ) == "probably" || aEl.canPlayType( types[i] ) == "probably") {
                     return urls[i]; // this is the best we can do
                 }
@@ -397,15 +404,16 @@ jQuery.fn.oiplayer = function(settings) {
 
     function createPoster(el, player) {
         var src = player.poster;
-        if (!src && player.type == 'audio') { // for audio-tags (no attribute poster)
+        if (!src && player.type == 'audio') { // for audio-tags (no attribute poster but image inside audio-tag)
             var img = $(el).find('img')[0];
             src = $(img).attr('src');
             $(img).remove();
         }
         if (!src) {
-            return '<div class="preview ' + player.type + '" style="width:' + player.width + 'px;height:' + player.height + 'px;"></div>'
+            //return '<div class="preview ' + player.type + '" style="width:' + player.width + 'px;height:' + player.height + 'px;"></div>'
+            return "";
         } else {
-            return '<img  class="preview" src="' + src + '" width="' + player.width + '" height="' + player.height + '" alt="click to play" title="click to play" />';
+            return '<img class="preview ' + player.type + '" src="' + src + '" width="' + player.width + '" height="' + player.height + '" alt="click to play" title="click to play" />';
         }
     }
         
@@ -494,7 +502,6 @@ $.oiplayer = {
     },
     
     msg: function(player, msg) {
-        //$( $.oiplayer.div(player) ).append('<div class="oiplayerinfo">' + msg + '</div>');
         $('<div class="oiplayerinfo"></div>').text(msg).hide().appendTo( $.oiplayer.div(player) ).fadeIn();
     },
     
@@ -530,7 +537,9 @@ $.oiplayer = {
 function Player() {
     this.myname = "super";
 }
-Player.prototype.init = function(el, url, config) { }
+Player.prototype.init = function(el, url, config) {
+    this._init(el, url, config);
+}
 Player.prototype.mute = function() { }
 Player.prototype.play = function() { }
 Player.prototype.pause = function() { }
@@ -551,7 +560,7 @@ Player.prototype._init = function(el, url, config) {
     this.controls = $(this.player).attr('controls');
     if (this.controls == undefined) this.controls = false;
     this.width  = $(this.player).attr('width') > 0 ? $(this.player).attr('width') : 320;
-    this.height = $(this.player).attr('height') > 0 ? $(this.player).attr('height') : 240;;
+    this.height = $(this.player).attr('height') > 0 ? $(this.player).attr('height') : 240;
     this.state = 'init';
     this.pos = 0;
     
@@ -563,7 +572,7 @@ function MediaPlayer() {
 }
 MediaPlayer.prototype = new Player();
 MediaPlayer.prototype.init = function(el, url, config) {
-    this._init(el, url, config); // just init and pass it along
+    this._init(el, url, config);
     this.url = url;
     if (config.controls) {
         var self = this;
