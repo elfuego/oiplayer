@@ -418,13 +418,23 @@ jQuery.fn.oiplayer = function(settings) {
     }
         
     function createControls() {
-        var html = '<div class="controls"><ul class="controls">' + 
+        var agent = navigator.userAgent.toLowerCase(); 
+        var html;
+        if (agent.indexOf('iphone') > -1 || agent.indexOf('ipod') > -1) {
+            // sorry for this :-( could not find a suitable abilities check
+            html = '<div class="controls"><ul class="controls">' + 
+                      '<li class="play"><a title="play" href="#play">play</a></li>' +
+                      '<li class="position">00:00</li>' +
+                   '</ul></div>';
+        } else {
+            html = '<div class="controls"><ul class="controls">' + 
                       '<li class="play"><a title="play" href="#play">play</a></li>' +
                       '<li class="slider"><div class="slider"><div> </div></div></li>' +
                       '<li class="position">00:00</li>' +
                       '<li class="sound"><a title="mute" href="#sound">mute</a></li>' + 
                       '<li class="screen"><a title="fullscreen" href="#fullscreen">fullscreen</a></li>' + 
                    '</ul></div>';
+        }
         return html;
     }
     
@@ -782,7 +792,7 @@ FlowPlayer.prototype.init = function(el, url, config) {
         ctrls = null;
     }
     
-    var div = document.createElement('div'); // TODO: (?) add (random) id: adding flowplayer and returning it impossible without id
+    var div = document.createElement('div');
     $(el).closest('div.oiplayer').html(div);
     $(div).addClass('player');
     this.player = $f(div, { src: flwplayer, width: this.width, height: this.height, wmode: 'opaque' }, {
