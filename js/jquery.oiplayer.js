@@ -132,7 +132,7 @@ jQuery.fn.oiplayer = function(settings) {
                 
                 if (pl.duration) {  // else no use
                     $(ctrls).find("div.slider > div").slider({
-                            animate: 'fast',
+                            animate: true,
                             range: 'min',
                             value: (pl.start ? pl.start : 0),
                             max: Math.round(pl.duration)
@@ -141,7 +141,7 @@ jQuery.fn.oiplayer = function(settings) {
                         pos(pl, ui.value);
                     });
                     $(ctrls).find("div.slider > div").bind('slidechange', function(ev, ui) {
-                        if (ev.originalEvent.type == "mouseup") { 
+                        if (ev.originalEvent != undefined && ev.originalEvent.type == "mouseup") { 
                             pos(pl, ui.value);
                         }
                     });
@@ -472,17 +472,17 @@ $.oiplayer = {
                 pos = player.position();
                 sec = Math.floor(pos);
                 //console.log("n: " + now + ", s: " + sec + ", pos: " + pos);
-                if (!isNaN(pos) && pos > 0 && sec != now) {
+                if (!isNaN(pos) && pos > 0 && pos != now) {
                     $(ctrls).find('li.position').text( $.oiplayer.totime(pos) );
-                    $(ctrls).find('div.slider > div').slider('option', 'value', sec);
+                    $(ctrls).find('div.slider > div').slider('option', 'value', pos);
                     $(ctrls).find('li.slider').addClass('changed');
                     i = 0;
-                    now = sec;
+                    now = pos;
                 }
                 if (pos < 1) { $(ctrls).find('li.slider').removeClass('changed'); }
-                if (now == sec) { i++; }
-                if (i > 10) {
-                    //console.log("stopping... " + i);
+                if (now == pos) { i++; }
+                if (i > 9) {
+                    //console.log("stopped after " + (i * 0.2) + " seconds.");
                     player.pause(); // maybe stop?
                     clearInterval(progress);
                     return;
