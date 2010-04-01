@@ -114,18 +114,27 @@ div.oiplayer ul.controls li.play.pause a
 	float: left;
 }
 
-div.oiplayer.fullscreen ul.controls li.play a,
-div.oiplayer.fullscreen ul.controls li.pause a { margin-left: 0; }
-
-div.oiplayer > div.controls.top ul.controls li.play a,
-div.oiplayer > div.controls.top ul.controls li.pause a { margin-left: 5px; }
-
-div.oiplayer div.oiplayerinfo
+div.oiplayer ul.controls li.position,
+div.oiplayer ul.controls li.timeleft
 {
-	font-size: xx-small;
-	margin-top: 4px;
-	background-color: #efefef;
+	float: left;
+	font-family: Monaco, Courier, monospaced;
+	font-size: 10px;
+	line-height: 26px;
+	color: #555;
+	text-align: right;
 }
+div.oiplayer ul.controls li.position
+{
+	margin: 0 5px;
+	width: 32px;
+}
+div.oiplayer ul.controls li.timeleft
+{
+	margin-left: 5px;
+	width: 36px;
+}
+
 
 div.oiplayer ul.controls li.sound a
 {
@@ -133,7 +142,7 @@ div.oiplayer ul.controls li.sound a
 	background-image: url(images/controls-soundon.png);
 	background-repeat: no-repeat;
 	width: 23px;
-	margin-left: 7px;
+	margin-left: 5px;
 }
 
 div.oiplayer ul.controls li.sound.muted a
@@ -142,14 +151,8 @@ div.oiplayer ul.controls li.sound.muted a
 	background-image: url(images/controls-soundoff.png);
 	background-repeat: no-repeat;
 	width: 23px;
-	margin-left: 7px;
+	margin-left: 5px;
 }
-
-div.oiplayer.fullscreen ul.controls li.sound a, 
-div.oiplayer.fullscreen ul.controls li.sound.muted a { margin-right: 3px; }
-
-div.oiplayer div.top ul.controls li.sound a, 
-div.oiplayer div.top ul.controls li.sound.muted a { margin-right: 8px; }
 
 div.oiplayer ul.controls li.screen a
 {
@@ -157,27 +160,21 @@ div.oiplayer ul.controls li.screen a
 	background-image: url(images/controls-fullscreen.png);
 	background-repeat: no-repeat;
 	width: 23px;
-	margin-left: 7px;
+	margin-left: 5px;
 }
 
-div.oiplayer ul.controls li.position,
-div.oiplayer ul.controls li.timeleft
+div.oiplayer div.oiplayerinfo
 {
-	font-family: Monaco, Courier, monospaced;
-	font-size: 12px;
-	line-height: 26px;
-	color: #555;
-	margin-left: 0;
-	float: left;
-	width: 63px;
-	text-align: center;
+	font-size: xx-small;
+	margin-top: 4px;
+	background-color: #efefef;
 }
 
 /* ### slider, jquery-ui etc. ### */
 div.oiplayer div.controls li.slider
 {
 	float: left;
-	margin-left: 7px;
+    margin-left: 0px;
 	background: url(images/slider11-left.png) left -50px no-repeat;
 	padding-left: 9px;
 }
@@ -237,7 +234,8 @@ div.oiplayer > div.controls.white {	background-image: url(images/controls-whitie
 
 /* dark (only possible with top really) */
 div.oiplayer div.controls.dark { background-image: url(images/controls-blackbg.png); }
-div.oiplayer div.controls.dark li.position { color: #efefef; }
+div.oiplayer div.controls.dark li.position,
+div.oiplayer div.controls.dark li.timeleft { color: #efefef; }
 
 div.oiplayer div.controls.dark a { background-position: 0 -50px; }
 div.oiplayer div.controls.dark a:hover { background-position: 0 0; }
@@ -269,6 +267,20 @@ div.oiplayer.fullscreen
 div.oiplayer.fullscreen > img.preview { margin: 0 auto; }
 div.oiplayer.fullscreen > div.player { margin: 0 auto; }
 div.oiplayer.fullscreen > div.controls { margin: 0 auto; }
+
+div.oiplayer.fullscreen ul.controls li.play a,
+div.oiplayer.fullscreen ul.controls li.pause a { margin-left: 0; }
+
+div.oiplayer.fullscreen ul.controls li.sound a, 
+div.oiplayer.fullscreen ul.controls li.sound.muted a { margin-right: 3px; }
+
+div.oiplayer > div.controls.top ul.controls li.play a,
+div.oiplayer > div.controls.top ul.controls li.pause a { margin-left: 5px; }
+
+div.oiplayer > div.controls.top ul.controls li.sound a, 
+div.oiplayer > div.controls.top ul.controls li.sound.muted a { margin-right: 8px; }
+
+
 
 /* inavailable / no compatible sources */
 div.oiplayer.video.inavailable { background: url(images/preview_video.png) left top repeat; }

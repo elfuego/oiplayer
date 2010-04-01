@@ -27,7 +27,7 @@
                       Value 'top' will add a css class of that name and will hide/show controls on top of the player window.
                       Add a css class of your own to edit the appearance of the controls (f.e. 'top dark').
  *
- * @changes: iphone compatibility
+ * @changes: timeleft indicator
  * @version: '$Id$'
 */
 
@@ -71,7 +71,7 @@ jQuery.fn.oiplayer = function(settings) {
             if (config.controls && player.url != undefined) {
                 $(div).append(createControls());
                 $(div).find('div.controls').width(player.width);
-                $(div).find('li.slider').width(player.width - 182);
+                $(div).find('li.slider').width(player.width - 190);
                 if (config.controls != true) {  // append classes
                     $(div).find('div.controls').addClass(config.controls);
                     if (config.controls.indexOf('top') > -1) {
@@ -145,6 +145,7 @@ jQuery.fn.oiplayer = function(settings) {
                             pos(pl, ui.value);
                         }
                     });
+                    $(ctrls).find("li.slider").after('<li class="timeleft">-' + $.oiplayer.totime(pl.duration) + '</li>');
                 }
 
                 /* show/hide */
@@ -168,6 +169,7 @@ jQuery.fn.oiplayer = function(settings) {
         player.seek(pos);
         var ctrls = $( $.oiplayer.div(player) ).find('ul.controls');
         $(ctrls).find('li.position').text( $.oiplayer.totime(pos) );
+        $(ctrls).find('li.timeleft').text('-' + $.oiplayer.totime(player.duration - pos) );
         if (pos > 0) {
             $(ctrls).find('li.slider').addClass("changed");
         } else {
@@ -236,13 +238,13 @@ jQuery.fn.oiplayer = function(settings) {
             $(div).find('.preview').width(player.width).height(player.height).css('margin-left', half);
             
             $(div).find('div.controls').width(player.width).css('margin-left', half);
-            $(div).find('div.controls li.slider').width(player.width - 182);
+            $(div).find('div.controls li.slider').width(player.width - 190);
         } else {
             $(div).find('div.player').width(player.width).height(player.height).css('margin-left', '0');
             $(div).find('.preview').width(player.width).height(player.height).css('margin-left', '0');
             
             $(div).find('div.controls').width(player.width).css('margin-left', '0');
-            $(div).find('div.controls li.slider').width(player.width - 182);
+            $(div).find('div.controls li.slider').width(player.width - 190);
         }
         
         var pos;
@@ -429,8 +431,8 @@ jQuery.fn.oiplayer = function(settings) {
         } else {
             html = '<div class="controls"><ul class="controls">' + 
                       '<li class="play"><a title="play" href="#play">play</a></li>' +
-                      '<li class="slider"><div class="slider"><div> </div></div></li>' +
                       '<li class="position">00:00</li>' +
+                      '<li class="slider"><div class="slider"><div> </div></div></li>' +
                       '<li class="sound"><a title="mute" href="#sound">mute</a></li>' + 
                       '<li class="screen"><a title="fullscreen" href="#fullscreen">fullscreen</a></li>' + 
                    '</ul></div>';
@@ -473,19 +475,28 @@ $.oiplayer = {
         var ctrls = $( $.oiplayer.div(player) ).find('ul.controls');
         var pos = 0;
         var progress = null;
-        var sec = player.start;
+        //var sec = player.start;
         var now;
         var i = 0;
+        
+        var left = player.duration;
         
         clearInterval(progress);
         progress = setInterval(function() {
                 pos = player.position();
-                sec = Math.floor(pos);
+                //sec = Math.floor(pos);
                 //console.log("n: " + now + ", s: " + sec + ", pos: " + pos);
                 if (!isNaN(pos) && pos > 0 && pos != now) {
                     $(ctrls).find('li.position').text( $.oiplayer.totime(pos) );
                     $(ctrls).find('div.slider > div').slider('option', 'value', pos);
                     $(ctrls).find('li.slider').addClass('changed');
+                    
+                    //console.log("left: " + left);
+                    if (player.duration > 0) {
+                        left = player.duration - pos;
+                        $(ctrls).find('li.timeleft').text("-" + $.oiplayer.totime(left));
+                    }
+                    
                     i = 0;
                     now = pos;
                 }
