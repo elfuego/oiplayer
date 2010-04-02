@@ -5,17 +5,18 @@
 * @version  '$Id$'
 */
 
-/* MSIE Java plugin detection, sigh :-( */
-#clientcaps
-{
-	behavior: url(#default#clientCaps);
-	display: none;
-}
-
 div.oiplayer
 {
 	position: relative;
 	/*height: 270px;*/  /* player 240 + controls 25 + margin 5 (set in jquery.oiplayer.js) */
+}
+
+div.oiplayer audio,
+div.oiplayer video
+{
+	display: inline;
+	margin: 0;
+	padding: 0;
 }
 
 div.oiplayer > div.player
@@ -323,3 +324,11 @@ body.oiplayer-example > div.main
 
 body.oiplayer-example > div.main ol { padding-left: 20px; }
 body.oiplayer-example > div.main p.license { font-size: 0.85em; }
+
+
+/* MSIE Java plugin detection, sigh :-( */
+#clientcaps
+{
+	behavior: url(#default#clientCaps);
+	display: none;
+}
