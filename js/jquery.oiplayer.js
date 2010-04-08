@@ -161,8 +161,6 @@ jQuery.fn.oiplayer = function(settings) {
                 }
             } // config.controls
         });
-        
-        return this; // plugin convention
     });
     
     function pos(player, pos) {
@@ -458,6 +456,7 @@ jQuery.fn.oiplayer = function(settings) {
         return attributes;
     }
 
+    return this; // plugin convention
 };
 
 //  ------------------------------------------------------------------------------------------------
