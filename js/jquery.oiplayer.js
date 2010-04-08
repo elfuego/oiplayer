@@ -224,7 +224,7 @@ jQuery.fn.oiplayer = function(settings) {
         if (player.origpos != null) {   // append them back to original div
             $(player.origpos).append(player.div);
             $('#oiplayer-fullscreen').remove();
-            $(player.div).unwrap();
+            //$(player.div).unwrap();
             player.origpos = null;
         } else {
             $(player.div).wrap('<div class="oiplayer-origpos" />');
