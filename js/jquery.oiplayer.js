@@ -221,37 +221,36 @@ jQuery.fn.oiplayer = function(settings) {
             player.height = Math.floor(player.oheight * multi_w);
         }
         
-        if (player.origpos != null) {   // append them back to original div
-            $(player.origpos).append(player.div);
+        if (player.origpos != null && player.myname != 'flowplayer') {
+            $(player.origpos).after(player.div);
             $('#oiplayer-fullscreen').remove();
-            //$(player.div).unwrap();
+            $(player.origpos).remove();
             player.origpos = null;
+            
+            $(player.div).find('.preview').width(player.width).height(player.height).css('margin-left', '0');
+            $(player.div).find('div.player').width(player.width).height(player.height).css('margin-left', '0');
+            $(player.div).find('div.controls').width(player.width).css('margin-left', '0').find('li.slider').width(player.width - 190);
+
         } else {
             $(player.div).wrap('<div class="oiplayer-origpos" />');
             player.origpos = $(player.div).closest('div.oiplayer-origpos');
             $('body').append('<div id="oiplayer-fullscreen"><div class="oiplayer"></div><div class="overlay"></div></div>');
             $('#oiplayer-fullscreen').append(player.div);
+            
+            $(player.div).find('.preview').width(player.width).height(player.height);
+            $(player.div).find('div.player').width(player.width).height(player.height);
+            $(player.div).find('div.controls').width(player.width).find('li.slider').width(player.width - 190);
         }
         
         if (player.state == 'play' && player.myname != 'flowplayer') { player.play(); }
         $(player.player).width(player.width).height(player.height);
-        
         if (player.config.controls.indexOf('top') == -1) {
             $(player.div).width(player.width).height( player.height + $(player.controls).height() ).css('margin-left', half);
         } else {
             $(player.div).width(player.width).height(player.height).css('margin-left', half);
         }
         
-        if ($('#oiplayer-fullscreen').find('div').length > 0) {
-            $(player.div).find('.preview').width(player.width).height(player.height);
-            $(player.div).find('div.player').width(player.width).height(player.height);
-            $(player.controls).width(player.width).find('li.slider').width(player.width - 190);
-        } else {
-            $(player.div).find('.preview').width(player.width).height(player.height).css('margin-left', '0');
-            $(player.div).find('div.player').width(player.width).height(player.height).css('margin-left', '0');
-            $(player.controls).width(player.width).css('margin-left', '0').find('li.slider').width(player.width - 190);
-        }
-        
+        // this last part is for flowplayer
         var pos;
         if (player.myname == 'flowplayer') {
             pos = parseInt(player.position());
