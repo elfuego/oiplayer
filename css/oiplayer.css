@@ -285,15 +285,6 @@ div#oiplayer-fullscreen > div.overlay {
 	background-repeat: repeat;
 }
 
-/*
-div#oiplayer-fullscreen > div.oiplayer
-{
-	position: relative;
-	top: 0;
-	left: 0;
-}
-*/
-
 div#oiplayer-fullscreen > div.oiplayer > img.preview
 {
 	margin: 0 auto;
@@ -309,19 +300,6 @@ div#oiplayer-fullscreen > div.oiplayer > div.controls
 	margin: 0 auto;
 	z-index: 122;
 }
-
-/*
-div#oiplayer-fullscreen ul.controls li.play a,
-div#oiplayer-fullscreen ul.controls li.pause a { margin-left: 0; }
-
-div#oiplayer-fullscreen ul.controls li.sound a, 
-div#oiplayer-fullscreen ul.controls li.sound.muted a { margin-right: 3px; }
-*/
-
-div#oiplayer-fullscreen div.controls.top ul.controls li.play a,
-div#oiplayer-fullscreen div.controls.top ul.controls li.pause a { margin-left: 5px; }
-
-
 
 /* ### inavailable / no compatible sources ### */
 div.oiplayer.video.inavailable { background: url(images/preview_video.png) left top repeat; }
