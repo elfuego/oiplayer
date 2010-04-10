@@ -20,6 +20,7 @@ div.oiplayer embed
 	display: block;
 	margin: 0;
 	padding: 0;
+	border: 0;
 }
 
 div.oiplayer > div.player
@@ -30,8 +31,6 @@ div.oiplayer > div.player
 	margin: 0;
 	padding: 0;
 	z-index: 10;
-	background-color: #000;
-	/*height: 240px;*/
 }
 
 div.oiplayer > div.controls
@@ -285,6 +284,11 @@ div#oiplayer-fullscreen > div.overlay {
 	background-repeat: repeat;
 }
 
+div#oiplayer-fullscreen > div.oiplayer
+{
+	position: fixed;
+	top: 0;
+}
 div#oiplayer-fullscreen > div.oiplayer > img.preview
 {
 	margin: 0 auto;
