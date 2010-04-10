@@ -236,6 +236,7 @@ jQuery.fn.oiplayer = function(settings) {
             player.origpos = $(player.div).closest('div.oiplayer-origpos');
             $('body').append('<div id="oiplayer-fullscreen"><div class="overlay"></div></div>');
             $('#oiplayer-fullscreen').append(player.div);
+            $('#oiplayer-fullscreen').find('div.overlay').height( $(document).height() );
             
             $(player.div).find('.preview').width(player.width).height(player.height);
             $(player.div).find('div.player').width(player.width).height(player.height);
