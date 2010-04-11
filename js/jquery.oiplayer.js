@@ -23,9 +23,9 @@
  *       'jar' : JAR file of Cortado
  *       'flash' : location of flowplayer.swf
  *       'controls' : Use oiplayer controls or not (make sure to include jquery-ui-1.7.2.slider.js for progress slider).
-                      Simply 'true' means show me controls below player.
-                      Value 'top' will add a css class of that name and will hide/show controls on top of the player window.
-                      Add a css class of your own to edit the appearance of the controls (f.e. 'top dark').
+ *                    Simply 'true' means show me controls below player.
+ *                    Value 'top' will add a css class of that name and will hide/show controls on top of the player window.
+ *                    Add a css class of your own to edit the appearance of the controls (f.e. 'top dark').
  *
  * @changes: made fullscreen/window work with players in absolute positioned elements
  * @version: '$Id$'
@@ -150,7 +150,8 @@ jQuery.fn.oiplayer = function(settings) {
                 }
 
                 // show/hide
-                if (config.controls.indexOf('top') > -1) {
+                if (config.controls != true && config.controls.indexOf('top') > -1) {
+                    console.log(config.controls);
                     $(pl.div).hover(
                         function() { 
                             $(pl.ctrls).fadeIn();
@@ -203,7 +204,7 @@ jQuery.fn.oiplayer = function(settings) {
         var pos = player.position();
         var window_w = $(window).width();
         var window_h = $(window).height();
-        if (player.config.controls.indexOf('top') == -1) {
+        if (player.config.controls != true && player.config.controls.indexOf('top') == -1) {
             window_h = window_h - $(player.ctrls).height();   // available space
         }
         var multi_w = window_w / player.owidth;
@@ -258,7 +259,7 @@ jQuery.fn.oiplayer = function(settings) {
             setTimeout(function() { player.seek(pos) }, 1000); // give fp time to reload
         }
         $(player.player).width(player.width).height(player.height);
-        if (player.config.controls.indexOf('top') == -1) {
+        if (player.config.controls != true && player.config.controls.indexOf('top') == -1) {
             $(player.div).width(player.width).height( player.height + $(player.ctrls).height() ).css('margin-left', half);
         } else {
             $(player.div).width(player.width).height(player.height).css('margin-left', half);
