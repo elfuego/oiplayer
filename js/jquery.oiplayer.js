@@ -64,10 +64,6 @@ jQuery.fn.oiplayer = function(settings) {
             var poster = createPoster(div, player);
             $(div).prepend(poster);
             
-            //if ($.browser.msie) { 
-                //$('p.oiplayer-warn').hide(); // MSIE places stuff partly outside mediatag
-            //}
-            
             $(div).width(player.width).height(player.height);
             if (config.controls && player.url != undefined) {
                 $(div).append(createControls());
@@ -79,10 +75,10 @@ jQuery.fn.oiplayer = function(settings) {
                     if (config.controls.indexOf('top') > -1) {
                         $(player.ctrls).hide();
                     } else {
-                        $(div).height( player.height + $(player.ctrls).height() );
+                        $(div).height( parseInt(player.height) + $(player.ctrls).height() );
                     }
                 } else {
-                    $(div).height( player.height + $(player.ctrls).height() );
+                    $(div).height( parseInt(player.height) + $(player.ctrls).height() );
                 }
             }
             if (player.url == undefined) {  // no compatible sources to play
@@ -203,7 +199,7 @@ jQuery.fn.oiplayer = function(settings) {
         var pos = player.position();
         var window_w = $(window).width();
         var window_h = $(window).height();
-        if (player.config.controls != true && player.config.controls.indexOf('top') == -1) {
+        if (player.config.controls == true || player.config.controls.indexOf('top') == -1) {
             window_h = window_h - $(player.ctrls).height();   // available space
         }
         var multi_w = window_w / player.owidth;
@@ -258,8 +254,8 @@ jQuery.fn.oiplayer = function(settings) {
             setTimeout(function() { player.seek(pos) }, 1000); // give fp time to reload
         }
         $(player.player).width(player.width).height(player.height);
-        if (player.config.controls != true && player.config.controls.indexOf('top') == -1) {
-            $(player.div).width(player.width).height( player.height + $(player.ctrls).height() ).css('margin-left', half);
+        if (player.config.controls == true || player.config.controls.indexOf('top') == -1) {
+            $(player.div).width(player.width).height( parseInt(player.height) + $(player.ctrls).height() ).css('margin-left', half);
         } else {
             $(player.div).width(player.width).height(player.height).css('margin-left', half);
         }
