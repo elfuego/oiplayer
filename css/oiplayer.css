@@ -288,6 +288,7 @@ div#oiplayer-fullscreen > div.oiplayer
 {
 	position: fixed;
 	top: 0;
+	z-index: 120;
 }
 div#oiplayer-fullscreen > div.oiplayer > img.preview
 {
