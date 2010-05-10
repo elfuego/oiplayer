@@ -151,7 +151,6 @@ jQuery.fn.oiplayer = function(settings) {
 
                 // show/hide
                 if (config.controls != true && config.controls.indexOf('top') > -1) {
-                    console.log(config.controls);
                     $(pl.div).hover(
                         function() { 
                             $(pl.ctrls).fadeIn();
