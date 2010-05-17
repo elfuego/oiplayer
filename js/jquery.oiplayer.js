@@ -72,7 +72,7 @@ jQuery.fn.oiplayer = function(settings) {
                 $(player.ctrls).find('li.slider').width(player.width - 190);
                 if (config.controls != true) {  // append classes
                     $(player.ctrls).addClass(config.controls);
-                    if (config.controls.indexOf('top') > -1) {
+                    if (config.controls.indexOf('top') > -1 && player.myname.indexOf('cortado') < 0) {
                         $(player.ctrls).hide();
                     } else {
                         $(div).height( parseInt(player.height) + $(player.ctrls).height() );
@@ -146,7 +146,9 @@ jQuery.fn.oiplayer = function(settings) {
                 }
 
                 // show/hide
-                if (config.controls != true && config.controls.indexOf('top') > -1) {
+                if (config.controls != true 
+                    && config.controls.indexOf('top') > -1 
+                    && pl.myname.indexOf('cortado') < 0) {
                     $(pl.div).hover(
                         function() { 
                             $(pl.ctrls).fadeIn();
@@ -199,8 +201,10 @@ jQuery.fn.oiplayer = function(settings) {
         var pos = player.position();
         var window_w = $(window).width();
         var window_h = $(window).height();
-        if (player.config.controls == true || player.config.controls.indexOf('top') == -1) {
-            window_h = window_h - $(player.ctrls).height();   // available space
+        if (player.config.controls == true 
+            || player.config.controls.indexOf('top') == -1
+            || player.myname.indexOf('cortado') > -1) {
+            window_h = window_h - $(player.ctrls).height();   // lessen available space
         }
         var multi_w = window_w / player.owidth;
         var multi_h = window_h / player.oheight;
@@ -254,10 +258,14 @@ jQuery.fn.oiplayer = function(settings) {
             setTimeout(function() { player.seek(pos) }, 1000); // give fp time to reload
         }
         $(player.player).width(player.width).height(player.height);
-        if (player.config.controls == true || player.config.controls.indexOf('top') == -1) {
+        if (player.config.controls == true
+            || player.config.controls.indexOf('top') == -1
+            || player.myname.indexOf('cortado') > -1) {
+            $(player.player).attr('height', player.height).attr('width', player.width);
             $(player.div).width(player.width).height( parseInt(player.height) + $(player.ctrls).height() ).css('margin-left', half);
         } else {
             $(player.div).width(player.width).height(player.height).css('margin-left', half);
+            $(player.player).attr('height', player.height).attr('width', player.width);
         }
 
     }
@@ -731,7 +739,7 @@ CortadoPlayer.prototype.pause = function() {
 //     } catch(err) { }
 }
 CortadoPlayer.prototype.mute = function() {
-    $.oiplayer.msg(this, "Sorry. Cortado does not this with Javascript.");
+    $.oiplayer.msg(this, "Sorry. Cortado currently does not support changing volume with Javascript.");
 }
 CortadoPlayer.prototype.position = function() {
     this.pos = this.player.getPlayPosition();
