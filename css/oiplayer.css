@@ -174,7 +174,12 @@ div.oiplayer div.oiplayerinfo
 {
 	font-size: xx-small;
 	margin-top: 4px;
-	background-color: #efefef;
+	padding: 2px;
+	background-color: #efffef;
+	position: absolute;
+	bottom: -24px;
+	left: 0;
+	z-index: 225;
 }
 
 /* ### slider, jquery-ui etc. ### */
