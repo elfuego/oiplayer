@@ -825,8 +825,8 @@ FlowPlayer.prototype.create = function(el, url, config) {
             autoPlay: this.autoplay,
             duration: duration,
             scaling: 'fit',
-            autoBuffering: this.autobuffer,
-            bufferLength: 5
+            autoBuffering: true
+            //bufferLength: 5
         },
         plugins: { controls: ctrls }
     });
