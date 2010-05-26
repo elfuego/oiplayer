@@ -590,8 +590,8 @@ Player.prototype._init = function(el, url, config) {
     if (this.autobuffer == undefined) this.autobuffer = false;
     this.controls = $(this.player).attr('controls');
     if (this.controls == undefined) this.controls = false;
-    this.width  = $(this.player).attr('width') > 0 ? $(this.player).attr('width') : 320;
-    this.height = $(this.player).attr('height') > 0 ? $(this.player).attr('height') : 240;
+    this.width  = $(this.player).attr('width') > 0 ? parseInt($(this.player).attr('width')) : 320;
+    this.height = $(this.player).attr('height') > 0 ? parseInt($(this.player).attr('height')) : 240;
     this.state = 'init';
     this.pos = 0;
     
