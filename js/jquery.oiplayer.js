@@ -182,7 +182,7 @@ jQuery.fn.oiplayer = function(settings) {
         }
 
         player.play();
-        
+        $(player.div).trigger("oiplayerstart", [player]);
         if (player.config.controls) {
             var timer = $(player.ctrls).find('li.position');
             if ($(player.ctrls).find('li.pause').length == 0) {
@@ -310,6 +310,9 @@ jQuery.fn.oiplayer = function(settings) {
         if (eas.start != null) {
             player.start = eas.start;
         }
+        if (eas.id != null) {
+            player.id = eas.id;
+        }
         player.info = selectedPlayer.type + ":" + selectedPlayer.url;
         player.init(el, selectedPlayer.url, config);
         return player;
@@ -385,7 +388,7 @@ jQuery.fn.oiplayer = function(settings) {
     }
     
     /*
-     * Returns url it expects to be able to play with html5 video- or audiotag based on mimetype.
+     * Returns (first) url it expects to be able to play with html5 video- or audiotag based on mimetype.
      */
     function canPlayMedia(types, urls) {
         var vEl = document.createElement("video");
