@@ -10,12 +10,39 @@ div.oiplayer
 	position: relative;
 	margin: 0;
 	padding: 0;
+	background-color: #000;
 }
 
-div.oiplayer audio,
-div.oiplayer video,
-div.oiplayer object,
-div.oiplayer embed
+div.oiplayer.fullscreen
+{
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	overflow: hidden;
+	z-index: 1000;
+	width: 100%;
+	height: 100%;
+}
+
+div.oiplayer.fullscreen > div.player
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1001;
+}
+
+div.oiplayer.fullscreen > div.controls
+{
+	z-index: 1002;
+	margin: 0 auto;
+}
+
+div.oiplayer audio, div.oiplayer video, div.oiplayer object, div.oiplayer embed 
 {
 	display: block;
 	margin: 0;
@@ -51,7 +78,7 @@ div.oiplayer > div.player > audio
 	left: 0;
 	margin: 0;
 	padding: 0;
-	width: 100%;        /* not sure about this */
+	/*width: 100%;*/        /* not sure about this */
 }
 
 div.oiplayer > .preview
@@ -134,12 +161,10 @@ div.oiplayer ul.controls li.timeleft
 }
 div.oiplayer ul.controls li.position
 {
-	margin: 0 5px;
 	width: 36px;
 }
 div.oiplayer ul.controls li.timeleft
 {
-	margin-left: 5px;
 	width: 42px;
 }
 
@@ -149,7 +174,7 @@ div.oiplayer ul.controls li.sound a
 	background-image: url(images/controls-soundon.png);
 	background-repeat: no-repeat;
 	width: 23px;
-	margin: 0 5px;
+	margin-right: 5px;
 }
 
 div.oiplayer ul.controls li.sound.muted a
@@ -158,7 +183,6 @@ div.oiplayer ul.controls li.sound.muted a
 	background-image: url(images/controls-soundoff.png);
 	background-repeat: no-repeat;
 	width: 23px;
-	margin-left: 5px;
 }
 
 div.oiplayer ul.controls li.screen a
@@ -167,7 +191,7 @@ div.oiplayer ul.controls li.screen a
 	background-image: url(images/controls-fullscreen.png);
 	background-repeat: no-repeat;
 	width: 23px;
-	margin-left: 5px;
+	margin-right: 5px;
 }
 
 div.oiplayer div.oiplayerinfo
@@ -245,7 +269,11 @@ div.oiplayer > div.controls.top
 div.oiplayer > div.controls.white {	background-image: url(images/controls-whitie.png); }
 
 /* dark (only possible with top really) */
-div.oiplayer div.controls.dark { background-image: url(images/controls-blackbg.png); }
+div.oiplayer div.controls.dark
+{
+	/*background-image: url(images/controls-blackbg.png);*/
+	background-color: #000;
+}
 div.oiplayer div.controls.dark li.position,
 div.oiplayer div.controls.dark li.timeleft { color: #fff; }
 
@@ -265,55 +293,6 @@ div.oiplayer div.controls.dark li.changed .ui-widget-content .ui-state-default {
 
 div.oiplayer > div.controls.top ul.controls li.sound a, 
 div.oiplayer > div.controls.top ul.controls li.sound.muted a { margin-right: 8px; }
-
-/* ### fullscreen ### */
-div#oiplayer-fullscreen
-{
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 109;
-	width: 100%;
-	height: 100%;
-}
-
-div#oiplayer-fullscreen > div.overlay {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 100;
-	width: 100%;
-	height: 800px;
-	/*background-color: #333;*/
-	background-image: url(images/controls-blackbg.png);
-	background-repeat: repeat;
-}
-
-div#oiplayer-fullscreen > div.oiplayer
-{
-	position: fixed;
-	top: 0;
-	z-index: 120;
-}
-div#oiplayer-fullscreen > div.oiplayer > img.preview
-{
-	margin: 0 auto;
-	z-index: 121;
-}
-div#oiplayer-fullscreen > div.oiplayer > div.player
-{
-	margin: 0 auto;
-	z-index: 120;
-}
-div#oiplayer-fullscreen > div.oiplayer > div.controls
-{
-	margin: 0 auto;
-	z-index: 122;
-	background-image: url(images/controls-whitie.png);
-	background-repeat: repeat;
-}
-div#oiplayer-fullscreen > div.oiplayer > div.controls.dark { background-image: url(images/controls-blackbg.png); }
-
 
 /* ### inavailable / no compatible sources ### */
 div.oiplayer.video.inavailable { background: url(images/preview_video.png) left top repeat; }
