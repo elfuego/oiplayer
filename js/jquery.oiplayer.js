@@ -70,15 +70,23 @@ jQuery.fn.oiplayer = function(settings) {
                 player.ctrls = $(div).find('div.controls');
                 $(player.ctrls).width(player.width);
                 $(player.ctrls).find('li.slider').width(player.width - 190);
-                if (config.controls != true) {  // append classes
+                
+                if (config.controls != true) {  // we're using classes, append them
+                    if (player.myname.indexOf('cortado') > -1 || isIphone() || isIpad()) { // remove top when not compatible
+                        config.controls = config.controls.replace('top', '');
+                        if (config.controls.length == 0) { config.controls = 'white'; }
+                    }
                     $(player.ctrls).addClass(config.controls);
-                    if (config.controls.indexOf('top') > -1 && player.myname.indexOf('cortado') < 0) {
+                    if (config.controls.indexOf('top') > -1) {
+                        player.ctrlspos = 'top';
                         $(player.ctrls).hide();
                     } else {
-                        $(div).height( parseInt(player.height) + $(player.ctrls).height() );
+                        $(div).height( $(div).height() + $(player.ctrls).height() );
+                        player.ctrlspos = 'bottom';
                     }
                 } else {
-                    $(div).height( parseInt(player.height) + $(player.ctrls).height() );
+                    $(div).height( $(div).height() + $(player.ctrls).height() );
+                    player.ctrlspos = 'bottom';
                 }
             }
             if (player.url == undefined) {  // no compatible sources to play
@@ -116,14 +124,12 @@ jQuery.fn.oiplayer = function(settings) {
                 });
 
                 $(pl.ctrls).find('li.sound a').click(function(ev){
-                    if (pl.state != 'init' && pl.state != 'ended') {
-                        pl.mute();
-                        $(pl.ctrls).find('li.sound').toggleClass('muted');
-                    }
+                    ev.preventDefault();
+                    $(pl.ctrls).find('li.sound').toggleClass('muted');
+                    pl.mute();
                 });
                 $(pl.ctrls).find('li.screen a').click(function(ev){
                     ev.preventDefault();
-                    $(ev.target).parent('div').css('border', '2px solid #c00');
                     fullscreen(pl);
                 });
                 
@@ -142,13 +148,10 @@ jQuery.fn.oiplayer = function(settings) {
                             pos(pl, ui.value);
                         }
                     });
-                    $(pl.ctrls).find("li.slider").after('<li class="timeleft">-' + $.oiplayer.totime(pl.duration) + '</li>');
                 }
 
                 // show/hide
-                if (config.controls != true 
-                    && config.controls.indexOf('top') > -1 
-                    && pl.myname.indexOf('cortado') < 0) {
+                if (pl.ctrlspos == 'top') {
                     $(pl.div).hover(
                         function() { 
                             $(pl.ctrls).fadeIn();
@@ -190,7 +193,7 @@ jQuery.fn.oiplayer = function(settings) {
             }
             $.oiplayer.follow(player);
         }
-        //$.oiplayer.msg(player, "Playing... " + player.info);
+        //$.oiplayer.msg(player, "Playing... " + player.info + " (" + player.duration + ")");
     }
 
     function fullscreen(player) {
@@ -198,76 +201,62 @@ jQuery.fn.oiplayer = function(settings) {
             player.owidth = player.width;
             player.oheight = player.height;
         }
-        var pos = player.position();
-        var window_w = $(window).width();
-        var window_h = $(window).height();
-        if (player.config.controls == true 
-            || player.config.controls.indexOf('top') == -1
-            || player.myname.indexOf('cortado') > -1) {
-            window_h = window_h - $(player.ctrls).height();   // lessen available space
-        }
-        var multi_w = window_w / player.owidth;
-        var multi_h = window_h / player.oheight;
-        var half = 0;
-        if (player.width != player.owidth) {
-            player.width = player.owidth;
-            player.height = player.oheight;
-        } else if (multi_h < multi_w) {
-            player.width = Math.round(player.owidth * multi_h);
-            player.height = window_h;
-            half = Math.round((window_w - player.width) / 2);
-        } else {
-            player.width = window_w;
-            player.height = Math.floor(player.oheight * multi_w);
-        }
-        // move and resize stuff
-        if (player.origpos != null) {
-            $(player.origpos).after(player.div);
-            $('#oiplayer-fullscreen').remove();
-            $(player.origpos).remove();
-            player.origpos = null;
-            
-            $(player.div).find('.preview').width(player.width).height(player.height).css('margin-left', '0');
-            $(player.div).find('div.player').width(player.width).height(player.height).css('margin-left', '0');
-            $(player.div).find('div.controls').width(player.width).css('margin-left', '0').find('li.slider').width(player.width - 190);
-            
-        } else {
-            $(player.div).wrap('<div class="oiplayer-origpos" />');
-            player.origpos = $(player.div).closest('div.oiplayer-origpos');
-            $('body').append('<div id="oiplayer-fullscreen"><div class="overlay"></div></div>');
-            $('#oiplayer-fullscreen').append(player.div);
-            $('#oiplayer-fullscreen').find('div.overlay').height( $(document).height() );
-            
-            $(player.div).find('.preview').width(player.width).height(player.height);
-            $(player.div).find('div.player').width(player.width).height(player.height);
-            $(player.div).find('div.controls').width(player.width).find('li.slider').width(player.width - 190);
-        }
+
+        $(player.div).toggleClass('fullscreen');
         
-        if (player.myname == 'flowplayer') {    // recreate fp
+        // flash stuff
+        if (player.myname == 'flowplayer') {
+            // for flash
+            var pos = player.position();
             var fp_id = player.player.id();
             player.player.unload();
             var pl_div = $(player.div).find('div.player');
-            $(pl_div).empty().attr('id', fp_id);
-            player.create(fp_id, player.url, player.config);
+            $(pl_div).empty().attr('id', fp_id); // re-use fp id
         }
         
-        if (player.state == 'play') { 
-            player.play(); 
-        }
-        if (player.myname == 'flowplayer') {
-            setTimeout(function() { player.seek(pos) }, 1000); // give fp time to reload
-        }
-        $(player.player).width(player.width).height(player.height);
-        if (player.config.controls == true
-            || player.config.controls.indexOf('top') == -1
-            || player.myname.indexOf('cortado') > -1) {
-            $(player.player).attr('height', player.height).attr('width', player.width);
-            $(player.div).width(player.width).height( parseInt(player.height) + $(player.ctrls).height() ).css('margin-left', half);
+        if ($(player.div).is('.fullscreen')) {
+            player.origoverflow = document.documentElement.style.overflow;
+            document.documentElement.style.overflow = 'hidden';
+
+            // new dimensions
+            var controls_width = $(player.div).first('div.controls').width();
+            $(player.div).width('100%').height('100%');
+            player.width = $(window).width();
+            if (player.ctrlspos == 'top') {
+                player.height = $(window).height();
+            } else {
+                player.height = $(player.div).height() - $(player.div).find('div.controls').height();
+            }
+            $(player.player).width(player.width).height(player.height);
+            $(player.div).find('div.controls').css('margin-left', Math.round( (player.width - controls_width) / 2) + 'px');
+            
+            // 'hide' other media players (display:hidden; often disables them)
+            $('div.oiplayer').not('.fullscreen').css('margin-left', '-9999px');
+            
         } else {
-            $(player.div).width(player.width).height(player.height).css('margin-left', half);
-            $(player.player).attr('height', player.height).attr('width', player.width);
+            $('div.oiplayer').css('margin-left', '0');    // show other mediaplayers again
+            document.documentElement.style.overflow = player.origoverflow;
+            
+            // reset dimensions
+            player.width = player.owidth;
+            player.height = player.oheight;
+            $(player.player).width(player.width).height(player.height);
+            
+            $(player.div).find('div.controls').css('margin-left', '0');
+            if (player.ctrlspos == 'top') {
+                $(player.div).width(player.width).height(player.height);
+            } else {
+                $(player.div).width(player.width).height(player.height + $(player.div).find('div.controls').height());
+            }
+            
         }
 
+        // flash stuff
+        if (player.myname == 'flowplayer') {
+            player.create(fp_id, player.url, player.config);    // recreate fp with id
+            setTimeout(function() { player.seek(pos) }, 1000);  // give fp time to reload
+            if (player.state == 'play') { player.play(); }
+        }
     }
     
     /* 
@@ -320,9 +309,9 @@ jQuery.fn.oiplayer = function(settings) {
     
     /* 
      * Selects which player to use and returns a proposal.type and proposal.url. 
-     * Adapt this to change the prefered order, here the order is: video, cortado, msie_cortado flash.
+     * Adapt this to change the prefered order, here the order is: video/audio, cortado, msie_cortado, flash.
      * @param el    video or audio element
-     * @param types mimetypes
+     * @param types mimetype (and codec) attributes
      * @param urls  media links
      */
     function selectPlayer(el, types, urls) {
@@ -433,19 +422,20 @@ jQuery.fn.oiplayer = function(settings) {
     }
         
     function createControls() {
-        var agent = navigator.userAgent.toLowerCase(); 
         var html;
-        if (agent.indexOf('iphone') > -1 || agent.indexOf('ipod') > -1) {
-            // sorry about this :-( could not find a suitable abilities check
+        if (isIphone()) {
             html = '<div class="controls"><ul class="controls">' + 
                       '<li class="play"><a title="play" href="#play">play</a></li>' +
                       '<li class="position">00:00</li>' +
+                      '<li class="slider"><div class="slider"><div> </div></div></li>' +
+                      '<li class="timeleft">-00:00</li>' +
                    '</ul></div>';
         } else {
             html = '<div class="controls"><ul class="controls">' + 
                       '<li class="play"><a title="play" href="#play">play</a></li>' +
                       '<li class="position">00:00</li>' +
                       '<li class="slider"><div class="slider"><div> </div></div></li>' +
+                      '<li class="timeleft">-00:00</li>' +
                       '<li class="sound"><a title="mute" href="#sound">mute</a></li>' + 
                       '<li class="screen"><a title="fullscreen" href="#fullscreen">fullscreen</a></li>' + 
                    '</ul></div>';
@@ -469,6 +459,14 @@ jQuery.fn.oiplayer = function(settings) {
             }
         }
         return attributes;
+    }
+    
+    /* sorry about these :-( could not find suitable abilities checks */
+    function isIphone() {   // iPhone and iPod act the same 
+    	return navigator.userAgent.match(/iPhone|iPod/i) != null;
+    }
+    function isIpad() {
+    	return navigator.userAgent.match(/iPad/i) != null;
     }
 
     return this; // plugin convention
@@ -534,12 +532,16 @@ $.oiplayer = {
         }        
     },
     
+    /* 
+     * Can come in handy in stead of using 'console.log("bla")' in some browsers,
+     * f.e.: '$.oiplayer.msg(this.player, "Play: " + this.url)'.
+     */
     msg: function(player, msg) {
-        $('<div class="oiplayerinfo"></div>').text(msg).hide().appendTo(player.div).fadeIn();
+        $('<div class="oiplayerinfo"></div>').text(msg).insertAfter(player.div).hide().fadeIn();
     },
     
     /* 
-     * Returns div the player is wrapped in
+     * Returns time left formatted as 00:00
      */
     totime: function (pos) {
         function toTime(sec) {
@@ -577,7 +579,7 @@ Player.prototype.mute = function() { }
 Player.prototype.play = function() { }
 Player.prototype.pause = function() { }
 Player.prototype.position = function() { }
-Player.prototype.seek = function(p) { }
+Player.prototype.seek = function(pos) { }
 Player.prototype.info = function() { }
 
 Player.prototype._init = function(el, url, config) {
@@ -616,7 +618,7 @@ MediaPlayer.prototype.init = function(el, url, config) {
                 /* bug in FF 3.5? still NaN after durationchange */
                 if (!isNaN(self.player.duration) && self.player.duration > 0) {
                     self.duration = self.player.duration;
-                }   
+                }
             }, false);
         this.player.addEventListener("playing", 
             function(ev) {
@@ -656,8 +658,10 @@ MediaPlayer.prototype.pause = function() {
 MediaPlayer.prototype.mute = function() {
     if (this.player.muted) {
         this.player.muted = false;
+        //this.player.volume = 1.0;
     } else {
         this.player.muted = true;
+        //this.player.volume = 0;
     }
 }
 MediaPlayer.prototype.position = function() {
