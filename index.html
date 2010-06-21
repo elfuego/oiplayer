@@ -12,7 +12,7 @@
   $(document).ready(function() {
       $('body.oiplayer-example').oiplayer({
           server : 'http://www.openimages.eu', /* msie (or java) has issues with just a dir */
-          jar : '/oiplayer/cortado-ovt-stripped-wm_r38710.jar',
+          jar : '/oiplayer/plugins/cortado-ovt-stripped-wm_r38710.jar',
           flash : '/oiplayer/plugins/flowplayer-3.1.5.swf',
           controls : 'top'
       });
@@ -111,8 +111,7 @@ $(document).ready(function() {
     <li>
       OIPlayer has a fallback mechanism that can be made to work 
       by installing <a href="http://www.flowplayer.org">Flowplayer</a> and 
-      <a href="http://en.wikipedia.org/wiki/Cortado_%28software%29">Cortado</a>
-      (<a href="http://downloads.xiph.org/releases/cortado/?C=M;O=D">download</a>). 
+      <a href="http://www.theora.org/cortado/">Cortado</a>. 
       Flowplayer needs the Flash plugin and plays h.264, flv and mp4. 
       Cortado is a Java applet that plays Ogg video and audio (ogv, oga).
       <ul>
