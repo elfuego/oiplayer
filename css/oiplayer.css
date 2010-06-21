@@ -10,7 +10,7 @@ div.oiplayer
 	position: relative;
 	margin: 0;
 	padding: 0;
-	background-color: #000;
+	background-color: #c00;
 }
 
 div.oiplayer.fullscreen
@@ -63,12 +63,22 @@ div.oiplayer > div.player
 div.oiplayer > div.controls
 {
 	position: absolute;
-	bottom: 0;
+	bottom: 10px;
 	left: 0;
-	height: 25px;
+	height: 28px;
+	margin: 0 10px;
+	padding-top: 3px;
+	width: 300px;
+	max-width: 640px;
+	color: #555;
+	background-color: #fff;
+	/* border-radius: 2px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5); */
+	-webkit-border-radius: 2px;
+	-webkit-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
+	-moz-border-radius: 2px;
+	-moz-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
 	z-index: 19;
-	margin: 0;
-	padding: 0;
 }
 
 div.oiplayer > div.player > audio
@@ -93,22 +103,13 @@ div.oiplayer > img.preview { }
 div.oiplayer > div.preview.video { background: url(images/preview_video.png) left top repeat; }
 div.oiplayer > div.preview.audio { background: url(images/preview_audio.png) left top repeat; }
 
-div.oiplayer.audio, #msie_cortadoplayer_oiplayer
-{
-/*
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	z-index: 8;
-*/
-}
 
 /* controls */
 div.oiplayer ul.controls
 {
 	margin: 0;
 	padding: 0;
-	height: 23px;
+	height: 28px;
 	list-style: none;
 	display: inline;
 	overflow: hidden;
@@ -131,42 +132,17 @@ div.oiplayer ul.controls a
 }
 
 div.oiplayer ul.controls a:hover { background-position: 0 -25px; }
+div.oiplayer a { outline: none; }
 
 div.oiplayer ul.controls li.play a
 {
 	background-image: url(images/controls-play.png);
 	width: 21px;
-	margin-left: 2px;
+	margin-left: 6px;
 	float: left;
 }
 
-div.oiplayer ul.controls li.play.pause a
-{
-	background-image: url(images/controls-pause.png);
-	width: 21px;
-	margin-left: 2px;
-	float: left;
-}
-
-div.oiplayer ul.controls li.position,
-div.oiplayer ul.controls li.timeleft
-{
-	float: left;
-	font-family: Monaco, "Courier New", monospaced;
-	font-size: 10px;
-	line-height: 26px;
-	color: #555;
-	text-align: right;
-	font-weight: normal;
-}
-div.oiplayer ul.controls li.position
-{
-	width: 36px;
-}
-div.oiplayer ul.controls li.timeleft
-{
-	width: 42px;
-}
+div.oiplayer ul.controls li.play.pause a { background-image: url(images/controls-pause.png); }
 
 div.oiplayer ul.controls li.sound a
 {
@@ -174,125 +150,124 @@ div.oiplayer ul.controls li.sound a
 	background-image: url(images/controls-soundon.png);
 	background-repeat: no-repeat;
 	width: 23px;
-	margin-right: 5px;
+	margin-right: 7px;
 }
 
-div.oiplayer ul.controls li.sound.muted a
-{
-	float: right;
-	background-image: url(images/controls-soundoff.png);
-	background-repeat: no-repeat;
-	width: 23px;
-}
+div.oiplayer ul.controls li.sound.muted a { background-image: url(images/controls-soundoff.png); }
 
 div.oiplayer ul.controls li.screen a
 {
 	float: right;
 	background-image: url(images/controls-fullscreen.png);
-	background-repeat: no-repeat;
 	width: 23px;
-	margin-right: 5px;
+	margin-right: 7px;
 }
 
-div.oiplayer div.oiplayerinfo
-{
-	font-size: xx-small;
-	margin-top: 4px;
-	padding: 2px;
-	background-color: #efffef;
-	position: absolute;
-	bottom: -24px;
-	left: 0;
-	z-index: 225;
-}
 
 /* ### slider, jquery-ui etc. ### */
-div.oiplayer div.controls li.slider
+
+div.oiplayer > div.controls li.position > div.time,
+div.oiplayer > div.controls li.position > div.timeleft
 {
 	float: left;
-    margin-left: 0px;
-	background: url(images/slider11-left.png) left -50px no-repeat;
-	padding-left: 9px;
+	font-family: Monaco, "Courier New", monospaced;
+	font-size: 10px;
+	line-height: 26px;
+	text-align: center;
+	font-weight: normal;
 }
 
-div.oiplayer div.controls li.slider div.slider div.ui-slider
+div.oiplayer ul.controls li.position > div.time
+{
+	width: 40px;
+	margin-right: 2px;
+}
+div.oiplayer ul.controls li.position > div.timeleft
+{
+	width: 46px;
+	margin-left: 4px;
+}
+
+div.oiplayer ul.controls div.sliderwrap
+{
+	background: url(images/slider11-left.png) left -50px no-repeat;
+	width: 110px;
+	float: left;
+	padding-left: 8px;
+}
+
+div.oiplayer ul.controls div.ui-slider
 {
 	border: 0;
 	width: 100%;
 	background: url(images/slider11-long.png) right -25px no-repeat;
-	height: 25px;
+	height: 32px;
 }
 
-div.oiplayer div.controls .ui-slider { position: relative; }
-div.oiplayer div.controls .ui-slider-horizontal .ui-slider-handle { top: 0; }
+div.oiplayer ul.controls .ui-slider { position: relative; }
+div.oiplayer ul.controls .ui-slider-horizontal .ui-slider-handle { top: 0; }
 
-div.oiplayer div.controls .ui-slider .ui-slider-handle
+div.oiplayer ul.controls .ui-slider .ui-slider-handle
 {
 	cursor: pointer;
-	height: 25px;
+	height: 32px;
 	position: absolute;
 	width: 14px;
 	z-index: 2;
 }
-div.oiplayer div.controls a.ui-slider-handle:hover { background-position: 0 -100px; }
+div.oiplayer ul.controls a.ui-slider-handle:hover { background-position: 0 -100px; }
 
-div.oiplayer div.controls li.slider div.ui-slider-range
+div.oiplayer ul.controls div.ui-slider-range
 {
-	height: 25px;
+	height: 32px;
 	background: url(images/slider11-long.png) right -50px no-repeat;
 }
 
-div.oiplayer div.controls .ui-state-default, 
-div.oiplayer .ui-widget-content .ui-state-default
+div.oiplayer ul.controls .ui-state-default, 
+div.oiplayer ul.controls .ui-widget-content .ui-state-default
 {
 	border: 0;
 	background-color: transparent;
 	background: url(images/slider11-pos.png) left -75px no-repeat;
 	margin-left: -9px;
 }
-div.oiplayer div.controls li.changed a.ui-slider-handle:hover { background-position: 0 -100px; }
+div.oiplayer ul.controls li.changed a.ui-slider-handle:hover { background-position: 0 -100px; }
 
-div.oiplayer div.controls li.changed .ui-state-default, 
-div.oiplayer div.controls li.changed .ui-widget-content .ui-state-default { background: url(images/slider11-pos.png) left -75px no-repeat; }
+div.oiplayer ul.controls li.changed .ui-state-default, 
+div.oiplayer ul.controls li.changed .ui-widget-content .ui-state-default { background: url(images/slider11-pos.png) left -75px no-repeat; }
 
-div.oiplayer div.controls .ui-state-default:focus, 
-div.oiplayer div.controls .ui-widget-content .ui-state-default:focus { outline: none; } 
+div.oiplayer ul.controls .ui-state-default:focus, 
+div.oiplayer ul.controls .ui-widget-content .ui-state-default:focus { outline: none; } 
 
 /* top */
 div.oiplayer > div.controls.top
 {
-	background-image: url(images/controls-whitie.png);
+/*
+    background-image: url(images/controls-whitie.png);
 	background-repeat: repeat;
+*/
 }
 
 /* white */
-div.oiplayer > div.controls.white {	background-image: url(images/controls-whitie.png); }
+div.oiplayer > div.controls.white {	/*background-image: url(images/controls-whitie.png);*/ }
 
 /* dark (only possible with top really) */
-div.oiplayer div.controls.dark
+div.oiplayer > div.controls.dark
 {
-	/*background-image: url(images/controls-blackbg.png);*/
+	color: #efefef;
 	background-color: #000;
 }
-div.oiplayer div.controls.dark li.position,
-div.oiplayer div.controls.dark li.timeleft { color: #fff; }
 
 div.oiplayer div.controls.dark a { background-position: 0 -50px; }
 div.oiplayer div.controls.dark a:hover { background-position: 0 0; }
-
-div.oiplayer div.controls.dark li.slider { background: url(images/slider11-left.png) left -50px no-repeat; }
-div.oiplayer div.controls.dark li.slider div.slider div.ui-slider { background: url(images/slider11-long.png) right -0px no-repeat; }
-
-div.oiplayer div.controls.dark li.slider div.ui-slider-range { background: url(images/slider11-long.png) right -50px no-repeat; }
-
+div.oiplayer div.controls.dark div.sliderwrap { background: url(images/slider11-left.png) left -50px no-repeat; }
+div.oiplayer div.controls.dark div.ui-slider { background: url(images/slider11-long.png) right -0px no-repeat; }
+div.oiplayer div.controls.dark div.ui-slider-range { background: url(images/slider11-long.png) right -50px no-repeat; }
 div.oiplayer div.controls.dark a.ui-slider-handle { background: url(images/slider11-pos.png) left -75px no-repeat; }
 div.oiplayer div.controls.dark a.ui-slider-handle:hover { background-position: 0 -100px; }
 div.oiplayer div.controls.dark li.changed a.ui-slider-handle:hover { background-position: 0 -100px; }
 div.oiplayer div.controls.dark li.changed .ui-state-default,
 div.oiplayer div.controls.dark li.changed .ui-widget-content .ui-state-default { background-position: left -75px; }
-
-div.oiplayer > div.controls.top ul.controls li.sound a, 
-div.oiplayer > div.controls.top ul.controls li.sound.muted a { margin-right: 8px; }
 
 /* ### inavailable / no compatible sources ### */
 div.oiplayer.video.inavailable { background: url(images/preview_video.png) left top repeat; }
@@ -306,6 +281,18 @@ div.oiplayer.inavailable p
 	margin: 0 auto;
 	padding-top: 32%;
 	font-weight: bold;
+}
+
+div.oiplayer div.oiplayerinfo
+{
+	font-size: xx-small;
+	margin-top: 4px;
+	padding: 2px;
+	background-color: #efffef;
+	position: absolute;
+	bottom: -24px;
+	left: 0;
+	z-index: 225;
 }
 
 /* ### example html ### */

@@ -66,10 +66,8 @@ jQuery.fn.oiplayer = function(settings) {
             
             $(div).width(player.width).height(player.height);
             if (config.controls && player.url != undefined) {
-                $(div).append(createControls());
+                $(div).append(controlsHtml());
                 player.ctrls = $(div).find('div.controls');
-                $(player.ctrls).width(player.width);
-                $(player.ctrls).find('li.slider').width(player.width - 190);
                 
                 if (config.controls != true) {  // we're using classes, append them
                     if (player.myname.indexOf('cortado') > -1 || isIphone() || isIpad()) { // remove top when not compatible
@@ -79,7 +77,9 @@ jQuery.fn.oiplayer = function(settings) {
                     $(player.ctrls).addClass(config.controls);
                     if (config.controls.indexOf('top') > -1) {
                         player.ctrlspos = 'top';
-                        $(player.ctrls).hide();
+                        if (player.type != 'audio' && player.state != 'init') { 
+                            $(player.ctrls).hide(); 
+                        }
                     } else {
                         $(div).height( $(div).height() + $(player.ctrls).height() );
                         player.ctrlspos = 'bottom';
@@ -104,7 +104,7 @@ jQuery.fn.oiplayer = function(settings) {
                 ev.preventDefault();
                 start(pl);
             });
-                
+            
             if (config.controls) {
                 $(pl.ctrls).find('li.play a').click(function(ev) {
                     ev.preventDefault();
@@ -134,48 +134,31 @@ jQuery.fn.oiplayer = function(settings) {
                 });
                 
                 if (pl.duration) {  // else no use
-                    $(pl.ctrls).find("div.slider > div").slider({
-                            animate: true,
-                            range: 'min',
-                            value: (pl.start ? pl.start : 0),
-                            max: Math.round(pl.duration)
-                    });
-                    $(pl.ctrls).find("div.slider > div").bind('slide', function(ev, ui) {
-                        pos(pl, ui.value);
-                    });
-                    $(pl.ctrls).find("div.slider > div").bind('slidechange', function(ev, ui) {
-                        if (ev.originalEvent != undefined && ev.originalEvent.type == "mouseup") { 
-                            pos(pl, ui.value);
-                        }
-                    });
+                    $.oiplayer.slider(pl)
                 }
 
                 // show/hide
-                if (pl.ctrlspos == 'top') {
+                if (pl.ctrlspos == 'top' && pl.type != 'audio') {
                     $(pl.div).hover(
                         function() { 
-                            $(pl.ctrls).fadeIn();
+                            $(pl.ctrls).fadeIn(); 
                         },
                         function() {
-                            $(pl.ctrls).fadeOut('slow');
+                            if (pl.state != 'init') { 
+                                $(pl.ctrls).fadeOut('slow'); 
+                            }
                         }
                     );
                 }
             } // config.controls
+
+            $(pl.div).bind("oiplayerended", function(ev, pl) {
+                $(pl.ctrls).fadeIn('slow');
+            });
+            
         });
     });
     
-    function pos(player, pos) {
-        player.seek(pos);
-        $(player.ctrls).find('li.position').text( $.oiplayer.totime(pos) );
-        $(player.ctrls).find('li.timeleft').text('-' + $.oiplayer.totime(player.duration - pos) );
-        if (pos > 0) {
-            $(player.ctrls).find('li.slider').addClass("changed");
-        } else {
-            $(player.ctrls).find('li.slider').removeClass("changed");
-        }
-    }
-
     /* Mainly user interface stuff on first start of playing */
     function start(player) {
         if (player.type == 'video') {
@@ -185,7 +168,7 @@ jQuery.fn.oiplayer = function(settings) {
         }
 
         player.play();
-        $(player.div).trigger("oiplayerstart", [player]);
+        $(player.div).trigger("oiplayerplay", [player]);
         if (player.config.controls) {
             var timer = $(player.ctrls).find('li.position');
             if ($(player.ctrls).find('li.pause').length == 0) {
@@ -219,7 +202,6 @@ jQuery.fn.oiplayer = function(settings) {
             document.documentElement.style.overflow = 'hidden';
 
             // new dimensions
-            var controls_width = $(player.div).first('div.controls').width();
             $(player.div).width('100%').height('100%');
             player.width = $(window).width();
             if (player.ctrlspos == 'top') {
@@ -227,10 +209,14 @@ jQuery.fn.oiplayer = function(settings) {
             } else {
                 player.height = $(player.div).height() - $(player.div).find('div.controls').height();
             }
+            
             $(player.player).width(player.width).height(player.height);
+            
+            // controls
+            var controls_width = controlsWidth(player);
             $(player.div).find('div.controls').css('margin-left', Math.round( (player.width - controls_width) / 2) + 'px');
             
-            // 'hide' other media players (display:hidden; often disables them)
+            // 'hide' other media players (display:hidden often disables them)
             $('div.oiplayer').not('.fullscreen').css('margin-left', '-9999px');
             
         } else {
@@ -242,7 +228,10 @@ jQuery.fn.oiplayer = function(settings) {
             player.height = player.oheight;
             $(player.player).width(player.width).height(player.height);
             
-            $(player.div).find('div.controls').css('margin-left', '0');
+            // reposition controls
+            controlsWidth(player);
+            $(player.div).find('div.controls').css('margin-left', '');
+            
             if (player.ctrlspos == 'top') {
                 $(player.div).width(player.width).height(player.height);
             } else {
@@ -421,26 +410,38 @@ jQuery.fn.oiplayer = function(settings) {
         }
     }
         
-    function createControls() {
+    function controlsHtml() {
         var html;
         if (isIphone()) {
             html = '<div class="controls"><ul class="controls">' + 
                       '<li class="play"><a title="play" href="#play">play</a></li>' +
-                      '<li class="position">00:00</li>' +
-                      '<li class="slider"><div class="slider"><div> </div></div></li>' +
-                      '<li class="timeleft">-00:00</li>' +
+                      '<li class="position">' +
+                        '<div class="time">00:00</div>' +
+                        '<div class="sliderwrap"><div class="slider"><div> </div></div></div>' +
+                        '<div class="timeleft">-00:00</div>' +
+                      '</li>' +
                    '</ul></div>';
         } else {
             html = '<div class="controls"><ul class="controls">' + 
                       '<li class="play"><a title="play" href="#play">play</a></li>' +
-                      '<li class="position">00:00</li>' +
-                      '<li class="slider"><div class="slider"><div> </div></div></li>' +
-                      '<li class="timeleft">-00:00</li>' +
+                      '<li class="position">' +
+                        '<div class="time">00:00</div>' +
+                        '<div class="sliderwrap"><div class="slider"><div> </div></div></div>' +
+                        '<div class="timeleft">-00:00</div>' +
+                      '</li>' +
                       '<li class="sound"><a title="mute" href="#sound">mute</a></li>' + 
                       '<li class="screen"><a title="fullscreen" href="#fullscreen">fullscreen</a></li>' + 
                    '</ul></div>';
         }
         return html;
+    }
+
+    function controlsWidth(player) {
+        var controls_width = player.width - 20;
+        if (controls_width > 620) { controls_width = 620; }
+        $(player.ctrls).width(controls_width);
+        $(player.ctrls).find('div.sliderwrap').width(controls_width - 190);
+        return controls_width;
     }
     
     /*
@@ -497,28 +498,65 @@ $.oiplayer = {
                 //sec = Math.floor(pos);
                 //console.log("n: " + now + ", s: " + sec + ", pos: " + pos);
                 if (!isNaN(pos) && pos > 0 && pos != now) {
-                    $(player.ctrls).find('li.position').text( $.oiplayer.totime(pos) );
                     $(player.ctrls).find('div.slider > div').slider('option', 'value', pos);
-                    $(player.ctrls).find('li.slider').addClass('changed');
+                    $(player.ctrls).find('li.position').addClass('changed');
                     
                     //console.log("left: " + left);
                     if (player.duration > 0) {
                         left = player.duration - pos;
-                        $(player.ctrls).find('li.timeleft').text("-" + $.oiplayer.totime(left));
+                        $(player.ctrls).find('div.timeleft').text("-" + $.oiplayer.totime(left));
                     }
+                    $(player.ctrls).find('div.time').text( $.oiplayer.totime(pos) );
                     
                     i = 0;
                     now = pos;
                 }
-                if (pos < 1) { $(player.ctrls).find('li.slider').removeClass('changed'); }
+                if (pos < 1) { $(player.ctrls).find('li.position').removeClass('changed'); }
                 if (now == pos) { i++; }
-                if (i > 9) {
-                    //console.log("stopped after " + (i * 0.2) + " seconds.");
-                    player.pause(); // maybe stop?
+                if (i > 4) {
+                    //console.log("stopped after " + (i * 0.5) + " seconds.");
+                    if (pos >= player.duration && player.state != 'ended') {
+                        player.state = 'ended';
+                        $(player.div).trigger("oiplayerended", [player]);
+                    }
                     clearInterval(progress);
                     return;
                 }
             }, 200);
+    },
+    
+    /* 
+     * Add slider aka scrobbler
+     */
+    slider: function(player) {
+        $(player.ctrls).find("div.slider > div").slider({
+                animate: true,
+                range: 'min',
+                value: (player.start ? player.start : 0),
+                max: Math.round(player.duration)
+        });
+        $(player.ctrls).find("div.slider > div").bind('slide', function(ev, ui) {
+            $.oiplayer.position(player, ui.value);
+        });
+        $(player.ctrls).find("div.slider > div").bind('slidechange', function(ev, ui) {
+            if (ev.originalEvent != undefined && ev.originalEvent.type == "mouseup") { 
+                $.oiplayer.position(player, ui.value);
+            }
+        });
+    },
+    
+    /* 
+     * Updates slider position
+     */
+    position: function(player, pos) {
+        player.seek(pos);
+        $(player.ctrls).find('div.time').text( $.oiplayer.totime(pos) );
+        $(player.ctrls).find('div.timeleft').text('-' + $.oiplayer.totime(player.duration - pos) );
+        if (pos > 0) {
+            $(player.ctrls).find('li.position').addClass("changed");
+        } else {
+            $(player.ctrls).find('li.position').removeClass("changed");
+        }
     },
     
     /* 
@@ -541,7 +579,7 @@ $.oiplayer = {
     },
     
     /* 
-     * Returns time left formatted as 00:00
+     * Returns time formatted as 00:00
      */
     totime: function (pos) {
         function toTime(sec) {
@@ -598,7 +636,7 @@ Player.prototype._init = function(el, url, config) {
     this.width  = $(this.player).attr('width') > 0 ? parseInt($(this.player).attr('width')) : 320;
     this.height = $(this.player).attr('height') > 0 ? parseInt($(this.player).attr('height')) : 240;
     this.state = 'init';
-    this.pos = 0;
+    //this.pos = 0;
     
     //return this.player;
 }
@@ -614,10 +652,10 @@ MediaPlayer.prototype.init = function(el, url, config) {
         var self = this;
         this.player.addEventListener("durationchange", 
             function(ev) {
-                //console.log("durationchange: " + self.player.duration);
-                /* bug in FF 3.5? still NaN after durationchange */
                 if (!isNaN(self.player.duration) && self.player.duration > 0) {
                     self.duration = self.player.duration;
+                    $.oiplayer.msg(self, "found duration: " + self.duration);
+                    $.oiplayer.slider(self);
                 }
             }, false);
         this.player.addEventListener("playing", 
@@ -641,7 +679,10 @@ MediaPlayer.prototype.init = function(el, url, config) {
             }, false);
         this.player.addEventListener("ended", 
             function(ev) {
-                self.state = 'ended';
+                if (self.state != 'ended') { 
+                    self.state = 'ended';
+                    $(self.div).trigger("oiplayerended", [self]); 
+                }
                 $(self.div).find('li.play').removeClass('pause');
             }, false);
     }
@@ -741,9 +782,13 @@ CortadoPlayer.prototype.pause = function() {
     this.pos = this.player.getPlayPosition();
     this.player.doPause();
     this.state = 'pause';
-//     try {
-//         this.player.doStop();
-//     } catch(err) { }
+    if (this.player.position() >= this.duration) {
+        this.state = 'ended';
+        $(this.div).trigger("oiplayerended", [this]);
+        try {
+            this.player.doStop();
+        } catch(err) { }
+    }
 }
 CortadoPlayer.prototype.mute = function() {
     $.oiplayer.msg(this, "Sorry. Cortado currently does not support changing volume with Javascript.");
@@ -860,8 +905,11 @@ FlowPlayer.prototype.create = function(el, url, config) {
             self.state = 'play';
         });
         clip.onFinish(function() {
+            if (self.state != 'ended') {
+                self.state = 'ended';
+                $(self.div).trigger("oiplayerended", [self]);
+            }
             $(self.div).find('li.play').removeClass('pause');
-            self.state = 'ended';
         });
     }
     return this.player;

@@ -7,8 +7,17 @@
   <script src="js/jquery-ui-1.7.2.slider.min.js" type="text/javascript"><!-- help ie --></script>
   <script src="plugins/flowplayer-3.1.4.min.js" type="text/javascript"><!-- help ie --></script>
   <script src="js/jquery.oiplayer.js" type="text/javascript"><!-- help ie --></script>
-  <script src="js/play.js" type="text/javascript"><!-- help ie --></script>
   <link href="css/oiplayer.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript">
+  $(document).ready(function() {
+      $('body.oiplayer-example').oiplayer({
+          server : 'http://www.openimages.eu', /* msie (or java) has issues with just a dir */
+          jar : '/oiplayer/cortado-ovt-stripped-wm_r38710.jar',
+          flash : '/oiplayer/plugins/flowplayer-3.1.5.swf',
+          controls : 'top'
+      });
+  });
+  </script>
 </head>
 <body class="oiplayer-example">
 
@@ -47,14 +56,20 @@ $(document).ready(function() {
       Fallback to <a href="http://www.flowplayer.org">Flowplayer</a> (mp4, h.264) 
       or <a href="http://en.wikipedia.org/wiki/Cortado_%28software%29">Cortado</a> (oga, ogv)
     </li>
-    <li>Play/pause button</li>
-    <li>Mute/unmute button</li>
-    <li>Full 'screen' button (full window really)</li>
+    <li>Easy to use and implement</li>
+    <li>Consistent look between browsers, even with fallback</li>
+    <li>Multiple different players on a page</li>
+    <li>Play/pause</li>
+    <li>Mute/unmute</li>
+    <li>Full 'screen' (full window really)</li>
     <li>
-      Slider controllable with arrow keys 
+      Slider, controllable with arrow keys 
       (requires <a href="http://jqueryui.com/demos/slider/">jquery.ui.slider.js</a>)
     </li>
-    <li>iPhone compatible (play works, but other controls are of no use).</li>
+    <li>Dark and white controls, on top or below player</li>
+    <li>Easily skinnable with css</li>
+    <li>iPhone (play works, but other controls are of no use) and iPad compatible</li>
+    <li>Fires events: 'oiplayerplay' and 'oiplayerended'.
   </ul>
   <h3>Supported browsers</h3>
   <ul>
@@ -62,7 +77,7 @@ $(document).ready(function() {
     <li>Google Chrome (v5.0+)</li>
     <li>Firefox (v3.5+)</li>
     <li>Internet Explorer (v6.0+) with Flash or Java installed</li>
-    <li>And maybe some untested others with HTML5 support,  Flash or Java installed</li>
+    <li>And maybe some untested others with HTML5 support, Flash or Java installed</li>
   </ul>
   <p>
     OIPlayer is part of the <a href="http://www.openimages.eu/source">Open Images Platform</a> 
@@ -136,6 +151,16 @@ $(document).ready(function() {
 &lt;video class="oip_ea_duration_101 oip_ea_start_0"&gt;
   ... source tags here ...
 &lt;/video&gt;      
+</pre>
+    Besides these you can identify your player with an unique id f.e. with 'oip_ea_id_myid123', which
+    is registered in 'player.id'. This can be usefull for example to track the number of plays of 
+    a media item. OIPlayer fires two events to this effect: 'oiplayerplay' and 'oiplayerended', f.e.:
+<pre>
+$(document).ready(function() {
+    $('div.oiplayer').bind("oiplayerplay", function(ev, player) {
+        alert("I started playing: " + player.id);
+    }
+}
 </pre>
     </li>
     <li>To have MSIE detect Java support you need this div somewhere (just once) in your page:
