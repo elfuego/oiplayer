@@ -10,7 +10,6 @@ div.oiplayer
 	position: relative;
 	margin: 0;
 	padding: 0;
-	background-color: #c00;
 }
 
 div.oiplayer.fullscreen
@@ -24,6 +23,7 @@ div.oiplayer.fullscreen
 	z-index: 1000;
 	width: 100%;
 	height: 100%;
+	background-color: #000;
 }
 
 div.oiplayer.fullscreen > div.player
@@ -248,25 +248,12 @@ div.oiplayer ul.controls li.changed .ui-widget-content .ui-state-default { backg
 div.oiplayer ul.controls .ui-state-default:focus, 
 div.oiplayer ul.controls .ui-widget-content .ui-state-default:focus { outline: none; } 
 
-/* top */
-div.oiplayer > div.controls.top
-{
-/*
-    background-image: url(images/controls-whitie.png);
-	background-repeat: repeat;
-*/
-}
-
-/* white */
-div.oiplayer > div.controls.white {	/*background-image: url(images/controls-whitie.png);*/ }
-
-/* dark (only possible with top really) */
+/* dark  */
 div.oiplayer > div.controls.dark
 {
 	color: #efefef;
 	background-color: #000;
 }
-
 div.oiplayer div.controls.dark a { background-position: 0 -50px; }
 div.oiplayer div.controls.dark a:hover { background-position: 0 0; }
 div.oiplayer div.controls.dark div.sliderwrap { background: url(images/slider11-left.png) left -50px no-repeat; }
