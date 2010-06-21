@@ -88,6 +88,8 @@ jQuery.fn.oiplayer = function(settings) {
                     $(div).height( $(div).height() + $(player.ctrls).height() );
                     player.ctrlspos = 'bottom';
                 }
+                
+                controlsWidth(player);
             }
             if (player.url == undefined) {  // no compatible sources to play
                 $(div).addClass('inavailable');
@@ -437,7 +439,11 @@ jQuery.fn.oiplayer = function(settings) {
     }
 
     function controlsWidth(player) {
-        var controls_width = player.width - 20;
+        if (player.ctrlspos == 'top') {
+            var controls_width = player.width - 20;
+        } else {
+            var controls_width = player.width;        
+        }
         if (controls_width > 620) { controls_width = 620; }
         $(player.ctrls).width(controls_width);
         $(player.ctrls).find('div.sliderwrap').width(controls_width - 190);
