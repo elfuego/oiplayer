@@ -61,10 +61,12 @@ jQuery.fn.oiplayer = function(settings) {
                 $(div).find('div.player').append(player.player);
             }
             
-            var poster = createPoster(div, player);
-            $(div).prepend(poster);
             
             $(div).width(player.width).height(player.height);
+            
+            var poster = createPoster(div, player);
+            $(div).prepend(poster);
+
             if (config.controls && player.url != undefined) {
                 $(div).append(controlsHtml());
                 player.ctrls = $(div).find('div.controls');
@@ -95,7 +97,7 @@ jQuery.fn.oiplayer = function(settings) {
                 $(div).addClass('inavailable');
                 $(div).append('<p>No compatible source found to play.</p>');
             }
-            //$.oiplayer.msg(player, player.info);
+            $.oiplayer.msg(player, player.info);
             players.push(player);
 
         }); // end for each
@@ -405,8 +407,8 @@ jQuery.fn.oiplayer = function(settings) {
             $(img).remove();
         }
         if (!src) {
-            //return '<div class="preview ' + player.type + '" style="width:' + player.width + 'px;height:' + player.height + 'px;"></div>'
-            return "";
+            return '<div class="preview ' + player.type + '" style="width:' + player.width + 'px;height:' + player.height + 'px;"></div>'
+            //return "";
         } else {
             return '<img class="preview ' + player.type + '" src="' + src + '" width="' + player.width + '" height="' + player.height + '" alt="click to play" title="click to play" />';
         }
@@ -658,7 +660,7 @@ MediaPlayer.prototype.init = function(el, url, config) {
         var self = this;
         this.player.addEventListener("durationchange", 
             function(ev) {
-                if (!isNaN(self.player.duration) && self.player.duration > 0) {
+                if (!isNaN(self.player.duration) && self.player.duration > 0 && self.player.duration != 'Infinity') {
                     self.duration = self.player.duration;
                     $.oiplayer.msg(self, "found duration: " + self.duration);
                     $.oiplayer.slider(self);
