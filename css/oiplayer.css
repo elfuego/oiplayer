@@ -45,12 +45,23 @@ div.oiplayer.fullscreen > div.controls
 	margin: 0 auto;
 }
 
-div.oiplayer audio, div.oiplayer video, div.oiplayer object, div.oiplayer embed 
+div.oiplayer video, div.oiplayer object, div.oiplayer embed 
 {
 	display: block;
 	margin: 0;
 	padding: 0;
 	border: 0;
+}
+
+div.oiplayer audio
+{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	display: block;
+	margin: 0;
+	padding: 0;
+	width: 100%;    /* not sure about this */
 }
 
 div.oiplayer > div.player
@@ -62,6 +73,8 @@ div.oiplayer > div.player
 	padding: 0;
 	z-index: 10;
 }
+
+div.oiplayer.audio > div.player { bottom: 0; }
 
 div.oiplayer > div.controls
 {
@@ -88,16 +101,6 @@ div.oiplayer > div.controls.top
 	-moz-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
 	border-radius: 2px;
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
-}
-
-div.oiplayer > div.player > audio
-{
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	margin: 0;
-	padding: 0;
-	/*width: 100%;*/        /* not sure about this */
 }
 
 div.oiplayer > .preview
@@ -279,16 +282,15 @@ div.oiplayer.inavailable p
 	font-weight: bold;
 }
 
-div.oiplayer div.oiplayerinfo
+div.oiplayerinfo
 {
 	font-size: xx-small;
-	margin-top: 4px;
 	padding: 2px;
-	background-color: #efffef;
-	position: absolute;
-	bottom: -24px;
-	left: 0;
+	background-color: #efefef;
 	z-index: 225;
+	border-top: 1px solid #bbb;
+	font-family: Monaco, "Courier New", monospaced;
+	overflow: auto;
 }
 
 /* ### example html ### */
