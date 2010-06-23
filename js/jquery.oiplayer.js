@@ -605,7 +605,7 @@ $.oiplayer = {
             time = parseInt(time, 10);
             return time < 10 ? "0" + time : time;
         }
-        return toTime(pos);
+        return toTime(Math.floor(pos));
     }
 }
 
@@ -662,7 +662,7 @@ MediaPlayer.prototype.init = function(el, url, config) {
             function(ev) {
                 if (!isNaN(self.player.duration) && self.player.duration > 0 && self.player.duration != 'Infinity') {
                     self.duration = self.player.duration;
-                    $.oiplayer.msg(self, "found duration: " + self.duration);
+                    $.oiplayer.msg(self, "set duration: " + self.duration);
                     $.oiplayer.slider(self);
                 }
             }, false);
