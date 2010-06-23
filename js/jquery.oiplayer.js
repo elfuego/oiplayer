@@ -68,7 +68,7 @@ jQuery.fn.oiplayer = function(settings) {
             $(div).prepend(poster);
 
             if (config.controls && player.url != undefined) {
-                $(div).append(controlsHtml());
+                $(div).append(controlsHtml(player));
                 player.ctrls = $(div).find('div.controls');
                 
                 if (config.controls != true) {  // we're using classes, append them
@@ -414,7 +414,7 @@ jQuery.fn.oiplayer = function(settings) {
         }
     }
         
-    function controlsHtml() {
+    function controlsHtml(player) {
         var html;
         if (isIphone()) {
             html = '<div class="controls"><ul class="controls">' + 
@@ -434,7 +434,7 @@ jQuery.fn.oiplayer = function(settings) {
                         '<div class="timeleft">-00:00</div>' +
                       '</li>' +
                       '<li class="sound"><a title="mute" href="#sound">mute</a></li>' + 
-                      '<li class="screen"><a title="fullscreen" href="#fullscreen">fullscreen</a></li>' + 
+                      (player.type == 'video' ? '<li class="screen"><a title="fullscreen" href="#fullscreen">fullscreen</a></li>' : '') + 
                    '</ul></div>';
         }
         return html;
