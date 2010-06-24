@@ -38,8 +38,10 @@ jQuery.fn.oiplayer = function(settings) {
         flash : '/oiplayer/plugins/flowplayer-3.1.5.swf',
         controls : true
     };
+    
     if (settings) $.extend(config, settings);
-    var self = this;
+    
+    var current = this;
     var players = new Array();
     this.each(function() {
         var mediatags = $(this).find('video, audio');
@@ -48,7 +50,7 @@ jQuery.fn.oiplayer = function(settings) {
             if (sources.length == 0) {
                 //alert("no sources found in mediatag, will use first available");
                 /* at least this works in MSIE (and other browsers that don't know html5 video or audio ?) */
-                sources = $(self).find('source');
+                sources = $(current).find('source');
             }
             
             $(mt).wrap('<div class="oiplayer"><div class="player"></div></div>');
@@ -60,7 +62,6 @@ jQuery.fn.oiplayer = function(settings) {
                 $(div).find('div.player').empty();
                 $(div).find('div.player').append(player.player);
             }
-            
             
             $(div).width(player.width).height(player.height);
             
@@ -101,66 +102,66 @@ jQuery.fn.oiplayer = function(settings) {
             players.push(player);
 
         }); // end for each
-        
-        /* html ready, bind controls */
-        $.each(players, function(i, pl) {
-            $(pl.div).find('.preview').click(function(ev) {
-                ev.preventDefault();
-                start(pl);
-            });
-            
-            if (config.controls) {
-                $(pl.ctrls).find('li.play a').click(function(ev) {
-                    ev.preventDefault();
-                    if (pl.state == 'pause') {
-                        pl.play();
-                        if ($(pl.ctrls).find('li.pause').length == 0) {
-                            $(pl.ctrls).find('li.play').addClass('pause');
-                        }
-                        $.oiplayer.follow(pl);
-                    } else if (pl.state == 'play') {
-                        pl.pause();
-                        $(pl.ctrls).find('li.play').removeClass('pause');
-                    } else {
-                        start(pl);
-                    }
-                    //console.log("player state: " + pl.state);
-                });
-
-                $(pl.ctrls).find('li.sound a').click(function(ev){
-                    ev.preventDefault();
-                    $(pl.ctrls).find('li.sound').toggleClass('muted');
-                    pl.mute();
-                });
-                $(pl.ctrls).find('li.screen a').click(function(ev){
-                    ev.preventDefault();
-                    fullscreen(pl);
-                });
-                
-                if (pl.duration) {  // else no use
-                    $.oiplayer.slider(pl)
-                }
-
-                // show/hide
-                if (pl.ctrlspos == 'top' && pl.type != 'audio') {
-                    $(pl.div).hover(
-                        function() { 
-                            $(pl.ctrls).fadeIn(); 
-                        },
-                        function() {
-                            if (pl.state != 'init') { 
-                                $(pl.ctrls).fadeOut('slow'); 
-                            }
-                        }
-                    );
-                }
-            } // config.controls
-
-            $(pl.div).bind("oiplayerended", function(ev, pl) {
-                $(pl.ctrls).fadeIn('slow');
-            });
-            
+    });
+    
+    /* html ready, bind controls */
+    $.each(players, function(i, pl) {
+        $(pl.div).find('.preview').click(function(ev) {
+            ev.preventDefault();
+            start(pl);
         });
+        
+        if (config.controls) {
+            $(pl.ctrls).find('li.play a').click(function(ev) {
+                ev.preventDefault();
+                if (pl.state == 'pause') {
+                    pl.play();
+                    if ($(pl.ctrls).find('li.pause').length == 0) {
+                        $(pl.ctrls).find('li.play').addClass('pause');
+                    }
+                    $.oiplayer.follow(pl);
+                } else if (pl.state == 'play') {
+                    pl.pause();
+                    $(pl.ctrls).find('li.play').removeClass('pause');
+                } else {
+                    start(pl);
+                }
+                //console.log("player state: " + pl.state);
+            });
+
+            $(pl.ctrls).find('li.sound a').click(function(ev){
+                ev.preventDefault();
+                $(pl.ctrls).find('li.sound').toggleClass('muted');
+                pl.mute();
+            });
+            $(pl.ctrls).find('li.screen a').click(function(ev){
+                ev.preventDefault();
+                fullscreen(pl);
+            });
+            
+            if (pl.duration) {  // else no use
+                $.oiplayer.slider(pl)
+            }
+
+            // show/hide
+            if (pl.ctrlspos == 'top' && pl.type != 'audio') {
+                $(pl.div).hover(
+                    function() { 
+                        $(pl.ctrls).fadeIn(); 
+                    },
+                    function() {
+                        if (pl.state != 'init') { 
+                            $(pl.ctrls).fadeOut('slow'); 
+                        }
+                    }
+                );
+            }
+        } // config.controls
+
+        $(pl.div).bind("oiplayerended", function(ev, pl) {
+            $(pl.ctrls).fadeIn('slow');
+        });
+        
     });
     
     /* Mainly user interface stuff on first start of playing */
@@ -481,6 +482,7 @@ jQuery.fn.oiplayer = function(settings) {
     return this; // plugin convention
 };
 
+
 //  ------------------------------------------------------------------------------------------------
 //  Global functions
 //  ------------------------------------------------------------------------------------------------
@@ -608,7 +610,6 @@ $.oiplayer = {
         return toTime(Math.floor(pos));
     }
 }
-
 
 
 //  ------------------------------------------------------------------------------------------------
