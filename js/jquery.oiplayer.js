@@ -343,10 +343,18 @@ jQuery.fn.oiplayer = function(settings) {
         if (proposal.type == undefined) {
             var flash_url;
             for (var i = 0; i < types.length; i++) {
-                if (types[i].indexOf("video/mp4") > -1 || types[i].indexOf("video/flv") > -1
+                if (types[i].indexOf("video/flv") > -1) {
+                    proposal.url = urls[i];
+                    proposal.type = "flash";
+                    return proposal;
+                }
+            }
+            for (var i = 0; i < types.length; i++) {
+                if (types[i].indexOf("video/mp4") > -1 
                     /* || types[i].indexOf("video/mpeg") > -1 */ ) {
                     proposal.url = urls[i];
                     proposal.type = "flash";
+                    return proposal;
                 }
             }
         }
@@ -434,7 +442,7 @@ jQuery.fn.oiplayer = function(settings) {
                         '<div class="sliderwrap"><div class="slider"><div> </div></div></div>' +
                         '<div class="timeleft">-00:00</div>' +
                       '</li>' +
-                      '<li class="sound"><a title="mute" href="#sound">mute</a></li>' + 
+                      (isIpad() ? '' : '<li class="sound"><a title="mute" href="#sound">mute</a></li>') + 
                       (player.type == 'video' ? '<li class="screen"><a title="fullscreen" href="#fullscreen">fullscreen</a></li>' : '') + 
                    '</ul></div>';
         }
