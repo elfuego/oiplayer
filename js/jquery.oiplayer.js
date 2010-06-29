@@ -36,7 +36,8 @@ jQuery.fn.oiplayer = function(settings) {
         server : 'http://www.openimages.eu',
         jar : '/oiplayer/cortado-ovt-stripped-wm_r38710.jar',
         flash : '/oiplayer/plugins/flowplayer-3.1.5.swf',
-        controls : true
+        controls : true,
+        log: 'error'
     };
     
     if (settings) $.extend(config, settings);
@@ -94,11 +95,16 @@ jQuery.fn.oiplayer = function(settings) {
                 
                 controlsWidth(player);
             }
+            
             if (player.url == undefined) {  // no compatible sources to play
                 $(div).addClass('inavailable');
                 $(div).append('<p>No compatible source found to play.</p>');
             }
-            $.oiplayer.msg(player, player.info);
+            
+            if (config.log == 'info') {
+                $.oiplayer.msg(player, player.info);
+            }
+            
             players.push(player);
 
         }); // end for each
