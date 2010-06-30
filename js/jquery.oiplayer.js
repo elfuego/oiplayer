@@ -176,7 +176,6 @@ jQuery.fn.oiplayer = function(settings) {
     
     /* Mainly user interface stuff on first start of playing */
     function start(player) {
-        alert('0: start');
         if (player.type == 'video') {
             $(player.div).find('.preview').hide();
         } else {
