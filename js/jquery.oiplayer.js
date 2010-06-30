@@ -927,7 +927,7 @@ FlowPlayer.prototype.create = function(el, url, config) {
         });
         clip.onPause(function() {
             $(self.div).find('li.play').removeClass('pause');
-            self.state = 'pause';
+            //self.state = 'pause';
         });
         clip.onResume(function() {
             $(self.div).find('li.play').addClass('pause');
