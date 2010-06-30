@@ -176,6 +176,7 @@ jQuery.fn.oiplayer = function(settings) {
     
     /* Mainly user interface stuff on first start of playing */
     function start(player) {
+        alert('0: start');
         if (player.type == 'video') {
             $(player.div).find('.preview').hide();
         } else {
@@ -922,8 +923,8 @@ FlowPlayer.prototype.create = function(el, url, config) {
         });
         var clip = this.player.getCommonClip();
         clip.onStart(function() {
-            $(self.div).find('li.play').addClass('pause');
-            self.state = 'play';
+            //$(self.div).find('li.play').addClass('pause');
+            //self.state = 'play';
         });
         clip.onPause(function() {
             $(self.div).find('li.play').removeClass('pause');
