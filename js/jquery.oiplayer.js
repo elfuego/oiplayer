@@ -64,6 +64,10 @@ jQuery.fn.oiplayer = function(settings) {
                 $(div).find('div.player').append(player.player);
             }
             
+            if ($.browser.msie && (player.myname.indexOf('cortado') > -1 || player.myname == 'flowplayer')) {
+                $(div).nextAll('p.oiplayer-warn').first().hide();
+            }
+            
             $(div).width(player.width).height(player.height);
             
             var poster = createPoster(div, player);
@@ -677,7 +681,9 @@ MediaPlayer.prototype.init = function(el, url, config) {
             function(ev) {
                 if (!isNaN(self.player.duration) && self.player.duration > 0 && self.player.duration != 'Infinity') {
                     self.duration = self.player.duration;
-                    $.oiplayer.msg(self, "set duration: " + self.duration);
+                    if (config.log == 'info') {
+                        $.oiplayer.msg(self, "set duration: " + self.duration);
+                    }
                     $.oiplayer.slider(self);
                 }
             }, false);
