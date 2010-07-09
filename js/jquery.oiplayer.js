@@ -39,7 +39,6 @@ jQuery.fn.oiplayer = function(settings) {
         controls : true,
         log: 'error'
     };
-    
     if (settings) $.extend(config, settings);
     
     var current = this;
@@ -52,6 +51,12 @@ jQuery.fn.oiplayer = function(settings) {
                 //alert("no sources found in mediatag, will use first available");
                 /* at least this works in MSIE (and other browsers that don't know html5 video or audio ?) */
                 sources = $(current).find('source');
+            }
+            
+            /* In the next couple of lines the video/audio tag is wrapped in a new div, 
+               this breaks the video tag on iPhone 4 */
+            if (isIphone() && navigator.userAgent.match(/OS 4/i) != null) {
+                return;
             }
             
             $(mt).wrap('<div class="oiplayer"><div class="player"></div></div>');
@@ -264,7 +269,7 @@ jQuery.fn.oiplayer = function(settings) {
     }
     
     /* 
-     * Create player
+     * Creates player based upon selected url
      * @param el        video or audio element
      * @param source    source tags
      * @param config    configuration
@@ -434,18 +439,7 @@ jQuery.fn.oiplayer = function(settings) {
     }
         
     function controlsHtml(player) {
-        var html;
-        if (isIphone()) {
-            html = '<div class="controls"><ul class="controls">' + 
-                      '<li class="play"><a title="play" href="#play">play</a></li>' +
-                      '<li class="position">' +
-                        '<div class="time">00:00</div>' +
-                        '<div class="sliderwrap"><div class="slider"><div> </div></div></div>' +
-                        '<div class="timeleft">-00:00</div>' +
-                      '</li>' +
-                   '</ul></div>';
-        } else {
-            html = '<div class="controls"><ul class="controls">' + 
+        var html = '<div class="controls"><ul class="controls">' + 
                       '<li class="play"><a title="play" href="#play">play</a></li>' +
                       '<li class="position">' +
                         '<div class="time">00:00</div>' +
@@ -455,7 +449,6 @@ jQuery.fn.oiplayer = function(settings) {
                       (isIpad() ? '' : '<li class="sound"><a title="mute" href="#sound">mute</a></li>') + 
                       (player.type == 'video' ? '<li class="screen"><a title="fullscreen" href="#fullscreen">fullscreen</a></li>' : '') + 
                    '</ul></div>';
-        }
         return html;
     }
 
@@ -554,7 +547,7 @@ $.oiplayer = {
     },
     
     /* 
-     * Add slider aka scrobbler
+     * Add slider aka scrubber
      */
     slider: function(player) {
         $(player.ctrls).find("div.slider > div").slider({
@@ -718,6 +711,10 @@ MediaPlayer.prototype.init = function(el, url, config) {
     return this.player;
 }
 MediaPlayer.prototype.play = function() {
+    if (this.player.readyState == '0') {
+        //console.log("loading src: " + this.player.currentSrc);
+        this.player.load();
+    }
     this.player.play();
     this.state = 'play';
 }
