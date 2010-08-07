@@ -231,6 +231,7 @@ jQuery.fn.oiplayer = function(settings) {
             }
             
             $(player.player).width(player.width).height(player.height);
+            $(window).scrollTop(0).scrollLeft(0);
             
             // controls
             var controls_width = controlsWidth(player);
