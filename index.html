@@ -30,13 +30,13 @@
   <video 
     class="oip_ea_duration_101 oip_ea_start_0" 
     width="320" height="240"
-    poster="http://www.openbeelden.nl/images/21857/WEEKNUMMER364-HRE0000D9C6.png">
+    poster="http://www.openimages.eu/images/21857/WEEKNUMMER364-HRE0000D9C6.png">
     <source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/9734.9730.WEEKNUMMER364-HRE0000D9C6.ogv"  />
     <source type="video/mp4; codecs=unknown" src="http://www.openimages.eu/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4" />
   </video>
   
   <p class="license">
-    video: <a href="http://www.openbeelden.nl/users/beeldengeluid">Beeld en Geluid</a> licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/nl/deed.en">Creative Commons - Attribution-Share Alike</a>
+    video: <a href="http://www.openimages.eu/users/beeldengeluid">Beeld en Geluid</a> licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/nl/deed.en">Creative Commons - Attribution-Share Alike</a>
   </p>
   <p>
     This video on Open Images <a href="http://www.openimages.eu/media/9728/Storm">http://www.openimages.eu/media/9728/Storm</a>.<br />
@@ -61,15 +61,15 @@ $(document).ready(function() {
     <li>Multiple different players on a page</li>
     <li>Play/pause</li>
     <li>Mute/unmute</li>
-    <li>Full 'screen' (full window really)</li>
+    <li>Full 'screen' (full window really, that is what HTML5 requires)</li>
     <li>
       Slider, controllable with arrow keys 
       (requires <a href="http://jqueryui.com/demos/slider/">jquery.ui.slider.js</a>)
     </li>
     <li>Dark and white controls, on top or below player</li>
     <li>Easily skinnable with css</li>
-    <li>iPhone (play works, but other controls are of no use) and iPad compatible</li>
-    <li>Fires events: 'oiplayerplay' and 'oiplayerended'.
+    <li>iOS, iPhone, iPad etc. compatible</li>
+    <li>Fires events: 'oiplayerplay' and 'oiplayerended' to enable play statistics f.e.</li>
   </ul>
   <h3>Supported browsers</h3>
   <ul>
@@ -126,6 +126,10 @@ $(document).ready(function() {
               <li>Add a css class of your own to edit the appearance of the controls (f.e. 'top dark').</li>
             </ul>
         </li>
+        <li>
+          log: when you specify 'info' some messages are displayed on top of the media playing, 
+          'error' does nothing for now.
+        </li>
       </ul>
       These examples point to plugin files on <a href="http://www.openimages.eu">www.openimages.eu</a> 
       and should normally work with our media files.
@@ -135,7 +139,8 @@ $(document).ready(function() {
         'server' : 'http://www.openimages.eu',
         'jar' : '/oiplayer/plugins/cortado-ovt-stripped-wm_r38710.jar',
         'flash' : '/oiplayer/plugins/flowplayer-3.1.5.swf',
-        'controls' : 'top'
+        'controls' : 'top',
+        'log' : 'error'
     });
 });
 </pre>
