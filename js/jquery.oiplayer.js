@@ -26,8 +26,9 @@
  *                    Simply 'true' means show me controls below player.
  *                    Value 'top' will add a css class of that name and will hide/show controls on top of the player window.
  *                    Add a css class of your own to edit the appearance of the controls (f.e. 'top dark').
+ *       'log' : when your specify 'info' some debug messages are shown about the media playing 
  *
- * @changes: made fullscreen/window work with players in absolute positioned elements
+ * @changes: workarounds for iphone webkit ios 4, does not like wrapping in div in jquery
  * @version: '$Id$'
 */
 
@@ -53,13 +54,10 @@ jQuery.fn.oiplayer = function(settings) {
                 sources = $(current).find('source');
             }
             
-            /* In the next couple of lines the video/audio tag is wrapped in a new div, 
-               this breaks the video tag on iPhone 4 */
-            if (isIphone() && navigator.userAgent.match(/OS 4/i) != null) {
-                return;
+            /* video/audio tag is wrapped in a div, this breaks the video tag on iPhone 4 */
+            if (!isIphone()) {
+                $(mt).wrap('<div class="oiplayer"><div class="player"></div></div>');
             }
-            
-            $(mt).wrap('<div class="oiplayer"><div class="player"></div></div>');
             var div = $(mt).closest('div.oiplayer');
             var player = createPlayer(mt, sources, config);
             player.div = div;
@@ -79,11 +77,13 @@ jQuery.fn.oiplayer = function(settings) {
             $(div).prepend(poster);
 
             if (config.controls && player.url != undefined) {
-                $(div).append(controlsHtml(player));
-                player.ctrls = $(div).find('div.controls');
-                
+                $(mt).after(controlsHtml(player));
+                $(mt).removeAttr('controls');
+                player.ctrls = $(mt).next('div.oipcontrols');
+
                 if (config.controls != true) {  // we're using classes, append them
-                    if (player.myname.indexOf('cortado') > -1 || isIphone() || isIpad()) { // remove top when not compatible
+                    if (player.myname.indexOf('cortado') > -1 || isIphone() || isIpad()) { 
+                        /* remove .top when not compatible */
                         config.controls = config.controls.replace('top', '');
                         if (config.controls.length == 0) { config.controls = 'white'; }
                     }
@@ -227,7 +227,7 @@ jQuery.fn.oiplayer = function(settings) {
             if (player.ctrlspos == 'top') {
                 player.height = $(window).height();
             } else {
-                player.height = $(player.div).height() - $(player.div).find('div.controls').height();
+                player.height = $(player.div).height() - $(player.ctrls).height();
             }
             
             $(player.player).width(player.width).height(player.height);
@@ -235,7 +235,7 @@ jQuery.fn.oiplayer = function(settings) {
             
             // controls
             var controls_width = controlsWidth(player);
-            $(player.div).find('div.controls').css('margin-left', Math.round( (player.width - controls_width) / 2) + 'px');
+            $(player.ctrls).css('margin-left', Math.round( (player.width - controls_width) / 2) + 'px');
             
             // 'hide' other media players (display:hidden often disables them)
             $('div.oiplayer').not('.fullscreen').css('margin-left', '-9999px');
@@ -251,12 +251,12 @@ jQuery.fn.oiplayer = function(settings) {
             
             // reposition controls
             controlsWidth(player);
-            $(player.div).find('div.controls').css('margin-left', '');
+            $(player.ctrls).css('margin-left', '');
             
             if (player.ctrlspos == 'top') {
                 $(player.div).width(player.width).height(player.height);
             } else {
-                $(player.div).width(player.width).height(player.height + $(player.div).find('div.controls').height());
+                $(player.div).width(player.width).height(player.height + $(player.ctrls).height());
             }
             
         }
@@ -432,7 +432,7 @@ jQuery.fn.oiplayer = function(settings) {
             $(img).remove();
         }
         if (!src) {
-            return '<div class="preview ' + player.type + '" style="width:' + player.width + 'px;height:' + player.height + 'px;"></div>'
+            //return '<div class="preview ' + player.type + '" style="width:' + player.width + 'px;height:' + player.height + 'px;"></div>'
             //return "";
         } else {
             return '<img class="preview ' + player.type + '" src="' + src + '" width="' + player.width + '" height="' + player.height + '" alt="click to play" title="click to play" />';
@@ -440,7 +440,7 @@ jQuery.fn.oiplayer = function(settings) {
     }
         
     function controlsHtml(player) {
-        var html = '<div class="controls"><ul class="controls">' + 
+        var html = '<div class="oipcontrols"><ul>' + 
                       '<li class="play"><a title="play" href="#play">play</a></li>' +
                       '<li class="position">' +
                         '<div class="time">00:00</div>' +
@@ -448,7 +448,7 @@ jQuery.fn.oiplayer = function(settings) {
                         '<div class="timeleft">-00:00</div>' +
                       '</li>' +
                       (isIpad() ? '' : '<li class="sound"><a title="mute" href="#sound">mute</a></li>') + 
-                      (player.type == 'video' ? '<li class="screen"><a title="fullscreen" href="#fullscreen">fullscreen</a></li>' : '') + 
+                      (player.type == 'video' && !isIphone() ? '<li class="screen"><a title="fullscreen" href="#fullscreen">fullscreen</a></li>' : '') + 
                    '</ul></div>';
         return html;
     }
@@ -555,15 +555,16 @@ $.oiplayer = {
                 animate: true,
                 range: 'min',
                 value: (player.start ? player.start : 0),
-                max: Math.round(player.duration)
-        });
-        $(player.ctrls).find("div.slider > div").bind('slide', function(ev, ui) {
-            $.oiplayer.position(player, ui.value);
-        });
-        $(player.ctrls).find("div.slider > div").bind('slidechange', function(ev, ui) {
-            if (ev.originalEvent != undefined && ev.originalEvent.type == "mouseup") { 
-                $.oiplayer.position(player, ui.value);
-            }
+                step: 0.01,
+                max: Math.round(player.duration),
+                slide: function(ev, ui) { 
+                    $.oiplayer.position(player, ui.value);
+                },
+                slidechange: function(ev, ui) {
+                    if (ev.originalEvent != undefined && ev.originalEvent.type == "mouseup") { 
+                        $.oiplayer.position(player, ui.value);
+                    }
+                }
         });
     },
     
@@ -597,7 +598,7 @@ $.oiplayer = {
      * f.e.: '$.oiplayer.msg(this.player, "Play: " + this.url)'.
      */
     msg: function(player, msg) {
-        $('<div class="oiplayerinfo"></div>').text(msg).insertAfter(player.div).hide().fadeIn();
+        $('<div class="oiplayerinfo"></div>').text(msg).insertAfter(player.player).hide().fadeIn();
     },
     
     /* 
