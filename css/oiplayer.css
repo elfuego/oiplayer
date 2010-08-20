@@ -40,7 +40,7 @@ div.oiplayer.fullscreen > div.player > video,
 div.oiplayer.fullscreen > div.player > object,
 div.oiplayer.fullscreen > div.player > embed { z-index: 1002; }
 
-div.oiplayer.fullscreen > div.controls
+div.oiplayer.fullscreen > div.oipcontrols
 {
 	z-index: 1003;
 	margin: 0 auto;
@@ -77,11 +77,14 @@ div.oiplayer > div.player
 
 div.oiplayer.audio > div.player { bottom: 0; }
 
-div.oiplayer > div.controls
-{
-	position: absolute;
+div.oiplayer div.oipcontrols.top {
+    position: absolute;
 	bottom: 0;
 	left: 0;
+}
+
+div.oipcontrols
+{
 	height: 28px;
 	margin: 0;
 	padding-top: 3px;
@@ -92,16 +95,16 @@ div.oiplayer > div.controls
 	z-index: 19;
 }
 
-div.oiplayer > div.controls.top
+div.oiplayer div.oipcontrols.top
 {
-	margin: 0 10px;
 	bottom: 10px;
+	margin: 0 10px;
 	-webkit-border-radius: 2px;
 	-webkit-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
 	-moz-border-radius: 2px;
 	-moz-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
 	border-radius: 2px;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
+	box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 div.oiplayer > .preview
@@ -118,7 +121,7 @@ div.oiplayer > div.preview.audio { background: url(images/preview_audio.png) lef
 
 
 /* controls */
-div.oiplayer ul.controls
+div.oipcontrols ul
 {
 	margin: 0;
 	padding: 0;
@@ -128,7 +131,7 @@ div.oiplayer ul.controls
 	overflow: hidden;
 }
 
-div.oiplayer ul.controls li
+div.oipcontrols li
 {
 	margin: 0;
 	padding: 0;
@@ -136,7 +139,7 @@ div.oiplayer ul.controls li
 	display: inline;
 }
 
-div.oiplayer ul.controls a
+div.oipcontrols a
 {
 	padding: 23px 0 0 0;
 	overflow: hidden;
@@ -144,10 +147,10 @@ div.oiplayer ul.controls a
     height /**/: 23px;  /* for IE5/Win */
 }
 
-div.oiplayer ul.controls a:hover { background-position: 0 -25px; }
-div.oiplayer a { outline: none; }
+div.oipcontrols a:hover { background-position: 0 -25px; }
+div.oipcontrols a { outline: none; }
 
-div.oiplayer ul.controls li.play a
+div.oipcontrols li.play a
 {
 	background-image: url(images/controls-play.png);
 	width: 21px;
@@ -155,9 +158,9 @@ div.oiplayer ul.controls li.play a
 	float: left;
 }
 
-div.oiplayer ul.controls li.play.pause a { background-image: url(images/controls-pause.png); }
+div.oipcontrols li.play.pause a { background-image: url(images/controls-pause.png); }
 
-div.oiplayer ul.controls li.sound a
+div.oipcontrols li.sound a
 {
 	float: right;
 	background-image: url(images/controls-soundon.png);
@@ -166,9 +169,9 @@ div.oiplayer ul.controls li.sound a
 	margin-right: 7px;
 }
 
-div.oiplayer ul.controls li.sound.muted a { background-image: url(images/controls-soundoff.png); }
+div.oipcontrols li.sound.muted a { background-image: url(images/controls-soundoff.png); }
 
-div.oiplayer ul.controls li.screen a
+div.oipcontrols li.screen a
 {
 	float: right;
 	background-image: url(images/controls-fullscreen.png);
@@ -179,8 +182,8 @@ div.oiplayer ul.controls li.screen a
 
 /* ### slider, jquery-ui etc. ### */
 
-div.oiplayer > div.controls li.position > div.time,
-div.oiplayer > div.controls li.position > div.timeleft
+div.oipcontrols li.position > div.time,
+div.oipcontrols li.position > div.timeleft
 {
 	float: left;
 	font-family: Monaco, "Courier New", monospaced;
@@ -190,18 +193,18 @@ div.oiplayer > div.controls li.position > div.timeleft
 	font-weight: normal;
 }
 
-div.oiplayer ul.controls li.position > div.time
+div.oipcontrols li.position > div.time
 {
 	width: 40px;
 	margin-right: 2px;
 }
-div.oiplayer ul.controls li.position > div.timeleft
+div.oipcontrols li.position > div.timeleft
 {
 	width: 46px;
 	margin-left: 4px;
 }
 
-div.oiplayer ul.controls div.sliderwrap
+div.oipcontrols div.sliderwrap
 {
 	background: url(images/slider11-left.png) left -50px no-repeat;
 	width: 110px;
@@ -209,7 +212,7 @@ div.oiplayer ul.controls div.sliderwrap
 	padding-left: 8px;
 }
 
-div.oiplayer ul.controls div.ui-slider
+div.oipcontrols div.ui-slider
 {
 	border: 0;
 	width: 100%;
@@ -217,10 +220,10 @@ div.oiplayer ul.controls div.ui-slider
 	height: 32px;
 }
 
-div.oiplayer ul.controls .ui-slider { position: relative; }
-div.oiplayer ul.controls .ui-slider-horizontal .ui-slider-handle { top: 0; }
+div.oipcontrols .ui-slider { position: relative; }
+div.oipcontrols .ui-slider-horizontal .ui-slider-handle { top: 0; }
 
-div.oiplayer ul.controls .ui-slider .ui-slider-handle
+div.oipcontrols .ui-slider .ui-slider-handle
 {
 	cursor: pointer;
 	height: 32px;
@@ -228,46 +231,46 @@ div.oiplayer ul.controls .ui-slider .ui-slider-handle
 	width: 14px;
 	z-index: 2;
 }
-div.oiplayer ul.controls a.ui-slider-handle:hover { background-position: 0 -100px; }
+div.oipcontrols a.ui-slider-handle:hover { background-position: 0 -100px; }
 
-div.oiplayer ul.controls div.ui-slider-range
+div.oipcontrols div.ui-slider-range
 {
 	height: 32px;
 	background: url(images/slider11-long.png) right -50px no-repeat;
 }
 
-div.oiplayer ul.controls .ui-state-default, 
-div.oiplayer ul.controls .ui-widget-content .ui-state-default
+div.oipcontrols .ui-state-default, 
+div.oipcontrols .ui-widget-content .ui-state-default
 {
 	border: 0;
 	background-color: transparent;
 	background: url(images/slider11-pos.png) left -75px no-repeat;
 	margin-left: -9px;
 }
-div.oiplayer ul.controls li.changed a.ui-slider-handle:hover { background-position: 0 -100px; }
+div.oipcontrols li.changed a.ui-slider-handle:hover { background-position: 0 -100px; }
 
-div.oiplayer ul.controls li.changed .ui-state-default, 
-div.oiplayer ul.controls li.changed .ui-widget-content .ui-state-default { background: url(images/slider11-pos.png) left -75px no-repeat; }
+div.oipcontrols li.changed .ui-state-default, 
+div.oipcontrols li.changed .ui-widget-content .ui-state-default { background: url(images/slider11-pos.png) left -75px no-repeat; }
 
-div.oiplayer ul.controls .ui-state-default:focus, 
-div.oiplayer ul.controls .ui-widget-content .ui-state-default:focus { outline: none; } 
+div.oipcontrols .ui-state-default:focus, 
+div.oipcontrols .ui-widget-content .ui-state-default:focus { outline: none; } 
 
 /* dark  */
-div.oiplayer > div.controls.dark
+div.oipcontrols.dark
 {
 	color: #efefef;
 	background-color: #000;
 }
-div.oiplayer div.controls.dark a { background-position: 0 -50px; }
-div.oiplayer div.controls.dark a:hover { background-position: 0 0; }
-div.oiplayer div.controls.dark div.sliderwrap { background: url(images/slider11-left.png) left -50px no-repeat; }
-div.oiplayer div.controls.dark div.ui-slider { background: url(images/slider11-long.png) right -0px no-repeat; }
-div.oiplayer div.controls.dark div.ui-slider-range { background: url(images/slider11-long.png) right -50px no-repeat; }
-div.oiplayer div.controls.dark a.ui-slider-handle { background: url(images/slider11-pos.png) left -75px no-repeat; }
-div.oiplayer div.controls.dark a.ui-slider-handle:hover { background-position: 0 -100px; }
-div.oiplayer div.controls.dark li.changed a.ui-slider-handle:hover { background-position: 0 -100px; }
-div.oiplayer div.controls.dark li.changed .ui-state-default,
-div.oiplayer div.controls.dark li.changed .ui-widget-content .ui-state-default { background-position: left -75px; }
+div.oipcontrols.dark a { background-position: 0 -50px; }
+div.oipcontrols.dark a:hover { background-position: 0 0; }
+div.oipcontrols.dark div.sliderwrap { background: url(images/slider11-left.png) left -50px no-repeat; }
+div.oipcontrols.dark div.ui-slider { background: url(images/slider11-long.png) right -0px no-repeat; }
+div.oipcontrols.dark div.ui-slider-range { background: url(images/slider11-long.png) right -50px no-repeat; }
+div.oipcontrols.dark a.ui-slider-handle { background: url(images/slider11-pos.png) left -75px no-repeat; }
+div.oipcontrols.dark a.ui-slider-handle:hover { background-position: 0 -100px; }
+div.oipcontrols.dark li.changed a.ui-slider-handle:hover { background-position: 0 -100px; }
+div.oipcontrols.dark li.changed .ui-state-default,
+div.oipcontrols.dark li.changed .ui-widget-content .ui-state-default { background-position: left -75px; }
 
 /* ### inavailable / no compatible sources ### */
 div.oiplayer.video.inavailable { background: url(images/preview_video.png) left top repeat; }
@@ -288,10 +291,13 @@ div.oiplayerinfo
 	font-size: xx-small;
 	padding: 2px;
 	background-color: #efefef;
-	z-index: 225;
+	z-index: 99;
 	border-top: 1px solid #bbb;
 	font-family: Monaco, "Courier New", monospaced;
 	overflow: auto;
+	position: absolute;
+	top: 0;
+	left: 0;
 }
 
 /* ### example html ### */
