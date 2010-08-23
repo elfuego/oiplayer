@@ -134,10 +134,10 @@ div.oipcontrols li
 
 div.oipcontrols a
 {
-	padding: 23px 0 0 0;
+	padding: 25px 0 0 0;
 	overflow: hidden;
 	height: 0 !important;
-    height /**/: 23px;  /* for IE5/Win */
+    height /**/: 25px;  /* for IE5/Win */
 }
 
 div.oipcontrols a:hover { background-position: 0 -25px; }
@@ -210,7 +210,7 @@ div.oipcontrols div.ui-slider
 	border: 0;
 	width: 100%;
 	background: url(images/slider11-long.png) right -25px no-repeat;
-	height: 32px;
+	height: 25px;
 }
 
 div.oipcontrols .ui-slider { position: relative; }
@@ -219,7 +219,7 @@ div.oipcontrols .ui-slider-horizontal .ui-slider-handle { top: 0; }
 div.oipcontrols .ui-slider .ui-slider-handle
 {
 	cursor: pointer;
-	height: 32px;
+	height: 25px;
 	position: absolute;
 	width: 14px;
 	z-index: 2;
@@ -228,7 +228,7 @@ div.oipcontrols a.ui-slider-handle:hover { background-position: 0 -100px; }
 
 div.oipcontrols div.ui-slider-range
 {
-	height: 32px;
+	height: 25px;
 	background: url(images/slider11-long.png) right -50px no-repeat;
 }
 
@@ -257,11 +257,11 @@ div.oipcontrols.dark
 div.oipcontrols.dark a { background-position: 0 -50px; }
 div.oipcontrols.dark a:hover { background-position: 0 0; }
 div.oipcontrols.dark div.sliderwrap { background: url(images/slider11-left.png) left -50px no-repeat; }
-div.oipcontrols.dark div.ui-slider { background: url(images/slider11-long.png) right -0px no-repeat; }
+div.oipcontrols.dark div.ui-slider { background: url(images/slider11-long.png) right px0 no-repeat; }
 div.oipcontrols.dark div.ui-slider-range { background: url(images/slider11-long.png) right -50px no-repeat; }
 div.oipcontrols.dark a.ui-slider-handle { background: url(images/slider11-pos.png) left -75px no-repeat; }
-div.oipcontrols.dark a.ui-slider-handle:hover { background-position: 0 -100px; }
-div.oipcontrols.dark li.changed a.ui-slider-handle:hover { background-position: 0 -100px; }
+div.oipcontrols.dark a.ui-slider-handle:hover { background-position: 0px -100px; }
+div.oipcontrols.dark li.changed a.ui-slider-handle:hover { background-position: 0px -100px; }
 div.oipcontrols.dark li.changed .ui-state-default,
 div.oipcontrols.dark li.changed .ui-widget-content .ui-state-default { background-position: left -75px; }
 
