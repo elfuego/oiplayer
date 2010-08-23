@@ -239,13 +239,19 @@ jQuery.fn.oiplayer = function(settings) {
             $(player.div).find('.preview').width(player.width).height(player.height);
             $(window).scrollTop(0).scrollLeft(0);
             
+            
             // controls
             var controls_width = controlsWidth(player);
             $(player.ctrls).css('margin-left', Math.round( (player.width - controls_width) / 2) + 'px');
             // 'hide' other media players (display:hidden often disables them)
             $('div.oiplayer').not('.fullscreen').css('margin-left', '-9999px');
             
+            $('div.oiplayer').bind('keydown', function(ev) {
+                if (ev.keyCode == '27') { fullscreen(player); }
+            });
+            
         } else {
+            $('div.oiplayer').unbind('keydown');
             $('div.oiplayer').css('margin-left', '0');    // show other mediaplayers again
             document.documentElement.style.overflow = player.origoverflow;
             
