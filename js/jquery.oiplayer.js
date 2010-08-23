@@ -106,8 +106,7 @@ jQuery.fn.oiplayer = function(settings) {
                     $(div).height( $(div).height() + $(player.ctrls).height() );
                     player.ctrlspos = 'bottom';
                 }
-                
-                controlsWidth(player);
+                $(player.ctrls).css('margin-left', Math.round( (player.width - controlsWidth(player)) / 2) + 'px');
             }
             
             if (player.url == undefined) {  // no compatible sources to play
@@ -263,13 +262,12 @@ jQuery.fn.oiplayer = function(settings) {
             $(player.div).find('.preview').width(player.width).height(player.height);
             
             // reposition controls
-            controlsWidth(player);
-            $(player.ctrls).css('margin-left', '');
             if (player.ctrlspos == 'top') {
                 $(player.div).width(player.width).height(player.height);
             } else {
                 $(player.div).width(player.width).height(player.height + $(player.ctrls).height());
             }
+            $(player.ctrls).css('margin-left', Math.round( (player.width - controlsWidth(player)) / 2) + 'px');
             
         }
 
