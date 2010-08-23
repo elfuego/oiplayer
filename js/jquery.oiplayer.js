@@ -77,9 +77,14 @@ jQuery.fn.oiplayer = function(settings) {
             $(div).prepend(poster);
 
             if (config.controls && player.url != undefined) {
-                $(mt).after(controlsHtml(player));
+                if (isIphone()) {
+                    $(mt).after(controlsHtml(player));
+                    player.ctrls = $(mt).next('div.oipcontrols');
+                } else {
+                    $(player.div).append(controlsHtml(player));
+                    player.ctrls = $(player.div).find('div.oipcontrols');
+                }
                 $(mt).removeAttr('controls');
-                player.ctrls = $(mt).next('div.oipcontrols');
 
                 if (config.controls != true) {  // we're using classes, append them
                     if (player.myname.indexOf('cortado') > -1 || isIphone() || isIpad()) { 
@@ -229,14 +234,14 @@ jQuery.fn.oiplayer = function(settings) {
             } else {
                 player.height = $(player.div).height() - $(player.ctrls).height();
             }
-            
             $(player.player).width(player.width).height(player.height);
+            $(player.div).find('div.player').height(player.height);
+            $(player.div).find('.preview').width(player.width).height(player.height);
             $(window).scrollTop(0).scrollLeft(0);
             
             // controls
             var controls_width = controlsWidth(player);
             $(player.ctrls).css('margin-left', Math.round( (player.width - controls_width) / 2) + 'px');
-            
             // 'hide' other media players (display:hidden often disables them)
             $('div.oiplayer').not('.fullscreen').css('margin-left', '-9999px');
             
@@ -248,11 +253,12 @@ jQuery.fn.oiplayer = function(settings) {
             player.width = player.owidth;
             player.height = player.oheight;
             $(player.player).width(player.width).height(player.height);
+            $(player.div).find('div.player').height(player.height);
+            $(player.div).find('.preview').width(player.width).height(player.height);
             
             // reposition controls
             controlsWidth(player);
             $(player.ctrls).css('margin-left', '');
-            
             if (player.ctrlspos == 'top') {
                 $(player.div).width(player.width).height(player.height);
             } else {
@@ -656,11 +662,13 @@ Player.prototype._init = function(el, url, config) {
     this.controls = $(this.player).attr('controls');
     if (this.controls == undefined) this.controls = false;
     this.width  = $(this.player).attr('width') > 0 ? parseInt($(this.player).attr('width')) : 320;
-    this.height = $(this.player).attr('height') > 0 ? parseInt($(this.player).attr('height')) : 240;
+    if (this.type == 'audio') {
+        var def_height = 32;
+    } else {
+        var def_height = 240;
+    }
+    this.height = $(this.player).attr('height') > 0 ? parseInt($(this.player).attr('height')) : def_height;
     this.state = 'init';
-    //this.pos = 0;
-    
-    //return this.player;
 }
 
 function MediaPlayer() {
