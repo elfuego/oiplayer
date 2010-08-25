@@ -12,10 +12,12 @@
  * a multitude of players (but defies MSIE ;-) http://footage.stealthisfilm.com/
  *
  * MSIE bug (!) : currently I could find no way to makes this plugin behave correctly in MSIE on multiple
- * mediatags in one go. You will have to wrap each mediatag in a div or some other element and feed it
- * to the plugin.
+ * mediatags in one go. You will have to wrap each mediatag in a div or some other element before 
+ * feeding it to the plugin.
  * 
  * Uses these parameters and/or the audio/video tag attributes like height, width, poster etc.
+ * An audio tag can have an image in its body to use as a poster cq. background.
+ * 
  * @params:
  *   id - id of the element that contains the media tag
  *   config - configuration parameters
@@ -28,7 +30,7 @@
  *                    Add a css class of your own to edit the appearance of the controls (f.e. 'top dark').
  *       'log' : when your specify 'info' some debug messages are shown about the media playing 
  *
- * @changes: workarounds for iphone webkit ios 4, does not like wrapping in div in jquery
+ * @changes: made dimensions of audio player depended on that of (poster) img in body
  * @version: '$Id$'
 */
 
@@ -71,11 +73,10 @@ jQuery.fn.oiplayer = function(settings) {
                 $(div).nextAll('p.oiplayer-warn').first().hide();
             }
             
-            $(div).width(player.width).height(player.height);
-            
             var poster = createPoster(div, player);
             $(div).prepend(poster);
-
+            $(div).width(player.width).height(player.height);
+            
             if (config.controls && player.url != undefined) {
                 if (isIphone()) {
                     $(mt).after(controlsHtml(player));
@@ -438,13 +439,13 @@ jQuery.fn.oiplayer = function(settings) {
         var src = player.poster;
         if (!src && player.type == 'audio') { // for audio-tags (no attribute poster but image inside audio-tag)
             var img = $(el).find('img')[0];
+            /* make height and width of audio those of img inside audio body */
+            player.width = $(img).attr('width') > 0 ? parseInt($(img).attr('width')) : player.width;
+            player.height = $(img).attr('height') > 0 ? parseInt($(img).attr('height')) : player.height;
             src = $(img).attr('src');
             $(img).remove();
         }
-        if (!src) {
-            //return '<div class="preview ' + player.type + '" style="width:' + player.width + 'px;height:' + player.height + 'px;"></div>'
-            //return "";
-        } else {
+        if (src) {
             return '<img class="preview ' + player.type + '" src="' + src + '" width="' + player.width + '" height="' + player.height + '" alt="click to play" title="click to play" />';
         }
     }
