@@ -160,7 +160,6 @@ jQuery.fn.oiplayer = function(settings) {
             });
             
             if (pl.duration) {  // else no use
-                console.log("L: " + pl.duration);
                 $.oiplayer.slider(pl)
             }
 
