@@ -456,7 +456,7 @@ jQuery.fn.oiplayer = function(settings) {
                       '<li class="position">' +
                         '<div class="time">00:00</div>' +
                         '<div class="sliderwrap"><div class="slider"><div> </div></div></div>' +
-                        '<div class="timeleft">-00:00</div>' +
+                        '<div class="timeleft">-' + (player.duration ? $.oiplayer.totime(player.duration - player.position()) : '0:00') + '</div>' +
                       '</li>' +
                       (isIpad() ? '' : '<li class="sound"><a title="mute" href="#sound">mute</a></li>') + 
                       (player.type == 'video' && !isIphone() ? '<li class="screen"><a title="fullscreen" href="#fullscreen">fullscreen</a></li>' : '') + 
@@ -586,7 +586,7 @@ $.oiplayer = {
         player.seek(pos);
         $(player.ctrls).find('div.time').text( $.oiplayer.totime(pos) );
         $(player.ctrls).find('div.timeleft').text('-' + $.oiplayer.totime(player.duration - pos) );
-        if (pos > 0) {
+        if (pos > 0 && $(player.ctrls).find('li.position.changed').length == 0) {
             $(player.ctrls).find('li.position').addClass("changed");
         } else {
             $(player.ctrls).find('li.position').removeClass("changed");
@@ -616,6 +616,7 @@ $.oiplayer = {
      * Returns time formatted as 00:00
      */
     totime: function (pos) {
+        if (pos < 0) { pos = 0; }
         function toTime(sec) {
             var h = Math.floor(sec / 3600);
             var min = Math.floor(sec / 60);
