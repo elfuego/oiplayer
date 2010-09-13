@@ -160,6 +160,7 @@ jQuery.fn.oiplayer = function(settings) {
             });
             
             if (pl.duration) {  // else no use
+                console.log("L: " + pl.duration);
                 $.oiplayer.slider(pl)
             }
 
@@ -693,6 +694,7 @@ MediaPlayer.prototype.init = function(el, url, config) {
                     if (config.log == 'info') {
                         $.oiplayer.msg(self, "set duration: " + self.duration);
                     }
+                    $(self.ctrls).find('div.timeleft').text("-" + $.oiplayer.totime(self.duration));
                     $.oiplayer.slider(self);
                 }
             }, false);
