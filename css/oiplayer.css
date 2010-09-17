@@ -78,8 +78,9 @@ div.oipcontrols
 	padding-top: 3px;
 	max-width: 640px;
 	color: #555;
-	background-color: #fff;
 	z-index: 19;
+	background-color: transparent;
+	background-image: url(images/bg-whitish.png);
 }
 
 div.oiplayer div.oipcontrols {
@@ -251,7 +252,8 @@ div.oipcontrols .ui-widget-content .ui-state-default:focus { outline: none; }
 div.oipcontrols.dark
 {
 	color: #efefef;
-	background-color: #000;
+	background-color: transparent;
+	background-image: url(images/bg-blackish.png);
 }
 div.oipcontrols.dark a { background-position: 0 -50px; }
 div.oipcontrols.dark a:hover { background-position: 0 0; }
