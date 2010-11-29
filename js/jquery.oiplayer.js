@@ -70,7 +70,7 @@ jQuery.fn.oiplayer = function(settings) {
             }
             
             if ($.browser.msie && (player.myname.indexOf('cortado') > -1 || player.myname == 'flowplayer')) {
-                $(div).nextAll('p.oiplayer-warn').first().hide();
+                $(div).parents().find('p.oiplayer-warn').hide();
             }
             
             var poster = createPoster(div, player);
