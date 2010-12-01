@@ -49,6 +49,7 @@ jQuery.fn.oiplayer = function(settings) {
     this.each(function() {
         var mediatags = $(this).find('video, audio');
         $.each(mediatags, function(i, mt) {
+            if (isIpad()) return;
             var sources = $(mt).find('source');
             if (sources.length == 0) {
                 //alert("no sources found in mediatag, will use first available");
