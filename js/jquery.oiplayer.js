@@ -386,6 +386,13 @@ jQuery.fn.oiplayer = function(settings) {
                 }
             }
         }
+        
+        /* try anyway with media tag */
+        if (types.length > 0 && types[0] == "unknown") {
+            proposal.url = urls[0];
+            proposal.type = "media";
+            return proposal;
+        }
         return proposal;
     }
     
