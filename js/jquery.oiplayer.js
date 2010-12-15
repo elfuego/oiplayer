@@ -658,7 +658,9 @@ Player.prototype.init = function(el, url, config) {
 Player.prototype.mute = function() { }
 Player.prototype.play = function() { }
 Player.prototype.pause = function() { }
+/* current position of audio or video */
 Player.prototype.position = function() { }
+/* go to this position */
 Player.prototype.seek = function(pos) { }
 Player.prototype.info = function() { }
 
@@ -682,6 +684,7 @@ Player.prototype._init = function(el, url, config) {
         var def_height = 240;
     }
     this.height = $(this.player).attr('height') > 0 ? parseInt($(this.player).attr('height')) : def_height;
+    if (this.type == 'audio') { $(this.player).removeAttr('width').removeAttr('height'); }
     this.state = 'init';
 }
 
