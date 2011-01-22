@@ -34,6 +34,7 @@
     <source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/9734.9730.WEEKNUMMER364-HRE0000D9C6.ogv"  />
     <source type="video/mp4; codecs=h264" src="http://www.openimages.eu/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4" />
     <source type="application/x-mpegurl" src="http://www.openbeelden.nl/files/09/35026.9730.WEEKNUMMER364-HRE0000D9C6.m3u8" />
+    You need a browser that understands the html5 video tag to play this item.
   </video>
 
   <p class="license">
@@ -168,7 +169,7 @@ $(document).ready(function() {
 <pre>
 $(document).ready(function() {
     $('div.oiplayer').bind("oiplayerplay", function(ev, player) {
-        alert("I started playing: " + player.id);
+        alert("I started playing: " + player.myname);
     }
 }
 </pre>
