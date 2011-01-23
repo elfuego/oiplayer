@@ -464,7 +464,7 @@ jQuery.fn.oiplayer = function(settings) {
                       '<li class="position">' +
                         '<div class="time">00:00</div>' +
                         '<div class="sliderwrap"><div class="slider"><div> </div></div></div>' +
-                        '<div class="timeleft">-' + (player.duration ? $.oiplayer.totime(player.duration - player.position()) : '0:00') + '</div>' +
+                        '<div class="timeleft">-' + (player.position() > 0 ? $.oiplayer.totime(player.duration - player.position()) : $.oiplayer.totime(player.duration)) + '</div>' +
                       '</li>' +
                       (isIpad() ? '' : '<li class="sound"><a title="mute" href="#sound">mute</a></li>') + 
                       (player.type == 'video' && !isIphone() ? '<li class="screen"><a title="fullscreen" href="#fullscreen">fullscreen</a></li>' : '') + 
