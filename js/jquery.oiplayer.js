@@ -833,10 +833,9 @@ CortadoPlayer.prototype.play = function() {
     this.state = 'play';
 }
 CortadoPlayer.prototype.pause = function() {
-    this.pos = this.player.getPlayPosition();
     this.player.doPause();
     this.state = 'pause';
-    if (this.player.position() >= this.duration) {
+    if (this.position() >= this.duration) {
         this.state = 'ended';
         $(this.div).trigger("oiplayerended", [this]);
         try {
