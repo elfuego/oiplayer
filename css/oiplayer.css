@@ -75,29 +75,32 @@ div.oipcontrols
 {
 	height: 30px;
 	margin: 0;
-	padding-top: 3px;
 	max-width: 640px;
 	color: #555;
 	z-index: 19;
 	background-color: transparent;
 	background-image: url(images/bg-whitish.png);
-}
-
-div.oiplayer div.oipcontrols {
+	
 	position: absolute;
 	bottom: 0;
 	left: 0;
 }
 
+div.oipcontrols.ios
+{
+	position: relative;
+	margin: 0;
+	padding: 0;
+}
+
 div.oiplayer div.oipcontrols.top
 {
-	height: 28px;
 	margin: auto auto 10px auto;
 	-webkit-border-radius: 2px;
-	-webkit-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
 	-moz-border-radius: 2px;
-	-moz-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
 	border-radius: 2px;
+	-webkit-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
 	box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
 }
 
@@ -112,26 +115,108 @@ div.oiplayer > .preview
 div.oiplayer > div.preview.video { background: url(images/preview_video.png) left top repeat; }
 div.oiplayer > div.preview.audio { background: url(images/preview_audio.png) left top repeat; }
 
-
-/* controls */
-div.oipcontrols ul
+div.oipcontrols > div
 {
-	margin: 0;
+	margin: 2px 0 0 0;
 	padding: 0;
 	height: 28px;
-	list-style: none;
-	display: inline;
-	overflow: hidden;
 }
 
-div.oipcontrols li
+div.oipcontrols div { position: absolute; }
+div.oipcontrols > div.play { left: 6px; width: 21px; }
+div.oipcontrols > div.time { width: 50px; left: 25px; text-align: right;  /* 83 */ }
+div.oipcontrols > div.progress { left: 83px; right: 122px; }   /* 10px margin left and right */
+div.oipcontrols > div.timeleft { width: 55px; right: 54px; text-align: left; /* 115 */ }
+div.oipcontrols > div.screen { width: 21px; right: 33px; /* 54 */ }
+div.oipcontrols > div.sound { width: 21px; right: 6px; }
+
+div.oiplayer.audio div.progress { right: 100px; }   /* 10px margin left and right */
+div.oiplayer.audio div.timeleft { right: 30px; }   /* 10px margin left and right */
+
+
+div.oipcontrols div.progress div.oiprogress  { 
+    background: url(images/slider11-long.png) 1px -25px no-repeat;
+    height: 25px;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+}
+div.oipcontrols div.progress.changed div.oiprogress { 
+    background: url(images/slider11-long.png) left -50px no-repeat;
+}
+
+div.oipcontrols div.bar {
+    height: 25px;
+    left: 6px;
+    top: 0;
+}
+div.oipcontrols div.back {
+    width: 100%;
+    background: url(images/slider11-long.png) right 0 no-repeat;
+    pointer-events: auto;
+}
+
+div.oipcontrols div.loaded {
+    background: url(images/slider11-long.png) right -25px no-repeat;
+    pointer-events: auto;
+}
+div.oipcontrols div.played
 {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	display: inline;
+	background: url(images/slider11-long.png) right -50px no-repeat;
+	pointer-events: none;
+}
+/* dark */
+div.oipcontrols.dark div.progress.changed div.oiprogress {
+    background: url(images/slider11-long.png) left -50px no-repeat;
+}
+div.oipcontrols.dark div.back {
+    background: url(images/slider11-long.png) right 0 no-repeat;
+}
+div.oipcontrols.dark div.played
+{
+	background: url(images/slider11-long.png) right -50px no-repeat;
+}
+div.oipcontrols.dark div.loaded {
+    background: url(images/slider11-long.png) right -25px no-repeat;
+}
+div.oipcontrols div.oiprogress-container
+{
+	left: 0;
+	right: 6px;
+}
+div.oipcontrols div.progress div.oiprogress-push {
+    width: 11px;
+    height: 25px;
+    pointer-events: auto;
+}
+div.oipcontrols div.pos {
+    width: 11px;
+    height: 25px;
 }
 
+
+/* others */
+div.oipcontrols div.play a, 
+div.oipcontrols div.pause a {
+	width: 21px;
+	float: left;
+}
+div.oipcontrols div.play a { background-image: url(images/controls-play.png); }
+div.oipcontrols div.pause a { background-image: url(images/controls-pause.png); }
+div.oipcontrols div.pos a {
+	background: url(images/slider11-pos.png) left -75px no-repeat;
+	width: 13px;
+	float: left;
+}
+div.oipcontrols > div.time, 
+div.oipcontrols > div.timeleft
+{
+	font-size: 10px;
+	font-family: Monaco, "Courier New", monospaced;
+	line-height: 26px;
+}
+
+/* controls */
 div.oipcontrols a
 {
 	padding: 25px 0 0 0;
@@ -139,114 +224,25 @@ div.oipcontrols a
 	height: 0 !important;
     height /**/: 25px;  /* for IE5/Win */
 }
-
 div.oipcontrols a:hover { background-position: 0 -25px; }
+div.oipcontrols div.pos a:hover { background-position: 0 -100px; }
 div.oipcontrols a { outline: none; }
 
-div.oipcontrols li.play a
-{
-	background-image: url(images/controls-play.png);
-	width: 21px;
-	margin-left: 6px;
-	float: left;
-}
-
-div.oipcontrols li.play.pause a { background-image: url(images/controls-pause.png); }
-
-div.oipcontrols li.sound a
+div.oipcontrols div.sound a
 {
 	float: right;
 	background-image: url(images/controls-soundon.png);
 	background-repeat: no-repeat;
 	width: 23px;
-	margin-right: 7px;
 }
+div.oipcontrols div.sound.muted a { background-image: url(images/controls-soundoff.png); }
 
-div.oipcontrols li.sound.muted a { background-image: url(images/controls-soundoff.png); }
-
-div.oipcontrols li.screen a
+div.oipcontrols div.screen a
 {
 	float: right;
 	background-image: url(images/controls-fullscreen.png);
 	width: 23px;
-	margin-right: 7px;
 }
-
-
-/* ### slider, jquery-ui etc. ### */
-
-div.oipcontrols li.position > div.time,
-div.oipcontrols li.position > div.timeleft
-{
-	float: left;
-	font-family: Monaco, "Courier New", monospaced;
-	font-size: 10px;
-	line-height: 26px;
-	text-align: center;
-	font-weight: normal;
-}
-
-div.oipcontrols li.position > div.time
-{
-	width: 40px;
-	margin-right: 2px;
-}
-div.oipcontrols li.position > div.timeleft
-{
-	width: 46px;
-	margin-left: 4px;
-}
-
-div.oipcontrols div.sliderwrap
-{
-	background: url(images/slider11-left.png) left -50px no-repeat;
-	width: 110px;
-	float: left;
-	padding-left: 8px;
-}
-
-div.oipcontrols div.ui-slider
-{
-	border: 0;
-	width: 100%;
-	background: url(images/slider11-long.png) right -25px no-repeat;
-	height: 25px;
-}
-
-div.oipcontrols .ui-slider { position: relative; }
-div.oipcontrols .ui-slider-horizontal .ui-slider-handle { top: 0; }
-
-div.oipcontrols .ui-slider .ui-slider-handle
-{
-	cursor: pointer;
-	height: 25px;
-	position: absolute;
-	width: 14px;
-	z-index: 2;
-}
-div.oipcontrols a.ui-slider-handle:hover { background-position: 0 -100px; }
-
-div.oipcontrols div.ui-slider-range
-{
-	height: 25px;
-	background: url(images/slider11-long.png) right -50px no-repeat;
-}
-
-div.oipcontrols .ui-state-default, 
-div.oipcontrols .ui-widget-content .ui-state-default
-{
-	border: 0;
-	background-color: transparent;
-	background: url(images/slider11-pos.png) left -75px no-repeat;
-	margin-left: -9px;
-}
-div.oipcontrols li.changed a.ui-slider-handle:hover { background-position: 0 -100px; }
-
-div.oipcontrols li.changed .ui-state-default, 
-div.oipcontrols li.changed .ui-widget-content .ui-state-default { background: url(images/slider11-pos.png) left -75px no-repeat; }
-
-div.oipcontrols .ui-state-default:focus, 
-div.oipcontrols .ui-widget-content .ui-state-default:focus { outline: none; } 
 
 /* dark  */
 div.oipcontrols.dark
@@ -257,14 +253,6 @@ div.oipcontrols.dark
 }
 div.oipcontrols.dark a { background-position: 0 -50px; }
 div.oipcontrols.dark a:hover { background-position: 0 0; }
-div.oipcontrols.dark div.sliderwrap { background: url(images/slider11-left.png) left -50px no-repeat; }
-div.oipcontrols.dark div.ui-slider { background: url(images/slider11-long.png) right px0 no-repeat; }
-div.oipcontrols.dark div.ui-slider-range { background: url(images/slider11-long.png) right -50px no-repeat; }
-div.oipcontrols.dark a.ui-slider-handle { background: url(images/slider11-pos.png) left -75px no-repeat; }
-div.oipcontrols.dark a.ui-slider-handle:hover { background-position: 0px -100px; }
-div.oipcontrols.dark li.changed a.ui-slider-handle:hover { background-position: 0px -100px; }
-div.oipcontrols.dark li.changed .ui-state-default,
-div.oipcontrols.dark li.changed .ui-widget-content .ui-state-default { background-position: left -75px; }
 
 /* ### inavailable / no compatible sources ### */
 div.oiplayer.video.inavailable { background: url(images/preview_video.png) left top repeat; }
@@ -293,6 +281,13 @@ div.oiplayerinfo
 	top: 0;
 	left: 0;
 }
+
+div.oiplayerinfo.bottom {
+	position: static;
+	margin-top: 32px;
+}
+
+
 
 /* ### example html ### */
 body.oiplayer-example
