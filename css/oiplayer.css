@@ -135,14 +135,14 @@ div.oiplayer.audio div.timeleft { right: 30px; }   /* 10px margin left and right
 
 
 div.oipcontrols div.progress div.oiprogress  { 
-    background: url(images/slider11-long.png) 1px -25px no-repeat;
+    background: url(images/slider11-long.png) left -50px no-repeat;
     height: 25px;
     left: 0;
     right: 0;
     pointer-events: none;
 }
 div.oipcontrols div.progress.changed div.oiprogress { 
-    background: url(images/slider11-long.png) left -50px no-repeat;
+    /*background: url(images/slider11-long.png) left -50px no-repeat;*/
 }
 
 div.oipcontrols div.bar {

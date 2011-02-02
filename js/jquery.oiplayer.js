@@ -264,8 +264,14 @@ jQuery.fn.oiplayer = function(settings) {
         x = Math.max(Math.min(x, width), 0);
         var seek = (x / width) * player.duration;
         if (player.state == 'init') { hidePreview(player); }
-        
-        $.oiplayer.position(player, seek);
+        var perc = (seek / player.duration) * 100;
+        perc = perc + "%";
+        $(player.ctrls).find('div.played').animate({ width:perc }, 200);
+        $(player.ctrls).find('div.oiprogress-push').animate(
+            { left: perc }, 
+            200, 
+            function() { $.oiplayer.position(player, seek); }
+        );
         player.seek(seek);
     }
     
@@ -623,14 +629,14 @@ $.oiplayer = {
     position: function(player, pos) {
         if (!isNaN(pos) && pos > 0) {
             var perc = (pos / player.duration) * 100;
-            var perc_left = 100 - perc;
-            //$(player.ctrls).find('div.loaded').width('100%');
-            $(player.ctrls).find('div.played').width(perc + '%');
-            $(player.ctrls).find('div.oiprogress-push').css('left', perc + '%');
+            perc = perc + "%";
+            $(player.ctrls).find('div.played').width(perc);
+            $(player.ctrls).find('div.oiprogress-push').css('left', perc);
             if (player.duration > 0) {
                 $(player.ctrls).find('div.timeleft').text("-" + $.oiplayer.totime(player.duration - pos));
             }
             $(player.ctrls).find('div.time').text( $.oiplayer.totime(pos) );
+            prevpos = pos;
         }
 
         /* .time .timeleft .changed */ 
