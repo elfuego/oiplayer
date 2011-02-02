@@ -616,7 +616,10 @@ $.oiplayer = {
             } else {
                 i++;
             }
-            $.oiplayer.position(player, pos);
+            /* player is paused while scrubbing */
+            if (player.state != 'pause') {  
+                $.oiplayer.position(player, pos); 
+            }
             if (i > 999) {
                 clearInterval(progress);
             }
