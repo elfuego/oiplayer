@@ -3,8 +3,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <title>OIPlayer jQuery Plugin - Open Images Platform</title>
-  <script src="js/jquery-1.3.2.min.js" type="text/javascript"><!-- help ie --></script>
-  <script src="js/jquery-ui-1.7.2.slider.min.js" type="text/javascript"><!-- help ie --></script>
+  <script src="js/jquery-1.4.2.min.js" type="text/javascript"><!-- help ie --></script>
   <script src="plugins/flowplayer-3.1.4.min.js" type="text/javascript"><!-- help ie --></script>
   <script src="js/jquery.oiplayer.js" type="text/javascript"><!-- help ie --></script>
   <link href="css/oiplayer.css" rel="stylesheet" type="text/css" />
@@ -53,8 +52,13 @@ $(document).ready(function() {
 </pre>
   <h3>Download</h3>
   <ul>
-    <li>Download <a href="http://plugins.jquery.com/files/oiplayer-1.0.3.tar.gz">OIPlayer v1.0.3</a></li>
-    <li>It's at <a href="http://plugins.jquery.com/project/oiplayer">jQuery's Plugins projectpage</a></li>
+    <li>
+      <a href="http://scm.mmbase.org/view/openimages/trunk/src/main/webapp/oiplayer/">Download from svn</a>, 
+      contains the most recent version.
+    </li>
+    <li>Or <a href="http://plugins.jquery.com/files/oiplayer-1.0.3.tar.gz">OIPlayer v1.0.3 (gz)</a>
+    from it's <a href="http://plugins.jquery.com/project/oiplayer">jQuery's Plugins projectpage</a>
+    </li>
   </ul>
   <h3>Features</h3>
   <ul>
@@ -97,11 +101,10 @@ $(document).ready(function() {
     <li>
       <a href="http://plugins.jquery.com/files/oiplayer-1.0.3.tar.gz">Download</a> and copy the 
       'oiplayer' directory to your site. Include these Javascript and css files in the head of your 
-      html document (jQuery 1.4.2 and jQuery UI 1.8 are also possible).
+      html document. Note that the 'flowplayer-3.1.4.min.js' script is only needed for FlowPlayer.
 <pre>
-&lt;script src="js/jquery-1.3.2.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
+&lt;script src="js/jquery-1.4.2.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
 &lt;script src="plugins/flowplayer-3.1.4.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
-&lt;script src="js/jquery-ui-1.7.2.slider.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
 &lt;script src="js/jquery.oiplayer.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
 &lt;link href="css/oiplayer.css" rel="stylesheet" type="text/css" /&gt;
 </pre>
@@ -125,8 +128,7 @@ $(document).ready(function() {
         <li>server: web server (msie (or windows java) has issues with finding directories)</li>
         <li>jar: location of Cortado jar</li>
         <li>flash: location of Flowplayer and its files</li>
-        <li>controls: Use oiplayer controls or not 
-          (make sure you include jquery-ui-1.7.2.slider.js for the progress slider):
+        <li>controls:
            <ul>   
               <li>Simply 'true' means show controls below player.</li>
               <li>Value 'top' will add a class of that name and will hide/show controls on top of the player window.</li>
