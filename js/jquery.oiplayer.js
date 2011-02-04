@@ -730,6 +730,7 @@ Player.prototype._init = function(el, url, config) {
     if (this.autobuffer == undefined) this.autobuffer = false;
     this.controls = $(this.player).attr('controls');
     if (this.controls == undefined) this.controls = false;
+    this.duration = 0;  /* set it to 0 to avoid NaN's */
     this.width = $(this.player).attr('width') > 0 ? parseInt($(this.player).attr('width')) : 320;
     if (this.type == 'audio') {
         var default_height = 32;
@@ -1025,7 +1026,9 @@ FlowPlayer.prototype.create = function(el, url, config) {
             $(self.div).find('div.loaded').width('100%');
         });
         clip.onStart(function() {
-            //var status = self.player.getStatus();
+            /* seems duration is not available until start: http://flowplayer.org/forum/3/18755 */
+            var fd = parseInt(self.player.getClip().fullDuration, 10);
+            if (fd > 0) { self.duration = fd; }
             if (self.state == 'init') { $.oiplayer.follow(self); }
             $(self.div).find('div.play').addClass('pause');
         });
