@@ -288,7 +288,7 @@ jQuery.fn.oiplayer = function(settings) {
             player.player.webkitEnterFullscreen();
             return;
         }
-        if (typeof(player.owidth) == "undefined") {
+        if (typeof(player.owidth) == undefined) {
             player.owidth = player.width;
             player.oheight = player.height;
         }
@@ -452,7 +452,7 @@ jQuery.fn.oiplayer = function(settings) {
         if (proposal.type == undefined) {
             var flash_url;
             for (var i = 0; i < types.length; i++) {
-                if (types[i].indexOf("video/flv") > -1) {
+                if (types[i].indexOf("video/flv") || types[i].indexOf("video/x-flv")) {
                     proposal.url = urls[i];
                     proposal.type = "flash";
                     return proposal;
