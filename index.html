@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <title>OIPlayer jQuery Plugin - Open Images Platform</title>
-  <script src="js/jquery-1.4.2.min.js" type="text/javascript"><!-- help ie --></script>
+  <script src="js/jquery-1.4.4.min.js" type="text/javascript"><!-- help ie --></script>
   <script src="plugins/flowplayer-3.1.4.min.js" type="text/javascript"><!-- help ie --></script>
   <script src="js/jquery.oiplayer.js" type="text/javascript"><!-- help ie --></script>
   <link href="css/oiplayer.css" rel="stylesheet" type="text/css" />
@@ -25,7 +25,6 @@
   <h2>HTML5 audio and video player with fallback to Java and Flash</h2>
   
   <div id="clientcaps">  </div> <!-- div#clientcaps is needed for Java detection in MSIE -->
-  
   <video 
     class="oip_ea_duration_101 oip_ea_start_0" 
     width="512" height="288"
@@ -35,7 +34,6 @@
     <source type="application/x-mpegurl" src="http://www.openbeelden.nl/files/09/35026.9730.WEEKNUMMER364-HRE0000D9C6.m3u8" />
     You need a browser that understands the html5 video tag to play this item.
   </video>
-
   <p class="license">
     video: <a href="http://www.openimages.eu/users/beeldengeluid">Beeld en Geluid</a> licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/nl/deed.en">Creative Commons - Attribution-Share Alike</a>
   </p>
@@ -43,7 +41,8 @@
     This video on Open Images <a href="http://www.openimages.eu/media/9728/Storm">http://www.openimages.eu/media/9728/Storm</a>.<br />
     OIPlayer 'attaches' itself to all video and/or audio tags it encounters. 
     Besides the general configuration of the plugin itself, it uses for each individual tag the 
-    attributes the respective tag has like poster, width, controls, autoplay etc.
+    attributes the respective tag has like poster, width, controls, autoplay etc. 
+    Easy implementation:
   </p>
 <pre>
 $(document).ready(function() {
@@ -53,10 +52,10 @@ $(document).ready(function() {
   <h3>Download</h3>
   <ul>
     <li>
-      <a href="http://scm.mmbase.org/view/openimages/trunk/src/main/webapp/oiplayer/">Download from svn</a>, 
-      contains the most recent version.
+      <a href="http://scm.mmbase.org/view/openimages/trunk/src/main/webapp/oiplayer/">Download
+      the most recente version</a> from our svn repository; or
     </li>
-    <li>Or <a href="http://plugins.jquery.com/files/oiplayer-1.0.3.tar.gz">OIPlayer v1.0.3 (gz)</a>
+    <li><a href="http://plugins.jquery.com/files/oiplayer-1.1.tar.gz">OIPlayer v1.1 (gz)</a>
     from it's <a href="http://plugins.jquery.com/project/oiplayer">jQuery's Plugins projectpage</a>
     </li>
   </ul>
@@ -73,14 +72,10 @@ $(document).ready(function() {
     <li>Play/pause</li>
     <li>Mute/unmute</li>
     <li>Full 'screen' (full window really, that is what HTML5 requires)</li>
-    <li>
-      Slider, controllable with arrow keys 
-      (requires <a href="http://jqueryui.com/demos/slider/">jquery.ui.slider.js</a>)
-    </li>
     <li>Dark and white controls, on top or below player</li>
     <li>Easily skinnable with css</li>
     <li>iOS, iPhone, iPad etc. compatible</li>
-    <li>Fires events: 'oiplayerplay' and 'oiplayerended' to enable play statistics f.e.</li>
+    <li>Fires events: 'oiplayerplay' and 'oiplayerended' to use f.e. for play statistics</li>
   </ul>
   <h3>Supported browsers</h3>
   <ul>
@@ -99,11 +94,11 @@ $(document).ready(function() {
   <h2>How-to</h2>
   <ol>
     <li>
-      <a href="http://plugins.jquery.com/files/oiplayer-1.0.3.tar.gz">Download</a> and copy the 
+      <a href="http://plugins.jquery.com/files/oiplayer-1.1.tar.gz">Download</a> and copy the 
       'oiplayer' directory to your site. Include these Javascript and css files in the head of your 
       html document. Note that the 'flowplayer-3.1.4.min.js' script is only needed for FlowPlayer.
 <pre>
-&lt;script src="js/jquery-1.4.2.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
+&lt;script src="js/jquery-1.4.4.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
 &lt;script src="plugins/flowplayer-3.1.4.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
 &lt;script src="js/jquery.oiplayer.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
 &lt;link href="css/oiplayer.css" rel="stylesheet" type="text/css" /&gt;
@@ -155,11 +150,11 @@ $(document).ready(function() {
 </pre>
     </li>
     <li>
-      Especially when OIPlayer needs to fallback to Cortado or Flowplayer, your browser has no way to
-      detect the duration of the media it should play. Since the html5 media tags have no attributes for 
+      Especially when OIPlayer needs to fallback to Cortado or Flowplayer, your browser often has no way to
+      detect the duration a media file. Since the html5 media tags have no attributes for 
       duration and starttime you can add that information using two classes on the mediatag. In this 
       case 'oip_ea_duration_101' (length is 101 seconds) and 'oip_ea_start_0' (start at 0 seconds).
-      When you don't include these the progress slider will not appear.
+      When you not including these the scrubber will not appear.
 <pre>
 &lt;video class="oip_ea_duration_101 oip_ea_start_0"&gt;
   ... source tags here ...
@@ -176,7 +171,8 @@ $(document).ready(function() {
 }
 </pre>
     </li>
-    <li>To have MSIE detect Java support you need this div somewhere (just once) in your page:
+    <li>To have OIPlayer detect Java support in  MSIE - for playing ogg with Cortado -
+        you need this div somewhere (just once) in your page:
       <pre>&lt;div id="clientcaps"&gt;  &lt;/div&gt;</pre>
     </li>
     <li>
@@ -186,7 +182,10 @@ $(document).ready(function() {
       playing movies from there.
     </li>
   </ol>
-  <address>Have fun! <a href="http://www.toly.nl">André van Toly</a></address>  
+  <address>
+   Have fun! <a href="http://www.toly.nl">André van Toly</a>, 
+   <a href="http://twitter.com/elfuego2">follow me on twitter</a>.
+  </address>  
 </div>
 
 <script src="http://www.google-analytics.com/ga.js" type="text/javascript"> </script>
