@@ -288,7 +288,7 @@ jQuery.fn.oiplayer = function(settings) {
             player.player.webkitEnterFullscreen();
             return;
         }
-        if (typeof(player.owidth) == undefined) {
+        if (player.owidth == undefined) {
             player.owidth = player.width;
             player.oheight = player.height;
         }
