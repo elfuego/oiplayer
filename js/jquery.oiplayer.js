@@ -47,9 +47,15 @@ jQuery.fn.oiplayer = function(settings) {
     var current = this;
     var players = new Array();
     this.each(function() {
-        var mediatags = $(this).find('video, audio');
+        var mediatags = $(this).find('video,audio');
+        if (mediatags.length == 0) {
+            /* navigate MSIE8 around a bug (?) introduced in jquery 1.4.4 (does not recognize audio or video) 
+            that seems partly fixed in jquery 1.5.1 (does not recognize "video, audio" but recognizes them solo) */
+            mediatags = $(this).find('video');
+            var audiotags = $(this).find('audio');
+            $.merge(mediatags, audiotags);
+        }
         $.each(mediatags, function(i, mt) {
-
             var sources = $(mt).find('source');
             if (sources.length == 0) {
                 /* this may work in older MSIE versions  */
