@@ -77,7 +77,9 @@ jQuery.fn.oiplayer = function(settings) {
                 $(div).find('div.player').empty();
                 $(div).find('div.player').append(player.player);
             }
-            
+            if (isIpad() && player.type == 'audio') {
+                $(mt).hide();   /* hide audio tag on iPad */
+            }
             /* if ($.browser.msie && (player.myname.indexOf('cortado') > -1 || player.myname == 'flowplayer')) {
                 $(div).parents().find('p.oiplayer-warn').hide();
             } */
@@ -124,7 +126,12 @@ jQuery.fn.oiplayer = function(settings) {
                         player.ctrlspos = 'bottom';
                     }
                 }
-                $(player.ctrls).css('margin-left', Math.round( (player.width - controlsWidth(player)) / 2) + 'px');
+                var ctrlsWidth = controlsWidth(player);
+                if (player.type == 'video') {
+                    $(player.ctrls).css('margin-left', Math.round( (player.width - ctrlsWidth) / 2) + 'px');
+                } else {
+                    $(player.ctrls).css('margin-left', '0px');
+                }
             }
             
             if (player.url == undefined) {  // no compatible sources to play
