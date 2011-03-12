@@ -155,7 +155,6 @@ div.oipcontrols div.back {
     background: url(images/slider11-long.png) right 0 no-repeat;
     pointer-events: auto;
 }
-
 div.oipcontrols div.loaded {
     background: url(images/slider11-long.png) right -25px no-repeat;
     pointer-events: auto;
@@ -166,19 +165,19 @@ div.oipcontrols div.played
 	pointer-events: none;
 }
 /* dark */
-div.oipcontrols.dark div.progress.changed div.oiprogress {
-    background: url(images/slider11-long.png) left -50px no-repeat;
-}
-div.oipcontrols.dark div.back {
-    background: url(images/slider11-long.png) right 0 no-repeat;
-}
-div.oipcontrols.dark div.played
-{
-	background: url(images/slider11-long.png) right -50px no-repeat;
-}
-div.oipcontrols.dark div.loaded {
-    background: url(images/slider11-long.png) right -25px no-repeat;
-}
+div.oipcontrols.dark div.progress.changed div.oiprogress { background: url(images/slider11-long.png) left -50px no-repeat; }
+div.oipcontrols.dark div.back { background: url(images/slider11-long.png) right 0 no-repeat; }
+div.oipcontrols.dark div.loaded { background: url(images/slider11-long.png) right -25px no-repeat; }
+div.oipcontrols.dark div.played { background: url(images/slider11-long.png) right -50px no-repeat; }
+/* ios: bit different color scheme */
+div.oipcontrols.ios div.back { background: url(images/slider11-long.png) right -25px no-repeat; }
+div.oipcontrols.ios div.loaded { background: url(images/slider11-long.png) right -50px no-repeat; }
+div.oipcontrols.ios div.player { background: url(images/slider11-long.png) right -75px no-repeat; }
+div.oipcontrols.ios.dark div.back { background: url(images/slider11-long.png) right 0 no-repeat; }
+div.oipcontrols.ios.dark div.loaded { background: url(images/slider11-long.png) right -25px no-repeat; }
+div.oipcontrols.ios.dark div.played { background: url(images/slider11-long.png) right -50px no-repeat; }
+
+
 div.oipcontrols div.oiprogress-container
 {
 	left: 0;
