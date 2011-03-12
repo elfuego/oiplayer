@@ -78,7 +78,7 @@ jQuery.fn.oiplayer = function(settings) {
                 $(div).find('div.player').append(player.player);
             }
             if (isIpad() && player.type == 'audio') {
-                $(mt).hide();   /* hide audio tag on iPad */
+                $(mt).css('height', '0px').hide();   /* hide audio tag on iPad */
             }
             /* if ($.browser.msie && (player.myname.indexOf('cortado') > -1 || player.myname == 'flowplayer')) {
                 $(div).parents().find('p.oiplayer-warn').hide();
