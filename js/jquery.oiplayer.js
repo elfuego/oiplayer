@@ -629,7 +629,7 @@ $.oiplayer = {
                 i++;
             }
             /* player is paused while scrubbing */
-            if (player.state != 'pause') {  
+            if (player.state != 'pause' && player.state != 'ended') {  
                 $.oiplayer.position(player, pos); 
             }
             if (i > 999) {
@@ -1039,7 +1039,7 @@ FlowPlayer.prototype.create = function(el, url, config) {
         });
         clip.onStart(function() {
             /* seems duration is not available until start: http://flowplayer.org/forum/3/18755 */
-            var fd = parseInt(self.player.getClip().fullDuration, 10);
+            var fd = self.player.getClip().fullDuration;
             if (fd > 0) { self.duration = fd; }
             if (self.state == 'init') { $.oiplayer.follow(self); }
             $(self.div).find('div.play').addClass('pause');
