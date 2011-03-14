@@ -80,9 +80,9 @@ jQuery.fn.oiplayer = function(settings) {
             if (isIpad() && player.type == 'audio') {
                 $(mt).css('height', '0px').hide();   /* hide audio tag on iPad */
             }
-            /* if ($.browser.msie && (player.myname.indexOf('cortado') > -1 || player.myname == 'flowplayer')) {
-                $(div).parents().find('p.oiplayer-warn').hide();
-            } */
+            if ($.browser.msie && (player.myname.indexOf('cortado') > -1 || player.myname == 'flowplayer')) {
+                $(current).find('.html5warning').hide();
+            }
             
             var poster = createPoster(div, player);
             $(div).prepend(poster);
@@ -431,7 +431,6 @@ jQuery.fn.oiplayer = function(settings) {
      * @param urls  media links
      */
     function selectPlayer(el, types, urls) {
-        //alert("types: " + types);
         var proposal = new Object();
         var probably = canPlayMedia(types, urls);
         if (probably != undefined) {
@@ -465,7 +464,7 @@ jQuery.fn.oiplayer = function(settings) {
         if (proposal.type == undefined) {
             var flash_url;
             for (var i = 0; i < types.length; i++) {
-                if (types[i].indexOf("video/flv") || types[i].indexOf("video/x-flv")) {
+                if (types[i].indexOf("video/flv") > -1 || types[i].indexOf("video/x-flv") > -1) {
                     proposal.url = urls[i];
                     proposal.type = "flash";
                     return proposal;
@@ -1006,12 +1005,12 @@ FlowPlayer.prototype.init = function(el, url, config) {
 FlowPlayer.prototype.create = function(el, url, config) {
     var flwplayer = config.server + config.flash;
     var duration = (this.duration == undefined ? 0 : Math.round(this.duration));
-    var ctrls;
+    /* var ctrls;
     if (this.controls) {
         ctrls = { height: 24, autoHide: 'always', hideDelay: 2000, fullscreen: false };
     } else {
         ctrls = null;
-    }
+    } */
     
     this.player = $f(el, { src: flwplayer, width: this.width, height: this.height, wmode: 'opaque' }, {
         clip: {
@@ -1022,7 +1021,7 @@ FlowPlayer.prototype.create = function(el, url, config) {
             //autoBuffering: true
             bufferLength: 5
         },
-        plugins: { controls: ctrls }
+        plugins: { controls: null }
     });
     
     if (config.controls) {
