@@ -1005,12 +1005,6 @@ FlowPlayer.prototype.init = function(el, url, config) {
 FlowPlayer.prototype.create = function(el, url, config) {
     var flwplayer = config.server + config.flash;
     var duration = (this.duration == undefined ? 0 : Math.round(this.duration));
-    /* var ctrls;
-    if (this.controls) {
-        ctrls = { height: 24, autoHide: 'always', hideDelay: 2000, fullscreen: false };
-    } else {
-        ctrls = null;
-    } */
     
     this.player = $f(el, { src: flwplayer, width: this.width, height: this.height, wmode: 'opaque' }, {
         clip: {
