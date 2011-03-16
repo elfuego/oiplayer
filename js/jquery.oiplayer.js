@@ -127,7 +127,7 @@ jQuery.fn.oiplayer = function(settings) {
                     }
                 }
                 var ctrlsWidth = controlsWidth(player);
-                if (player.type == 'video') {
+                if (player.type == 'video' || $(player.div).find('img').length > 0) {
                     $(player.ctrls).css('margin-left', Math.round( (player.width - ctrlsWidth) / 2) + 'px');
                 } else {
                     $(player.ctrls).css('margin-left', '0px');
