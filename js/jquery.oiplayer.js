@@ -784,6 +784,17 @@ MediaPlayer.prototype.init = function(el, url, config) {
                      }
                 }
             }, false);
+        this.player.addEventListener("canplaythrough", 
+            function(ev) {
+                if (self.player.buffered && self.player.buffered.length > 0) {
+                     var buf = self.player.buffered.end(0);
+                     if (buf > self.buffered) { 
+                          self.buffered = buf; 
+                          var perc = (buf / self.duration) * 100 + '%';
+                          $(self.ctrls).find('div.loaded').width(perc);
+                     }
+                }
+            }, false);
         this.player.addEventListener("loadeddata", 
             function(ev) {  /* FF will support this in v4 */
                 if (self.player.buffered && self.player.buffered.length > 0) {
