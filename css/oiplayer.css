@@ -133,6 +133,11 @@ div.oipcontrols > div.sound { width: 21px; right: 6px; }
 div.oiplayer.audio div.progress { right: 100px; }   /* 10px margin left and right */
 div.oiplayer.audio div.timeleft { right: 30px; }   /* 10px margin left and right */
 
+/* on iOS sound (iPad) or screen (iPhone) are hidden */
+div.oipcontrols.ios > div.progress { right: 100px; }
+div.oipcontrols.ios > div.timeleft { right: 30px; }
+div.oipcontrols.ios > div.screen { right: 6px; }
+
 
 div.oipcontrols div.progress div.oiprogress  { 
     background: url(images/slider11-long.png) left -50px no-repeat;
