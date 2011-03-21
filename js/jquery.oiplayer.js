@@ -77,7 +77,7 @@ jQuery.fn.oiplayer = function(settings) {
                 $(div).find('div.player').empty();
                 $(div).find('div.player').append(player.player);
             }
-            if (isIpad() && player.type == 'audio') {
+            if ((isIpad() || isIphone()) && player.type == 'audio') {
                 $(mt).css('height', '0px').hide();   /* hide audio tag on iPad */
             }
             if ($.browser.msie && (player.myname.indexOf('cortado') > -1 || player.myname == 'flowplayer')) {
@@ -742,7 +742,7 @@ Player.prototype._init = function(el, url, config) {
     if (this.autobuffer == undefined) this.autobuffer = false;
     this.controls = $(this.player).attr('controls');
     if (this.controls == undefined) this.controls = false;
-    this.duration = 0;  /* set it to 0 to avoid NaN's */
+    if (this.duration == undefined) this.duration = 0;
     this.width = $(this.player).attr('width') > 0 ? parseInt($(this.player).attr('width')) : 320;
     if (this.type == 'audio') {
         var default_height = 32;
