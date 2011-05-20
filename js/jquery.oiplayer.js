@@ -44,9 +44,9 @@ jQuery.fn.oiplayer = function(settings) {
     };
     if (settings) $.extend(config, settings);
     
-    var current = this;
     var players = new Array();
     this.each(function() {
+        var current = this;
         var mediatags = $(this).find('video,audio');
         if (mediatags.length == 0) {
             /* navigate MSIE8 around a bug (?) introduced in jquery 1.4.4 (does not recognize audio or video) 
@@ -60,6 +60,7 @@ jQuery.fn.oiplayer = function(settings) {
             if (sources.length == 0) {
                 /* this may work in older MSIE versions  */
                 sources = $(current).find('source');
+                //alert("src: " + $(sources).attr('src'));
             }
             
             /* video/audio tag is wrapped in a div */
