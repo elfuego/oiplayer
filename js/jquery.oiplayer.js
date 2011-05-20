@@ -1024,30 +1024,47 @@ FlowPlayer.prototype.create = function(el, url, config) {
             autoPlay: this.autoplay,
             duration: duration,
             scaling: 'fit',
-            //autoBuffering: true
-            bufferLength: 5
+            autoBuffering: true
+            //bufferLength: 3
         },
         plugins: { controls: null }
     });
     
     if (config.controls) {
         var self = this;
+        var clip = this.player.getCommonClip();
         this.player.onMute(function() {
             $(self.div).find('div.sound').addClass('muted');
         });
         this.player.onUnmute(function() {
             $(self.div).find('div.sound').removeClass('muted');
         });
-        var clip = this.player.getCommonClip();
+        this.player.onLoad(function() {
+            setInterval(function() {
+                if (self.duration < 1) {
+                    var fd = self.player.getCommonClip().fullDuration;
+                    try {
+                        var fd = self.player.getCommonClip().fullDuration;
+                    } catch(err) { }
+                    if (fd > 0) { self.duration = fd; }
+                }
+                try {
+                    var bufferStatus = self.player.getStatus().bufferEnd;
+                    var perc = (bufferStatus / self.duration) * 100;
+                    perc = perc + "%";
+                    $(self.div).find('div.loaded').width(perc);
+                } catch(err) { }
+            }, 1000);
+        });
         clip.onBufferFull(function() {  
             /* means enough buffer to play (not necessarily completely downloaded, fp has no means to track progress) */
-            $(self.div).find('div.loaded').width('100%');
+            //$(self.div).find('div.loaded').width('100%');
         });
         clip.onStart(function() {
             /* seems duration is not available until start: http://flowplayer.org/forum/3/18755 */
             var fd = self.player.getClip().fullDuration;
             if (fd > 0) { self.duration = fd; }
-            if (self.state == 'init') { $.oiplayer.follow(self); }
+            if (self.state == 'init' && self.duration > 0) { $.oiplayer.follow(self); }
             $(self.div).find('div.play').addClass('pause');
         });
         clip.onPause(function() {
@@ -1068,12 +1085,21 @@ FlowPlayer.prototype.create = function(el, url, config) {
     return this.player;
 }
 FlowPlayer.prototype.play = function() {
+    /* flowplayer states:
+    -1	unloaded
+    0	loaded
+    1	unstarted
+    2	buffering
+    3	playing
+    4	paused
+    5	ended */
     if (this.player.getState() == 4) {
         this.player.resume();
-    } else if (this.player.getState() != 3) {
+        this.state = 'play';
+    } else if (! this.player.isPlaying()) {
         this.player.play();
+        this.state = 'play';
     }
-    this.state = 'play';
 }
 FlowPlayer.prototype.pause = function() {
     if (this.player.getState() == 3) this.player.pause();
