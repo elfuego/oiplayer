@@ -1,3 +1,8 @@
-﻿This will become the README. 
+﻿README
 
-I have moved OIPlayer from the Open Images project in MMBase svn to this location in github to make it easier to manage as a separate project. 
+OIPlayer is a HTML5 audio and video player with fallback to Java and Flash. It is originally developed for the open media platform Open Images: http://www.openimages.eu
+
+OIPlayer 'attaches' itself to all video and/or audio tags it encounters. Besides the general configuration of the plugin itself, it uses for each individual tag the attributes the respective tag has like poster, width, controls, autoplay etc. It is easy to implement.
+
+13-07-2011
+I moved OIPlayer from the Open Images project in MMBase svn to this location in github to make it easier to manage as a separate project. 
