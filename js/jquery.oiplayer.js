@@ -654,7 +654,9 @@ $.oiplayer = {
         }
         if (player.state == 'init') { $(player.div).trigger("oiplayerplay", [player]); }
         player.play();
-        $.oiplayer.msg(player, "Playing... " + player.info + " (" + player.duration + ")");
+        if (config.log == 'info') {
+            $.oiplayer.msg(player, "Playing... " + player.info + " (" + player.duration + ")");
+        }
     },
     
     
@@ -1073,7 +1075,7 @@ FlowPlayer.prototype.create = function(el, url, config) {
                     }
                 } else {
                     clearInterval(checkDuration);
-                    $.oiplayer.msg(self, "set duration: " + self.duration);
+                    if (config.log == 'info') { $.oiplayer.msg(self, "set duration: " + self.duration); }
                     try {
                         var bufferStatus = self.player.getStatus().bufferEnd;
                         var perc = (bufferStatus / self.duration) * 100;
