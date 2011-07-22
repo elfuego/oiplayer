@@ -654,7 +654,7 @@ $.oiplayer = {
         }
         if (player.state == 'init') { $(player.div).trigger("oiplayerplay", [player]); }
         player.play();
-        if (config.log == 'info') {
+        if (player.config.log == 'info') {
             $.oiplayer.msg(player, "Playing... " + player.info + " (" + player.duration + ")");
         }
     },
