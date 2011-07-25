@@ -31,13 +31,12 @@
  *       'log' : when your specify 'info' some debug messages are shown about the media playing 
  *
  * @changes: replaced jquery.ui.slider with "own" scrubber, improved controls
- * @version: '$Id: jquery.oiplayer.js 45848 2011-07-18 15:44:41Z andre $'
 */
 
 jQuery.fn.oiplayer = function(settings) {
     var config = {
         server : 'http://www.openimages.eu',
-        jar : '/oiplayer/cortado-ovt-stripped-wm_r38710.jar',
+        jar : '/oiplayer/plugins/cortado-ovt-stripped-0.6.0.jar',
         flash : '/oiplayer/plugins/flowplayer-3.1.5.swf',
         controls : true,
         log: 'error'
@@ -969,8 +968,12 @@ CortadoPlayer.prototype.mute = function() {
     $.oiplayer.msg(this, "Sorry. Cortado currently does not support changing volume with Javascript.");
 }
 CortadoPlayer.prototype.position = function() {
-    this.pos = this.player.getPlayPosition();
+    if (this.state != 'init') {
+        this.pos = this.player.getPlayPosition();
     return this.pos;
+    } else {
+        return 0;
+    }
 }
 CortadoPlayer.prototype.seek = function(pos) {
     // doSeek(double pos); seek to a new position, must be between 0.0 and 1.0.
