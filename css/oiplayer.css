@@ -129,6 +129,7 @@ div.oipcontrols > div.progress { left: 83px; right: 122px; }   /* 10px margin le
 div.oipcontrols > div.timeleft { width: 55px; right: 54px; text-align: left; /* 115 */ }
 div.oipcontrols > div.screen { width: 21px; right: 33px; /* 54 */ }
 div.oipcontrols > div.sound { width: 21px; right: 6px; }
+div.oipcontrols > div.sound > div.volume { width: 80px; height: 12px; display: hidden; right: 4px; top: -10px; }
 
 div.oiplayer.audio div.progress { right: 100px; }   /* 10px margin left and right */
 div.oiplayer.audio div.timeleft { right: 30px; }   /* 10px margin left and right */
@@ -158,10 +159,12 @@ div.oipcontrols div.bar {
 div.oipcontrols div.back {
     width: 100%;
     background: url(images/slider11-long.png) right 0 no-repeat;
+    margin-right: 6px;
     pointer-events: auto;
 }
 div.oipcontrols div.loaded {
     background: url(images/slider11-long.png) right -25px no-repeat;
+    margin-right: 6px;
     pointer-events: auto;
 }
 div.oipcontrols div.played

@@ -37,7 +37,7 @@ jQuery.fn.oiplayer = function(settings) {
     var config = {
         server : 'http://www.openimages.eu',
         jar : '/oiplayer/plugins/cortado-ovt-stripped-0.6.0.jar',
-        flash : '/oiplayer/plugins/flowplayer-3.1.5.swf',
+        flash : '/oiplayer/plugins/flowplayer-3.2.7.swf',
         controls : true,
         log: 'error'
     };
@@ -182,10 +182,13 @@ jQuery.fn.oiplayer = function(settings) {
                 fullscreen(pl);
             });
             
+            $(pl.ctrls).find('div.back').click(function(ev){
+                jumpScrubberOnClick(pl, ev);
+            });
             $(pl.ctrls).find('div.loaded').click(function(ev){
                 jumpScrubberOnClick(pl, ev);
             });
-            $(pl.ctrls).find('div.back').click(function(ev){
+            $(pl.ctrls).find('div.played').click(function(ev){
                 jumpScrubberOnClick(pl, ev);
             });
             $(pl.ctrls).find('div.pos a').click(function(ev){ ev.preventDefault(); });
@@ -369,7 +372,7 @@ jQuery.fn.oiplayer = function(settings) {
         if (player.myname == 'flowplayer') {
             player.create(fp_id, player.url, player.config);    // recreate fp with id
             setTimeout(function() { 
-                player.seek(pos) 
+                player.seek(pos); 
                 if (state == 'play') { player.play(); }
             }, 1000);  // give fp time to reload
         }
@@ -461,7 +464,7 @@ jQuery.fn.oiplayer = function(settings) {
                 }
             }
         }
-        if (proposal.type == undefined) {
+        if (proposal.type == undefined || proposal.type.indexOf('cortado') > -1) {
             var flash_url;
             for (var i = 0; i < types.length; i++) {
                 if (types[i].indexOf("video/flv") > -1 || types[i].indexOf("video/x-flv") > -1) {
@@ -893,7 +896,10 @@ MediaPlayer.prototype.position = function() {
     return -1;
 }
 MediaPlayer.prototype.seek = function(pos) {
+    // TODO: investigate pause() and play() needed?
+    this.player.pause();
     this.player.currentTime = pos;   // float
+    this.player.play();
 }
 MediaPlayer.prototype.info = function() {
     /*  duration able in webkit, 
@@ -970,7 +976,7 @@ CortadoPlayer.prototype.mute = function() {
 CortadoPlayer.prototype.position = function() {
     if (this.state != 'init') {
         this.pos = this.player.getPlayPosition();
-    return this.pos;
+        return this.pos;
     } else {
         return 0;
     }
