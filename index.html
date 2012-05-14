@@ -5,7 +5,7 @@
   <title>OIPlayer jQuery Plugin - Open Images Platform</title>
   <script src="js/jquery-1.5.1.min.js" type="text/javascript"><!-- help ie --></script>
   <script src="plugins/flowplayer-3.2.6.min.js" type="text/javascript"><!-- help ie --></script>
-  <script src="js/jquery.oiplayer.new.js" type="text/javascript"><!-- help ie --></script>
+  <script src="js/jquery.oiplayer.js" type="text/javascript"><!-- help ie --></script>
   <link href="css/oiplayer.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript">
   $(document).ready(function() {
@@ -24,19 +24,22 @@
   <h1>OIPlayer jQuery plugin</h1>
   <h2>HTML5 audio and video player with fallback to Java and Flash</h2>
   
-  <div id="clientcaps">  </div> <!-- div#clientcaps is needed for Java detection in MSIE -->
-  <video 
-    class="oip_ea_duration_101 oip_ea_start_0" 
-    width="512" height="288"
-    poster="http://www.openbeelden.nl/images/39992/WEEKNUMMER364-HRE0000D9C6.png">
-    <source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/9734.9730.WEEKNUMMER364-HRE0000D9C6.ogv"  />
-    <source type="video/mp4; codecs=h264" src="http://www.openimages.eu/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4" />
-    <source type="application/x-mpegurl" src="http://www.openbeelden.nl/files/09/35026.9730.WEEKNUMMER364-HRE0000D9C6.m3u8" />
-    You need a browser that understands the html5 video tag to play this item.
-  </video>
-  <p class="license">
-    video: <a href="http://www.openimages.eu/users/beeldengeluid">Beeld en Geluid</a> licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/nl/deed.en">Creative Commons - Attribution-Share Alike</a>
-  </p>
+  <!-- div#clientcaps is needed for Java detection in MSIE -->
+  <div id="clientcaps">  </div> 
+  
+  <!-- video directly copied from http://www.openimages.eu/media/9728#share with added width and height attributes -->
+  <div xmlns:dct="http://purl.org/dc/terms/" xmlns:cc="http://creativecommons.org/ns#" class="oip_media" about="http://www.openimages.eu/files/09/88068.9730.WEEKNUMMER364-HRE0000D9C6.webm">
+    <video width="512" height="288" poster="http://www.openimages.eu/images/67506/WEEKNUMMER364-HRE0000D9C6.png" controls="controls">
+      <source type="video/webm; codecs=mpeg2" src="http://www.openimages.eu/files/09/88068.9730.WEEKNUMMER364-HRE0000D9C6.webm" />
+      <source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/9734.9730.WEEKNUMMER364-HRE0000D9C6.ogv" />
+      <source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/88071.9730.WEEKNUMMER364-HRE0000D9C6.ogv" />
+      <source type="video/mp4" src="http://www.openimages.eu/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4" />
+      <source type="video/mp4; codecs=mpeg2" src="http://www.openimages.eu/files/09/88065.9730.WEEKNUMMER364-HRE0000D9C6.mp4" />
+      <source type="application/x-mpegurl" src="http://www.openimages.eu/files/09/35026.9730.WEEKNUMMER364-HRE0000D9C6.m3u8" />
+      <source type="application/x-mpegurl" src="http://www.openimages.eu/files/09/88074.9730.WEEKNUMMER364_HRE0000D9C6.m3u8" />
+    </video>
+    <span class="license"><a href="http://www.openimages.eu/media/9728" rel="cc:attributionURL" property="dct:title">Storm</a>, by <a href="http://www.openbeelden.nl/users/beeldengeluid" rel="dct:creator" property="cc:attributionName">Polygoon-Profilti (producer) / Netherlands Institute for Sound and Vision (curator)</a>, is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/deed.en" rel="license">Creative Commons – Attribution-Share Alike</a>.</span>
+  </div>
   <p>
     This video on Open Images <a href="http://www.openimages.eu/media/9728/Storm">http://www.openimages.eu/media/9728/Storm</a>.<br />
     OIPlayer 'attaches' itself to all video and/or audio tags it encounters. 
@@ -54,9 +57,6 @@ $(document).ready(function() {
     <li>
       <a href="http://scm.mmbase.org/view/openimages/trunk/src/main/webapp/oiplayer/">Download
       the most recente version</a> from our svn repository; or
-    </li>
-    <li><a href="http://plugins.jquery.com/files/oiplayer-1.1.1.tar.gz">OIPlayer v1.1.1 (gz)</a>
-    from it's <a href="http://plugins.jquery.com/project/oiplayer">jQuery's Plugins projectpage</a>
     </li>
   </ul>
   <h3>Features</h3>
