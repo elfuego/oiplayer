@@ -48,4 +48,4 @@ The above configuration covers something like 99% of all current browsers. Maybe
 History
 
 13-07-2011
-I moved OIPlayer from the Open Images project in MMBase svn to this <https://github.com/elfuego/oiplayer> location in github to make it easier to manage as a separate project. 
+I moved OIPlayer from the Open Images project in MMBase svn to this <https://github.com/elfuego/oiplayer> location in github to make it a bit easier to experiment with its code. 
