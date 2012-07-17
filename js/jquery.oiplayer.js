@@ -165,7 +165,7 @@
                 
                 /* would be fairer to attach oiplayer as data to controls? (always present?) */
                 if (mediaId != undefined && mediaId.length > 0) {
-                    console.log("data mediaId: " + mediaId);
+                    //console.log("data mediaId: " + mediaId);
                     $('#' + mediaId).data('oiplayer', { player : player });
                 }
     
