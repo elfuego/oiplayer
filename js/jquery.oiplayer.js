@@ -112,14 +112,11 @@
                         $(mt).after(controlsHtml(player));
                         player.ctrls = $(mt).next('div.oipcontrols');
                         $(player.ctrls).addClass('ios');
-                        
                     } else {
-                        $(player.div).append(controlsHtml(player));
-                        player.ctrls = $(player.div).find('div.oipcontrols');
-                        
+                        $(div).append(controlsHtml(player));
+                        player.ctrls = $(div).find('div.oipcontrols');
                         $(mt).removeAttr('controls');
                     }
-                    
                     if (config.controls == true) {
                         $(div).height( $(div).height() + 30 );  // due to some quirk in webkit
                         player.ctrlspos = 'bottom';
@@ -195,24 +192,27 @@
                     //console.log("player state: " + pl.state);
                 });
     
+                methods.volume(pl, 100);    // volume slider at 100%
                 $(pl.ctrls).find('div.sound a').click(function(ev){
                     ev.preventDefault();
                     $(pl.ctrls).find('div.sound').toggleClass('muted');
                     pl.mute();
                 });
-                $(pl.ctrls).find('div.sound a').hover(function(ev){
+                $(pl.ctrls).find('div.volume').click(function(ev){
                     ev.preventDefault();
-                    $(pl.ctrls).find('div.volume').show();
+                    setVolumeFromSliderClick(pl, ev, this);
                 });
+                $(pl.ctrls).find('div.volume div.thumb > div').mousedown(function(ev){
+                    ev.preventDefault();
+                    setVolumeFromThumbScrub(pl, ev, this);
+                });
+
                 $(pl.ctrls).find('div.screen a').click(function(ev){
                     ev.preventDefault();
                     fullscreen(pl);
                 });
                 
-                $(pl.ctrls).find('div.loaded').click(function(ev){
-                    jumpScrubberOnClick(pl, ev);
-                });
-                $(pl.ctrls).find('div.back').click(function(ev){
+                $(pl.ctrls).find('div.loaded, div.back').click(function(ev){
                     jumpScrubberOnClick(pl, ev);
                 });
                 $(pl.ctrls).find('div.pos a').click(function(ev){ ev.preventDefault(); });
@@ -255,15 +255,14 @@
             player.scrubStart = $(self).offset()['left'];   // self is .push
             
             $(player.div).mousemove(function(ev) {
-                ev.preventDefault();
+                //ev.preventDefault();
                 updateScrubber(player, ev);
             });
             $(player.div).mouseup(function(ev) {
-                ev.preventDefault();
+                //ev.preventDefault();
                 $(player.ctrls).find('div.pos a').css("background-position", "0 -75px");
                 endScrubbing(player, ev);
             });
-     
         }
         
         function updateScrubber(player, ev) {
@@ -305,8 +304,28 @@
             player.seek(seek);
         }
         
-        function changeVolume(player, ev) {
-            
+        function setVolumeFromSliderClick(player, ev, el) {
+            var iwi = $(el).innerWidth();
+            var x = Math.max(Math.min(ev.pageX - $(el).offset()['left'], iwi), 0);
+            var vol = (x / iwi) * 100;
+            methods.volume(player, vol);    // updates player and interface
+        }
+        function setVolumeFromThumbScrub(player, ev, el) {
+            var iwi = $(player.ctrls).find('div.volume').innerWidth();
+            var startV = player.volume();
+            var startX = ev.pageX;
+
+            $(player.div).mousemove(function(e){
+                var del = e.pageX - startX;
+                var vol = startV + ((del / iwi) * 100);
+                methods.volume(player, vol);
+            });
+            $(player.div).mouseup(function(e){
+                $(player.div).unbind("mousemove").unbind("mouseleave").unbind("mouseup");
+            });
+            $(player.div).mouseleave(function(e){
+                $(player.div).unbind("mousemove").unbind("mouseleave").unbind("mouseup");
+            });
         }
         
         function fullscreen(player) {
@@ -581,7 +600,7 @@
                 return '<img class="preview ' + player.type + '" src="' + src + '" width="' + player.width + '" height="' + player.height + '" alt="click to play" title="click to play" />';
             }
         }
-            
+
         function controlsHtml(player) {
             var html = '<div class="oipcontrols">' + 
                           '<div class="play"><a href="#play">play</a></div>' +
@@ -591,14 +610,15 @@
                           '</div>' +
                           '<div class="timeleft">-' + (player.position() > 0 ? methods.totime(player.duration - player.position()) : methods.totime(player.duration)) + '</div>' +
                           (player.type == 'video' && !isIphone() ? '<div class="screen"><a href="#fullscreen">fullscreen</a></div>' : '') + 
-                          (isIpad() ? '' : '<div class="sound"><a href="#sound">mute</a><div class="slider"><div class="fill"></div><div class="thumb"></div></div></div></div>') + 
-                          '<div class="volume">' +
-                            '<div class="slider"><div class="fill"></div><div class="volpos"></div></div></div>' + 
-                          '</div>' +
+                          (isIpad() ? '' : '<div class="sound">' +
+                            '<a href="#sound">mute</a>' +
+                            '<div class="volume"><div class="slider">' +
+                              '<div class="fill"><!-- empty --></div><div class="thumb"><div><!-- empty --></div></div>' +
+                            '</div></div>' +
+                          '</div>') + 
                        '</div>';
             return html;
-        }
-    
+        }    
         function controlsWidth(player) {
             if (player.ctrlspos == 'top') {
                 var controls_width = player.width - 32;
@@ -702,9 +722,16 @@
      * @param player    Object of player or id
      * @param vol       Volume between 0 - 100
      */
-    volume: function (player, vol) {
+    volume: function (player, v) {
         if (player.myname == undefined) player = methods.player(player);
-        player.volume(vol);
+        if (v == undefined) {
+            return player.volume();
+        } else {
+            var vol = Math.max(Math.min(v, 100), 0);
+            player.volume(vol);
+            $(player.ctrls).find('div.volume div.fill').css('width', vol + '%');
+            $(player.ctrls).find('div.volume div.thumb > div').css('left', vol + '%');
+        }
     },
     
     /* 
@@ -975,7 +1002,7 @@ MediaPlayer.prototype.init = function(el, url, config) {
             }, false);
         this.player.addEventListener("volumechange", 
             function(ev) {
-                if (self.player.muted) { 
+                if (self.player.muted || self.volume() == 0) { 
                     $(self.ctrls).find('div.sound').addClass('muted');
                 } else {
                     $(self.ctrls).find('div.sound').removeClass('muted');
@@ -1006,10 +1033,8 @@ MediaPlayer.prototype.pause = function() {
 MediaPlayer.prototype.mute = function() {
     if (this.player.muted) {
         this.player.muted = false;
-        //this.player.volume = 1.0;
     } else {
         this.player.muted = true;
-        //this.player.volume = 0;
     }
 }
 MediaPlayer.prototype.position = function() {
@@ -1028,8 +1053,12 @@ MediaPlayer.prototype.seek = function(pos) {
     //this.player.play();
 }
 MediaPlayer.prototype.volume = function(v) {
-    // html5 has range 0.0 to 1.0, we use as in flowplayer it is 0-100
-    this.player.volume = Math.min(Math.max(v/100, 0), 1);
+    // html5 has range 0.0 to 1.0, we use as in flowplayer 0 - 100
+    if (v == undefined) {
+        return this.player.volume * 100;
+    } else {
+        this.player.volume = Math.min(Math.max(v/100, 0), 1);
+    }
 }
 MediaPlayer.prototype.info = function() {
     /*  duration able in webkit, 
@@ -1177,13 +1206,12 @@ FlowPlayer.prototype.init = function(el, url, config) {
     var mediaId = $(el).attr('id');
     $(div).attr('id', mediaId); // move id to other element cause video tag is replaced with flash
     $(div).addClass('player');
-    
     return this.create(div, url, config);
 }
 FlowPlayer.prototype.create = function(el, url, config) {
     var flwplayer = config.server + config.flash;
     var duration = (this.duration == undefined ? 0 : Math.round(this.duration));
-    
+    //alert('appending to ' + $(el).attr('class'));
     this.player = $f(el, { src: flwplayer, width: this.width, height: this.height, wmode: 'opaque' }, {
         clip: {
             url: this.url,
@@ -1204,6 +1232,13 @@ FlowPlayer.prototype.create = function(el, url, config) {
         });
         this.player.onUnmute(function() {
             $(self.div).find('div.sound').removeClass('muted');
+        });
+        this.player.onVolume(function(){
+            if (self.player.getStatus().muted || self.volume() == 0) { 
+                $(self.ctrls).find('div.sound').addClass('muted');
+            } else {
+                $(self.ctrls).find('div.sound').removeClass('muted');
+            }
         });
         this.player.onLoad(function() {
             var checkDuration = null;
@@ -1306,8 +1341,12 @@ FlowPlayer.prototype.seek = function(pos) {
     this.player.seek(pos);
 }
 FlowPlayer.prototype.volume = function(v) {
-    /* in fp 0-100 */
-    this.player.setVolume(v);
+    /* in fp an integer: 0-100 */
+    if (v == undefined) {
+        return this.player.getVolume();
+    } else {
+        this.player.setVolume(v);
+    }
 }
 FlowPlayer.prototype.info = function() {
     //return "Playing: " + this.url;

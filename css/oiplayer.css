@@ -129,7 +129,7 @@ div.oipcontrols > div.progress { left: 83px; right: 122px; }   /* 10px margin le
 div.oipcontrols > div.timeleft { width: 55px; right: 54px; text-align: left; /* 115 */ }
 div.oipcontrols > div.screen { width: 21px; right: 33px; /* 54 */ }
 div.oipcontrols > div.sound { width: 21px; right: 6px; }
-div.oipcontrols > div.sound > div.volume { width: 80px; height: 12px; display: hidden; right: 4px; top: -10px; }
+div.oipcontrols > div.sound > div.volume { width: 62px; height: 12px; left: -16px; top: -12px; }
 
 div.oiplayer.audio div.progress { right: 100px; }   /* 10px margin left and right */
 div.oiplayer.audio div.timeleft { right: 30px; }   /* 10px margin left and right */
@@ -138,7 +138,6 @@ div.oiplayer.audio div.timeleft { right: 30px; }   /* 10px margin left and right
 div.oipcontrols.ios > div.progress { right: 100px; }
 div.oipcontrols.ios > div.timeleft { right: 30px; }
 div.oipcontrols.ios > div.screen { right: 6px; }
-
 
 div.oipcontrols div.progress div.oiprogress  { 
     background: url(images/slider11-long.png) left -50px no-repeat;
@@ -330,4 +329,68 @@ body.oiplayer-example > div.main .license {	font-size: 0.8em; }
 {
 	behavior: url(#default#clientCaps);
 	display: none;
+}
+
+
+
+
+
+
+/* container for the volume slider */
+.volume .slider {
+  /* top: -5px; */
+  width: 100%;
+  height: 12px;
+  background-color: #808080;
+  -webkit-box-shadow: 0px 2px 4px rgba(0,0,0,0.8);
+  /* by default does not register for pointer events
+     so that only the VOL label acts as a hover trigger */
+  pointer-events: none;
+  /* volume slider is invisible by default */
+  opacity: 0;
+  -webkit-transform: translateX(60px);
+  /* set up the opacity transition */
+  -webkit-transition-property: opacity, -webkit-transform;
+  -webkit-transition-duration: 0.25s;
+}
+
+/* matches the slider when the volume button is hovered */
+div.oipcontrols > div.sound:hover > div.volume .slider,
+div.oipcontrols > div.sound a:hover > div.volume .slider, 
+.volume:hover .slider {
+  /* turn pointer events back on so that we now only
+     hide the slider when we exit the VOL label or the slider */
+  pointer-events: auto;
+  /* show the slider */
+  opacity: 1;
+  -webkit-transform: translateX(0);
+}
+
+/* the bar filling up to the thumb position */
+.slider .fill {
+  height: 100%;
+  background-color: #333;
+}
+
+/* the container for the thumb, shorter from the overall
+   slider width by the width of the thumb so that we can
+   use percentages to position the thumb */
+.slider .thumb {
+  left: 0;
+  right: 10px;
+}
+
+/* the actual thumb element */
+.slider .thumb > div {
+  top: -1px;
+  position: absolute;
+  width: 10px;
+  height: 14px;
+  background-color: #CCCCCC;
+  -webkit-box-shadow: 0px 2px 4px rgba(0,0,0,0.8);
+}
+
+/* hover state for the thumb */
+.slider .thumb > div:hover {
+  background-color: #EAEAEA;
 }
