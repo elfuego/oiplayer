@@ -1,7 +1,7 @@
 /*
  * OIPlayer - jQuery plugin to control html5 video and audio tags and serve alternatives if needed.
  *
- * Copyright (c) 2009-2011 André van Toly
+ * Copyright (c) 2009-2012 André van Toly
  * Licensed under GPL http://www.gnu.org/licenses/gpl.html
  *
  * Inits and controls video- or audioplayer based on the html5 video- or audiotag. Depends on jquery. 
@@ -24,10 +24,11 @@
  *       'server' : server url (for Flash or Java in some browsers)
  *       'jar' : location of Cortado JAR file
  *       'flash' : location of flowplayer.swf
- *       'controls' : Use oiplayer controls or not (make sure to include jquery-ui-1.7.2.slider.js for progress slider).
- *                    Simply 'true' means show me controls below player.
- *                    Value 'top' will add a css class of that name and will hide/show controls on top of the player window.
- *                    Add a css class of your own to edit the appearance of the controls (f.e. 'top dark').
+ *       'controls' : Configure controls, per default possible values are 'true', 'top', 'white', 'dark', 'top dark' and 'top white'.
+ *                    Simply 'true' means show me controls below player,
+ *                    'top' will add a css class of that name and will hide/show controls on top of the player window,
+ *                    and 'white' and 'dark' refer to light or dark styled versions which both can be used below or on top of your video.
+ *                    Or add a css class of your own to edit the appearance of the controls.
  *       'log' : when your specify 'info' some debug messages are shown about the media playing 
  *
  * @changes: replaced jquery.ui.slider with "own" scrubber, improved controls
@@ -96,8 +97,8 @@ jQuery.fn.oiplayer = function(settings) {
                     $(player.ctrls).addClass('ios');
                     
                 } else {
-                    $(player.div).append(controlsHtml(player));
-                    player.ctrls = $(player.div).find('div.oipcontrols');
+                    $(div).append(controlsHtml(player));
+                    player.ctrls = $(div).find('div.oipcontrols');
                     
                     $(mt).removeAttr('controls');
                 }

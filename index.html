@@ -27,7 +27,7 @@
   <!-- div#clientcaps is needed for Java detection in MSIE -->
   <div id="clientcaps">  </div> 
   
-  <!-- video directly copied from http://www.openimages.eu/media/9728#share with added width and height attributes -->
+  <!-- video embed tag copied from http://www.openimages.eu/media/9728#share with added width and height attributes -->
   <div xmlns:dct="http://purl.org/dc/terms/" xmlns:cc="http://creativecommons.org/ns#" class="oip_media" about="http://www.openimages.eu/files/09/88068.9730.WEEKNUMMER364-HRE0000D9C6.webm">
     <video width="512" height="288" poster="http://www.openimages.eu/images/67506/WEEKNUMMER364-HRE0000D9C6.png" controls="controls">
       <source type="video/webm; codecs=vp8" src="http://www.openimages.eu/files/09/88068.9730.WEEKNUMMER364-HRE0000D9C6.webm" />
@@ -81,6 +81,7 @@ $(document).ready(function() {
     <li>Safari (v4.0+)</li>
     <li>Google Chrome (v5.0+)</li>
     <li>Firefox (v3.5+)</li>
+    <li>Internet Explorer (v9.0+)</li>
     <li>Internet Explorer (v6.0+) with Flash or Java installed</li>
     <li>And maybe some untested others with HTML5 support, Flash or Java installed</li>
   </ul>
@@ -122,11 +123,12 @@ $(document).ready(function() {
         <li>server: web server (msie (or windows java) has issues with finding directories)</li>
         <li>jar: location of Cortado jar</li>
         <li>flash: location of Flowplayer and its files</li>
-        <li>controls:
+        <li>controls: current possible values and combintions are 'true', 'top', 'white', 'dark', 'top dark' and 'top white'.
            <ul>   
-              <li>Simply 'true' means show controls below player.</li>
-              <li>Value 'top' will add a class of that name and will hide/show controls on top of the player window.</li>
-              <li>Add a css class of your own to edit the appearance of the controls (f.e. 'top dark').</li>
+              <li>Simply 'true' means show controls below player,</li>
+              <li>'top' will add a class of that name and will hide/show controls on top of the player window,</li>
+              <li>and 'white' and 'dark' refer to light or dark styled versions which both can be used below or on top of your video.</li>
+              <li>Or add a css class of your own to edit the appearance of the controls.</li>
             </ul>
         </li>
         <li>
