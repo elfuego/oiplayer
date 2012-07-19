@@ -27,6 +27,7 @@ For example the following video tag including sources of a webm, ogv and h.264 f
       <source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/9734.9730.WEEKNUMMER364-HRE0000D9C6.ogv"  />
       <source type="video/webm; codecs=vp8" src="http://www.openbeelden.nl/files/09/88068.9730.WEEKNUMMER364-HRE0000D9C6.webm" />
       <source type="video/mp4; codecs=h264" src="http://www.openimages.eu/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4" />
+      <source type="video/mp4; codecs=avc1.42E01E,mp4a.40.2" src="http://www.openimages.eu/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4" />
     </video>
   </div>
 
