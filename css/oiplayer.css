@@ -129,7 +129,6 @@ div.oipcontrols > div.progress { left: 83px; right: 122px; }   /* 10px margin le
 div.oipcontrols > div.timeleft { width: 55px; right: 54px; text-align: left; /* 115 */ }
 div.oipcontrols > div.screen { width: 21px; right: 33px; /* 54 */ }
 div.oipcontrols > div.sound { width: 21px; right: 6px; }
-div.oipcontrols > div.sound > div.volume { width: 80px; height: 12px; display: hidden; right: 4px; top: -10px; }
 
 div.oiplayer.audio div.progress { right: 100px; }   /* 10px margin left and right */
 div.oiplayer.audio div.timeleft { right: 30px; }   /* 10px margin left and right */
