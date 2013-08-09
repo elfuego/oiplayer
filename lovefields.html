@@ -74,7 +74,7 @@ $(document).ready(function() {
     $("a.volume").click(function(ev) {
         ev.preventDefault();
         var vol = $(ev.target).text();
-        $.fn.oiplayer('volume','myaudio', vol );
+        $.fn.oiplayer('volume','myaudio', 50);
     });
 
     // bind play event on all div's .oiplayer
@@ -102,9 +102,7 @@ $(document).ready(function() {
     <a class="start69" href="#start">jump and start at 69</a> -
     <br />
     Bit old but describes what AirPlay can do http://bit.ly/gYX5W6 + how to enable it in #html5 video tag attr. x-webkit-airplay="allow"
-    And today, that great body has purged itself of parasites.<br />
-    <a class="goto" href="#start">Start of song</a>.
-  </p>
+    And today, that great body has purged itself of parasites. </p>
   <div id="playerwithsubs">
     <video id="theplayerid" controls="controls" width="384" height="288" poster="../oiplayer-svn/lovefields.png" x-webkit-airplay="allow">
       <source type="video/mp4; codecs=h264" src="../oiplayer-svn/lovefields.mp4" />
