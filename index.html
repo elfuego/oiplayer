@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <title>OIPlayer jQuery Plugin - Open Images Platform</title>
-  <meta name="viewport" content="width=device-width" />
   <script src="js/jquery-1.5.1.min.js" type="text/javascript"><!-- help ie --></script>
   <script src="plugins/flowplayer-3.2.6.min.js" type="text/javascript"><!-- help ie --></script>
   <script src="js/jquery.oiplayer.js" type="text/javascript"><!-- help ie --></script>
@@ -51,14 +49,15 @@
   </p>
 <pre>
 $(document).ready(function() {
-    $('body').oiplayer();   // on all video and audio tags in body
+    // on all video and audio tags in body
+    $('body').oiplayer();
 });
 </pre>
   <h3>Download</h3>
   <ul>
     <li>
       <a href="http://scm.mmbase.org/view/openimages/trunk/src/main/webapp/oiplayer/">Download
-      the most recente version</a> from our svn repository.
+      the most recente version of OIPlayer</a> from our svn repository.
     </li>
   </ul>
   <h3>Features</h3>
@@ -101,10 +100,14 @@ $(document).ready(function() {
       'oiplayer' directory to your site. Include these Javascript and css files in the head of your 
       html document. Note that the 'flowplayer-3.2.6.min.js' script is only needed for FlowPlayer.
 <pre>
-&lt;script src="js/jquery-1.5.1.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
-&lt;script src="plugins/flowplayer-3.2.6.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
-&lt;script src="js/jquery.oiplayer.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
-&lt;link href="css/oiplayer.css" rel="stylesheet" type="text/css" /&gt;
+&lt;script src="js/jquery-1.5.1.min.js" 
+  type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
+&lt;script src="plugins/flowplayer-3.2.6.min.js" 
+  type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
+&lt;script src="js/jquery.oiplayer.js" 
+  type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
+&lt;link href="css/oiplayer.css" 
+  rel="stylesheet" type="text/css" /&gt;
 </pre>
     </li>
     <li>
