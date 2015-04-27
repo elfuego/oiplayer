@@ -1,7 +1,7 @@
 /*
  * OIPlayer - jQuery plugin to control html5 video and audio tags and serve alternatives if needed.
  *
- * Copyright (c) 2009-2011 André van Toly
+ * Copyright (c) 2009-2015 André van Toly
  * Licensed under GPL http://www.gnu.org/licenses/gpl.html
  *
  * Inits and controls video- or audioplayer based on the html5 video- or audiotag. Depends on jquery. 
@@ -686,6 +686,9 @@
      */
     start: function (player, pos) {
         if (player.myname == undefined) player = methods.player(player);
+        if (player.state == 'init' || player.state == 'ended' || player.fpstate == undefined) { 
+            $(player.div).trigger("oiplayerplay", [player]); 
+        }
         
         // hide preview
         if (player.type == 'video') {
@@ -703,7 +706,6 @@
             if (player.state == 'init') { methods.follow(player); }
             if (player.fpstate == undefined) { methods.follow(player); }
         }
-        if (player.state == 'init') { $(player.div).trigger("oiplayerplay", [player]); }
         player.play();
         if (player.config.log == 'info') {
             methods.msg(player, "Playing... " + player.info + " (" + player.duration + ")");
@@ -787,8 +789,10 @@
      * @param player Object of player
      */
     follow: function (player) {
-        var i = now = 0;
-        var progress = null;
+        var i = 0, 
+            now = 0,
+            progress = null;
+        player.fpstate = 'following';
         clearInterval(progress);
         progress = setInterval(function() {
             var pos = player.position();
@@ -986,11 +990,8 @@
                 }, false);
             this.player.addEventListener("playing", 
                 function(ev) {
-                    if (self.state == 'init') { /* when started outside controls */
-                        $(self.player).trigger("oiplayerplay", [self]);
-                    }
-                    if (self.state == 'init' || self.state == 'ended') {
-                        $.oiplayer.follow(self);
+                    if (self.state == 'init' || self.state == 'ended') { /* when started outside controls */
+                        $.oiplayer.start(self);
                     }
                     self.state = 'play';
                     $(self.ctrls).find('div.play').addClass('pause');
