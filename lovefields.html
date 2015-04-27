@@ -55,12 +55,11 @@ $(document).ready(function() {
     
     $("a.start").click(function(ev) {
         ev.preventDefault();
-        var myPlayer = $.fn.oiplayer('player', 'theplayerid');
         $.fn.oiplayer('start', 'theplayerid');
     });
-    $("a.goto").click(function(ev) {
+    $("a.jump").click(function(ev) {
         ev.preventDefault();
-        $.fn.oiplayer('jump','myaudio', 20 );
+        $.fn.oiplayer('jump','theplayerid', 69);
     });
     $("a.start69").click(function(ev) {
         ev.preventDefault();
@@ -74,20 +73,19 @@ $(document).ready(function() {
     $("a.volume").click(function(ev) {
         ev.preventDefault();
         var vol = $(ev.target).text();
-        $.fn.oiplayer('volume','myaudio', 50);
+        $.fn.oiplayer('volume','theplayerid', vol);
     });
-
+    
     // bind play event on all div's .oiplayer
     $('div.oiplayer').bind("oiplayerplay", function(ev, player) {
         console.log("I started playing: " + $(player.el).attr('id'));
     });
-    
 });
 </script>
 
 </head>
 <body>
-  <div id="clientcaps"></div>
+  <div id="clientcaps"><!-- just for msie and java --></div>
   <p>
     <a href="../index.html">index</a>
     <a href="lovefields.html">lovefields</a>
@@ -95,9 +93,18 @@ $(document).ready(function() {
   </p>
   
 <div id="content">
+  <p>
+  controls: what do we want (all from 'outside' of plater): 
+  start play,
+  jump to point (in sec.), start playing from there.<br />
+  tracking: (fire event?) show text at point (in sec.),
+  use 'standard' subtitle files
+  </p>
+
+
   <p> 
     <a class="start" href="#start">start</a> -    
-    <a class="goto" href="#goto">goto</a> -
+    <a class="jump" href="#goto">jump</a> -
     <a class="pause" href="#stop">stop/pauze</a> - 
     <a class="start69" href="#start">jump and start at 69</a> -
     <br />
@@ -105,34 +112,23 @@ $(document).ready(function() {
     And today, that great body has purged itself of parasites. </p>
   <div id="playerwithsubs">
     <video id="theplayerid" controls="controls" width="384" height="288" poster="../oiplayer-svn/lovefields.png" x-webkit-airplay="allow">
-      <source type="video/mp4; codecs=h264" src="../oiplayer-svn/lovefields.mp4" />
+      <source type="video/webm; codecs=vp8,vorbis" src="lovefields.webm" />
+      <source type="video/mp4; codecs=h264" src="lovefields.mp4" />
       <!-- <source type="video/ogg; codecs=theora" src="../oiplayer-svn/lovefields.ogv" /> -->
     </video>
     <div id="subs"> </div>
   </div>
   <p class="one">
     Looking into using: <a href="lovefields.srt">lovefields.srt</a> for subtitles.
-    My friends, each of you is a single cel in the <a href="#asa" class="goto">great</a> body of the State. 
   </p>
-
   
-  <p class="two">
-And today, that great body has purged itself of parasites. We have triumphed over the unprincipled dissemination of facts. The thugs and wreckers have been cast out. And the poisenous weeds of disinformation have been consigned to the dustbin of history. Let each and every cell rejoice!<br />
-For today we celebrate the first glorious anniversary of the Information Purification Directive! We have created, for the first time in all history, a garden of pure ideology, where each worker may bloom secure from the pests of contradictory and confusing truths. Our Unification of Thought is a more powerfull weapon than any fleet or army on Earth! We are one people. With one will. One resolve. One cause. Our enemies shall talk themselves to death. And we will bury them with their own confusion! 
-
-    <br />Volume: 
+  <p class="two">Volume: 
     <a class="volume" href="#volume">0</a> -
     <a class="volume" href="#volume">30</a> -
     <a class="volume" href="#volume">50</a> -
     <a class="volume" href="#volume">750</a> -
     <a class="volume" href="#volume">100</a> 
-
   </p>
-  
-  <audio id="myaudio" width="320" height="32" controls="controls" class="oip_ea_duration_139 oip_ea_start_0">
-    <source type="audio/mpeg; codecs=mp3" src="../oiplayer-svn/Goo.mp3" />
-    <source type="audio/ogg; codecs=theora" src="../oiplayer-svn/Goo.ogg" />
-  </audio>
   
 </div>
 
