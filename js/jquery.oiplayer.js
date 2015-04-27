@@ -274,7 +274,7 @@
                 seek = player.duration - 0.1; 
             }
             if (seek < 0) { seek = 0; }
-            methods.position(player, seek);
+            methods.seek(player, seek);
             player.seek(seek);
         }
     
@@ -301,7 +301,7 @@
             $(player.ctrls).find('div.oiprogress-push').animate(
                 { left: perc }, 
                 200, 
-                function() { methods.position(player, seek); }
+                function() { methods.seek(player, seek); }
             );
             player.seek(seek);
         }
@@ -751,7 +751,7 @@
             $(player.div).find('.preview').css("z-index", "1");
         }
         
-        methods.position(player, pos);
+        methods.seek(player, pos);
         player.seek(pos);
     },
     
@@ -760,7 +760,7 @@
      * @param player Object of player
      * @param pos    Position in media
      */
-    position: function(player, pos) {
+    seek: function(player, pos) {
         if (!isNaN(pos) && pos > 0) {
             var perc = (pos / player.duration) * 100;
             perc = perc + "%";
@@ -781,7 +781,15 @@
         } else {
             $(player.ctrls).find('div.progress').removeClass('changed'); 
         }
+    },
     
+    /* 
+     * Returns position of player (in seconds?) helpfull for subtitles etc. to keep track.
+     * @param   player  Object of player
+     * @returns position of player
+     */
+    position: function(player){
+        return player.position();
     },
 
     /* 
@@ -803,7 +811,7 @@
             }
             /* player is paused while scrubbing */
             if (player.state != 'pause' && player.state != 'ended') {  
-                methods.position(player, pos); 
+                methods.seek(player, pos); 
             }
             if (i > 999) {
                 clearInterval(progress);
