@@ -69,17 +69,50 @@ $(document).ready(function() {
         ev.preventDefault();
         $.fn.oiplayer('pause','theplayerid');
     });
-
     $("a.volume").click(function(ev) {
         ev.preventDefault();
         var vol = $(ev.target).text();
         $.fn.oiplayer('volume','theplayerid', vol);
     });
-    
     // bind play event on all div's .oiplayer
     $('div.oiplayer').bind("oiplayerplay", function(ev, player) {
         console.log("I started playing: " + $(player.el).attr('id'));
     });
+    
+    // try to do something with subtitles
+    /* var subsInterval = null;
+    clearInterval(subsInterval);
+    subsInterval = setInterval(function() {
+        var pos = $.fn.oiplayer('position', 'theplayerid');
+        console.log('subs ' + pos);
+        
+    }, 500); */
+    
+    var subtitles = document.getElementById('subs');
+    var video = document.getElementById('theplayerid');
+    console.log(video);
+    for (var i = 0; i < video.textTracks.length; i++) {
+        console.log('textTrack ' + i);
+        var textTrack = video.textTracks[i];
+        
+        var kind = textTrack.kind; // e.g. "subtitles"
+        //textTrack.mode = "showing";//"disabled", hidden" or "showing"
+        var mode = textTrack.mode;
+        console.log('kind: ' + kind + ', mode: ' + mode);
+        
+
+        for (var j = 0; j < textTrack.cues.length; ++j) {
+            var cue = textTrack.cues[j];
+            // do something
+            //var cue = cues[0];
+        
+            //var cueId = (cue.id != null ? cue.id : 'niks');
+            var cueText = cue.text;
+            console.log('text ' + cueText);
+        }
+    }
+    
+    
 });
 </script>
 
@@ -116,11 +149,33 @@ $(document).ready(function() {
       <source type="video/mp4; codecs=h264" src="http://www.toly.net/media/lovefields.mp4" />
       <!-- <source type="video/mp4; codecs=h264" src="../oiplayer-svn/lovefields.mp4" /> -->
       <!-- <source type="video/ogg; codecs=theora" src="../oiplayer-svn/lovefields.ogv" /> -->
+      
+      <track src="lovefields.vtt" label="English" kind="subtitles" srclang="en" default="default" />
     </video>
     <div id="subs"> </div>
   </div>
+<pre style="width:200px; float:right;">
+WEBVTT FILE
+
+1
+00:00:00.070 --> 00:00:03.000
+OK
+
+2
+00:00:09.510 --> 00:00:15.000
+This piece is called "Please Humiliate Me Mr. More"
+
+3
+00:01:07.350 --> 00:01:09.000
+_something_ *** genius
+
+4
+00:01:09.400 --> 00:01:13.000
+This song is called "Bull In The Heather"
+</pre>
+
   <p class="one">
-    Looking into using: <a href="lovefields.srt">lovefields.srt</a> for subtitles.
+    Looking into using: <a href="lovefields.vtt">lovefields.vtt</a> for subtitles.
   </p>
   
   <p class="two">Volume: 
@@ -131,13 +186,6 @@ $(document).ready(function() {
     <a class="volume" href="#volume">100</a> 
   </p>
   
-</div>
-
-<div id="hiddensubtitles">
-  <div class="start_0 end_2">OK</div>
-  <div class="start_9 end_15">This piece is called "Please Humiliate Me Mr. More"</div>
-  <div class="start_67 end_69">_something_ *** genius</div>
-  <div class="start_69 end_73">This song is called "Bull In The Heather"</div>
 </div>
 
 
