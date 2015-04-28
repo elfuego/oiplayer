@@ -1,5 +1,5 @@
 README
-============
+========
 
 OIPlayer is a jQuery plugin to create a HTML5 audio and video player with fallback to Java and Flash. It is originally being developed for the media platform [Open Images](http://www.openimages.eu)
 
@@ -43,9 +43,35 @@ Activate OIPlayer on all div's with class 'post'.
 
 The above configuration covers something like 99% of all current browsers. Maybe even the ones that existed before Flash started playing video, since it can fallback to Java with the Cortado applet that plays ogg media files. You will need to change the server name property to your own server, often browsers or their plugins dislike loading files from different servers. 
 
+## Methods ##
+
+You need to target media on which OIPlayer is enabled individually - with an id for example - like in this case with id #video.
+
+    <video id="video">
+      <source type="video/webm; codecs=vp8,vorbis" src="lovefields.webm" />
+    </video>
+
+You can jump to 60 seconds in the video with id #video.
+
+    $.fn.oiplayer('jump','video', 60);
+
+Jump to 60 seconds and immediately it.
+
+    $.fn.oiplayer('start','video', 60);
+
+Set audio volume of #video to half. This works on a scale from 0 to 100.
+
+    $.fn.oiplayer('volume','video', 50);
+
+Put it back at full volume.
+
+    $.fn.oiplayer('volume','video', 100);
 
 
-History
+### History ###
+
+28-04-2015
+I merged the event-drive branch in develop. It contains several methods to control oiplayer from 'the outside', make it 'jump' to spots several seconds in a video or audio etc. 
 
 13-07-2011
 I moved OIPlayer from the Open Images project in MMBase svn to this <https://github.com/elfuego/oiplayer> location in github to make it a bit easier to experiment with its code. 

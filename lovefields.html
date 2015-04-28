@@ -57,6 +57,10 @@ $(document).ready(function() {
         ev.preventDefault();
         $.fn.oiplayer('start', 'theplayerid');
     });
+    $("a.jump60").click(function(ev) {
+        ev.preventDefault();
+        $.fn.oiplayer('jump','theplayerid', 60);
+    });
     $("a.jump").click(function(ev) {
         ev.preventDefault();
         $.fn.oiplayer('jump','theplayerid', 69);
@@ -101,7 +105,7 @@ $(document).ready(function() {
         console.log('kind: ' + kind + ', mode: ' + mode);
         
 
-        for (var j = 0; j < textTrack.cues.length; ++j) {
+        /* for (var j = 0; j < textTrack.cues.length; ++j) {
             var cue = textTrack.cues[j];
             // do something
             //var cue = cues[0];
@@ -109,7 +113,7 @@ $(document).ready(function() {
             //var cueId = (cue.id != null ? cue.id : 'niks');
             var cueText = cue.text;
             console.log('text ' + cueText);
-        }
+        } */
     }
     
     
@@ -134,15 +138,15 @@ $(document).ready(function() {
   use 'standard' subtitle files
   </p>
 
-
   <p> 
     <a class="start" href="#start">start</a> -    
     <a class="jump" href="#goto">jump</a> -
     <a class="pause" href="#stop">stop/pauze</a> - 
+    <a class="jump60" href="#start">jumpat60</a> -
     <a class="start69" href="#start">jump and start at 69</a> -
     <br />
     Bit old but describes what AirPlay can do http://bit.ly/gYX5W6 + how to enable it in #html5 video tag attr. x-webkit-airplay="allow"
-    And today, that great body has purged itself of parasites. </p>
+    </p>
   <div id="playerwithsubs">
     <video id="theplayerid" controls="controls" width="384" height="288" poster="lovefields.png" x-webkit-airplay="allow">
       <source type="video/webm; codecs=vp8,vorbis" src="http://www.toly.net/media/lovefields.webm" />

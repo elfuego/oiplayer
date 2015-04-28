@@ -782,20 +782,6 @@
             $(player.ctrls).find('div.progress').removeClass('changed'); 
         }
     },
-    
-    /* 
-     * Returns position of player (in seconds?) helpfull for subtitles etc. to keep track.
-     * @param   player  Object of player
-     * @returns position of player
-     */
-    /* position: function(player){
-        if (player.myname == undefined) player = methods.player(player);
-        if (player.position != null) {
-            return player.position();
-        } else {
-            return 0;
-        }
-    }, */
 
     /* 
      * Follows progress of player and calls interface update
