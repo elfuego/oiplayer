@@ -55,7 +55,7 @@ You can jump to 60 seconds in the video with id #video.
 
     $.fn.oiplayer('jump','video', 60);
 
-Jump to 60 seconds and immediately it.
+Jump to 60 seconds and start immediately.
 
     $.fn.oiplayer('start','video', 60);
 
