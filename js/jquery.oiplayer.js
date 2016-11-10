@@ -40,7 +40,7 @@
 
 (function( $ ){
     
-    "use strict"
+    "use strict";
 
     var config, methods = {
     
@@ -59,7 +59,7 @@
         };
 
         var current = this;
-        var players = new Array();
+        var players = [];
 
         return this.each(function() {
             if (options) {
@@ -67,7 +67,7 @@
             }
             
             var mediatags = $(this).find('video,audio');
-            if (mediatags.length == 0) {
+            if (mediatags.length === 0) {
                 /* navigate MSIE8 around a bug (?) introduced in jquery 1.4.4 (does not recognize audio or video) 
                 that seems partly fixed in jquery 1.5.1 (does not recognize "video, audio" but recognizes them solo) */
                 mediatags = $(this).find('video');
@@ -78,7 +78,7 @@
             $.each(mediatags, function(i, mt) {
                 var mediaId = $(mt).attr('id');
                 var sources = $(mt).find('source');
-                if (sources.length == 0) {
+                if (sources.length === 0) {
                     /* this may work in older MSIE versions  */
                     sources = $(current).find('source');
                     //alert("src: " + $(sources).attr('src'));
@@ -103,7 +103,7 @@
                 if ((isIpad() || isIphone()) && player.type == 'audio') {
                     $(mt).css('height', '0px').hide();   /* hide audio tag on iPad */
                 }
-                if (player.myname.indexOf('cortado') > -1 || player.myname === 'flowplayer') {
+                if ((player.myname.indexOf('cortado') > -1 || player.myname == 'flowplayer')) {
                     $(current).find('.html5warning').hide();
                 }
                 
@@ -111,7 +111,7 @@
                 $(div).prepend(poster);
                 $(div).height(player.height);
                 //console.log("ctrls: " + config.controls + " , " + player.url);
-                if (config.controls && player.url != undefined) {
+                if (config.controls && player.url !== undefined) {
                     
                     if (isIphone() || isIpad()) {
                         $(mt).after(controlsHtml(player));
@@ -122,7 +122,7 @@
                         player.ctrls = $(div).find('div.oipcontrols');
                         $(mt).removeAttr('controls');
                     }
-                    if (config.controls == true) {
+                    if (config.controls === true) {
                         $(div).height( $(div).height() + 30 );  // due to some quirk in webkit
                         player.ctrlspos = 'bottom';
                         
@@ -130,7 +130,7 @@
                         if (player.myname.indexOf('cortado') > -1 || isIphone() || isIpad()) { 
                             /* remove .top when not compatible */
                             config.controls = config.controls.replace('top', '');
-                            if (config.controls.length == 0) { config.controls = 'white'; }
+                            if (config.controls.length === 0) { config.controls = 'white'; }
                         }
                         $(player.ctrls).addClass(config.controls);
                         if (config.controls.indexOf('top') > -1) {
@@ -154,7 +154,7 @@
                     }
                 }
                 
-                if (player.url == undefined) {  // no compatible sources to play
+                if (player.url === undefined) {  // no compatible sources to play
                     $(div).addClass('inavailable');
                     $(div).append('<p>No compatible source found to play.</p>');
                 }
@@ -166,7 +166,7 @@
                 players.push(player);
                 
                 /* would be fairer to attach oiplayer as data to controls? (always present?) */
-                if (mediaId != undefined && mediaId.length > 0) {
+                if (mediaId !== undefined && mediaId.length > 0) {
                     //console.log("data mediaId: " + mediaId);
                     $('#' + mediaId).data('oiplayer', { player : player });
                 }
@@ -184,7 +184,7 @@
                     ev.preventDefault();
                     if (pl.state == 'pause') {
                         pl.play();
-                        if ($(pl.ctrls).find('div.pause').length == 0) {
+                        if ($(pl.ctrls).find('div.pause').length === 0) {
                             $(pl.ctrls).find('div.play').addClass('pause');
                         }
                     } else if (pl.state == 'play') {
@@ -256,7 +256,7 @@
             var width = $(player.ctrls).find('div.oiprogress').innerWidth();
             player.sPerPx = player.duration / (width - 11);
             player.startTime = player.position();
-            player.scrubStart = $(self).offset()['left'];   // self is .push
+            player.scrubStart = $(self).offset().left;
             
             $(player.div).mousemove(function(ev) {
                 //ev.preventDefault();
@@ -290,7 +290,7 @@
         
         function jumpScrubberOnClick(player, ev) {
             var width = $(player.ctrls).find('div.oiprogress').innerWidth();
-            var x = ev.pageX - $(player.ctrls).find('div.oiprogress').offset()['left'] - 5;
+            var x = ev.pageX - $(player.ctrls).find('div.oiprogress').offset().left - 5;
             x = Math.max(Math.min(x, width), 0);
             var seek = (x / width) * player.duration;
             
@@ -310,7 +310,7 @@
         
         function setVolumeFromSliderClick(player, ev, el) {
             var iwi = $(el).innerWidth();
-            var x = Math.max(Math.min(ev.pageX - $(el).offset()['left'], iwi), 0);
+            var x = Math.max(Math.min(ev.pageX - $(el).offset().left, iwi), 0);
             var vol = (x / iwi) * 100;
             methods.volume(player, vol);    // updates player and interface
         }
@@ -337,18 +337,19 @@
                 player.player.webkitEnterFullscreen();
                 return;
             }
-            if (player.owidth == undefined) {
+            if (player.owidth === undefined) {
                 player.owidth = player.width;
                 player.oheight = player.height;
             }
             $(player.div).toggleClass('fullscreen');
             
             // flash stuff
+            var fp_id;
             if (player.myname == 'flowplayer') {
                 // for flash
                 var pos = player.position();
                 var state = player.state;
-                var fp_id = player.player.id();
+                fp_id = player.player.id();
                 player.player.unload();
                 var pl_div = $(player.div).find('div.player');
                 $(pl_div).empty().attr('id', fp_id); // re-use fp id
@@ -423,7 +424,7 @@
             if (player.myname == 'flowplayer') {
                 player.create(fp_id, player.url, player.config);    // recreate fp with id
                 setTimeout(function() { 
-                    player.seek(pos) 
+                    player.seek(pos);
                     if (state == 'play') { player.play(); }
                 }, 1000);  // give fp time to reload
             }
@@ -444,7 +445,7 @@
             var urls = $.map(sources, function(i) {
                 return $(i).attr('src');
             });
-            if (urls.length == 0) { // no sources in body
+            if (urls.length === 0) { // no sources in body
                 urls[0] = $(el).attr('src');
                 types[0] = "unknown";   // TODO ? 
             }
@@ -463,13 +464,13 @@
                 player = new Player();
                 player.type = "none";
             }
-            if (eas.duration != null) {
+            if (eas.duration !== null) {
                 player.duration = eas.duration;
             }
-            if (eas.start != null) {
+            if (eas.start !== null) {
                 player.start = eas.start;
             }
-            if (eas.id != null) {
+            if (eas.id !== null) {
                 player.id = eas.id;
             }
             player.info = selectedPlayer.type + ":" + selectedPlayer.url;
@@ -485,16 +486,16 @@
          * @param urls  media links
          */
         function selectPlayer(el, types, urls) {
-            var proposal = new Object();
+            var proposal = {};
             var probably = canPlayMedia(types, urls);
-            if (probably != undefined) {
+            if (probably !== undefined) {
                 proposal.type = "media";
                 proposal.url = probably;
                 return proposal;    // optimization
             }
-            if (proposal.type == undefined) {
+            if (proposal.type === undefined) {
                 probably = canPlayCortado(types, urls);
-                if (probably != undefined && (supportMimetype('application/x-java-applet') || navigator.javaEnabled())) {
+                if (probably !== undefined && (supportMimetype('application/x-java-applet') || navigator.javaEnabled())) {
                     if ($.browser.msie) {   // Argh! A browser check!
                         /* IE always reports true on navigator.javaEnabled(),
                            that's why we need to check for the java plugin IE style. 
@@ -515,7 +516,7 @@
                     }
                 }
             }
-            if (proposal.type == undefined) {
+            if (proposal.type === undefined) {
                 var flash_url;
                 for (var i = 0; i < types.length; i++) {
                     if (types[i].indexOf("video/flv") > -1 || types[i].indexOf("video/x-flv") > -1) {
@@ -524,10 +525,10 @@
                         return proposal;
                     }
                 }
-                for (var i = 0; i < types.length; i++) {
-                    if (types[i].indexOf("video/mp4") > -1 
+                for (var j = 0; j < types.length; j++) {
+                    if (types[j].indexOf("video/mp4") > -1 
                         /* || types[i].indexOf("video/mpeg") > -1 */ ) {
-                        proposal.url = urls[i];
+                        proposal.url = urls[j];
                         proposal.type = "flash";
                         return proposal;
                     }
@@ -624,11 +625,8 @@
             return html;
         }    
         function controlsWidth(player) {
-            if (player.ctrlspos == 'top') {
-                var controls_width = player.width - 32;
-            } else {
-                var controls_width = player.width;        
-            }
+            var controls_width = player.width;
+            if (player.ctrlspos == 'top') controls_width = player.width - 32;
             if (controls_width > 620) { controls_width = 620; }
             $(player.ctrls).width(controls_width);
             $(player.ctrls).find('div.sliderwrap').width(controls_width - 190);
@@ -639,7 +637,7 @@
          * Returns attributes and values hidden in classes of an element, f.e. oip_ea_attr_value
          */
         function extraAttributes(el) {
-            var attributes = new Object();
+            var attributes = {};
             if ($(el).attr("class")) {
                 var classes = $(el).attr("class").split(' ');
                 for (var i in classes) {
@@ -655,10 +653,10 @@
         
         /* sorry about these :-( could not find suitable abilities checks */
         function isIphone() {   // iPhone and iPod act the same 
-            return navigator.userAgent.match(/iPhone|iPod/i) != null;
+            return navigator.userAgent.match(/iPhone|iPod/i) !== null;
         }
         function isIpad() {
-            return navigator.userAgent.match(/iPad/i) != null;
+            return navigator.userAgent.match(/iPad/i) !== null;
         }
         });
 
@@ -687,8 +685,8 @@
      * @param pos    Position to jump to before starting, ignored when empty.
      */
     start: function (player, pos) {
-        if (player.myname == undefined) player = methods.player(player);
-        if (player.state == 'init' || player.state == 'ended' || player.fpstate == undefined) { 
+        if (player.myname === undefined) player = methods.player(player);
+        if (player.state == 'init' || player.state == 'ended' || player.fpstate === undefined) { 
             $(player.div).trigger("oiplayerplay", [player]); 
         }
         
@@ -706,7 +704,7 @@
         if (player.config.controls) {
             $(player.ctrls).find('div.play').addClass('pause');
             if (player.state == 'init') { methods.follow(player); }
-            if (player.fpstate == undefined) { methods.follow(player); }
+            if (player.fpstate === undefined) { methods.follow(player); }
         }
         player.play();
         if (player.config.log == 'info') {
@@ -719,7 +717,7 @@
      * @param player Object of player or id
      */
     pause: function (player) {
-        if (player.myname == undefined) player = methods.player(player);
+        if (player.myname === undefined) player = methods.player(player);
         player.pause();
     },
 
@@ -729,8 +727,8 @@
      * @param vol       Volume between 0 - 100
      */
     volume: function (player, v) {
-        if (player.myname == undefined) player = methods.player(player);
-        if (v == undefined) {
+        if (player.myname === undefined) player = methods.player(player);
+        if (v === undefined) {
             return player.volume();
         } else {
             var vol = Math.max(Math.min(v, 100), 0);
@@ -746,7 +744,7 @@
      * @param pos    Position to jump to
      */
     jump: function (player, pos) {
-        if (player.myname == undefined) player = methods.player(player);
+        if (player.myname === undefined) player = methods.player(player);
         if (player.type == 'video') {
             $(player.div).find('.preview').fadeOut('normal');
         } else {
@@ -825,10 +823,11 @@
     },
 
     controlswidth: function(player) {
+        var controls_width;
         if (player.ctrlspos == 'top') {
-            var controls_width = player.width - 32;
+            controls_width = player.width - 32;
         } else {
-            var controls_width = player.width;        
+            controls_width = player.width;        
         }
         if (controls_width > 620) { controls_width = 620; }
         $(player.ctrls).width(controls_width);
@@ -855,7 +854,7 @@
         function toTime(sec) {
             var h = Math.floor(sec / 3600);
             var min = Math.floor(sec / 60);
-            var sec = Math.floor(sec - (min * 60));
+            sec = Math.floor(sec - (min * 60));
             if (h >= 1) {
                 min -= h * 60;
                 return h + ":" + addZero(min) + ":" + addZero(sec);
@@ -890,17 +889,17 @@
     }
     Player.prototype.init = function(el, url, config) {
         this._init(el, url, config);
-    }
-    Player.prototype.mute = function() { }
-    Player.prototype.play = function() { }
-    Player.prototype.pause = function() { }
+    };
+    Player.prototype.mute = function() { };
+    Player.prototype.play = function() { };
+    Player.prototype.pause = function() { };
     /* current position of audio or video */
-    Player.prototype.position = function() { }
+    Player.prototype.position = function() { };
     /* go to this position */
-    Player.prototype.seek = function(pos) { }
-    Player.prototype.info = function() { }
+    Player.prototype.seek = function(pos) { };
+    Player.prototype.info = function() { };
     /* value between 0 - 100 */
-    Player.prototype.volume = function(vol) { }
+    Player.prototype.volume = function(vol) { };
     
     Player.prototype._init = function(el, url, config) {
         this.state = 'init';
@@ -911,21 +910,18 @@
         this.type = el.tagName.toLowerCase(); // video or audio
         this.poster = $(this.player).attr('poster');
         this.autoplay = $(this.player).attr('autoplay');
-        if (this.autoplay == undefined) this.autoplay = false;
+        if (this.autoplay === undefined) this.autoplay = false;
         this.autobuffer = $(this.player).attr('autobuffer');
-        if (this.autobuffer == undefined) this.autobuffer = false;
+        if (this.autobuffer === undefined) this.autobuffer = false;
         this.controls = $(this.player).attr('controls');
-        if (this.controls == undefined) this.controls = false;
-        if (this.duration == undefined) this.duration = 0;
+        if (this.controls === undefined) this.controls = false;
+        if (this.duration === undefined) this.duration = 0;
         this.width = $(this.player).attr('width') > 0 ? parseInt($(this.player).attr('width')) : 320;
-        if (this.type == 'audio') {
-            var default_height = 32;
-        } else {
-            var default_height = 240;
-        }
+        var default_height = 240;
+        if (this.type == 'audio') default_height = 32;
         this.height = $(this.player).attr('height') > 0 ? parseInt($(this.player).attr('height')) : default_height;
         if (this.type == 'audio') { $(this.player).removeAttr('width').removeAttr('height'); }
-    }
+    };
     
     function MediaPlayer() {
         this.myname = "mediaplayer";
@@ -1006,7 +1002,7 @@
                 }, false);
             this.player.addEventListener("volumechange", 
                 function(ev) {
-                    if (self.player.muted || self.volume() == 0) { 
+                    if (self.player.muted || self.volume() === 0) { 
                         $(self.ctrls).find('div.sound').addClass('muted');
                     } else {
                         $(self.ctrls).find('div.sound').removeClass('muted');
@@ -1022,25 +1018,25 @@
                 }, false);
         }
         return this.player;
-    }
+    };
     MediaPlayer.prototype.play = function() {
         if (this.player.readyState == '0') {
             this.player.load();
         }
         this.player.play();
         this.state = 'play';
-    }
+    };
     MediaPlayer.prototype.pause = function() {
         this.player.pause();
         this.state = 'pause';
-    }
+    };
     MediaPlayer.prototype.mute = function() {
         if (this.player.muted) {
             this.player.muted = false;
         } else {
             this.player.muted = true;
         }
-    }
+    };
     MediaPlayer.prototype.position = function() {
         try {
             this.pos = this.player.currentTime;
@@ -1049,27 +1045,27 @@
             $.oiplayer.msg(self, "Error: " + err);
         }
         return -1;
-    }
+    };
     MediaPlayer.prototype.seek = function(pos) {
         // TODO: investigate pause() and play() needed?
         //this.player.pause();
         this.player.currentTime = pos;   // float
         //this.player.play();
-    }
+    };
     MediaPlayer.prototype.volume = function(v) {
         // html5 has range 0.0 to 1.0, we use as in flowplayer 0 - 100
-        if (v == undefined) {
+        if (v === undefined) {
             return this.player.volume * 100;
         } else {
             this.player.volume = Math.min(Math.max(v/100, 0), 1);
         }
-    }
+    };
     MediaPlayer.prototype.info = function() {
         /*  duration able in webkit, 
             unable in mozilla without: https://developer.mozilla.org/en/Configuring_servers_for_Ogg_media
         */
         //return "Duration: " + this.player.duration + " readyState: " + this.player.readyState;
-    }
+    };
     
     function CortadoPlayer() {
         this.myname = "cortadoplayer";
@@ -1108,20 +1104,20 @@
             'bufferSize': '256',
             'bufferHigh': '50',
             'bufferLow': '5'
-        }
-        for (name in params) {
+        };
+        for (var name in params) {
             var p = document.createElement('param');
             p.name = name;
             p.value = params[name];
             this.player.appendChild(p);
         }
         return this.player;
-    }
+    };
     
     CortadoPlayer.prototype.play = function() {
         this.player.doPlay();
         this.state = 'play';
-    }
+    };
     CortadoPlayer.prototype.pause = function() {
         this.player.doPause();
         this.state = 'pause';
@@ -1132,13 +1128,13 @@
                 this.player.doStop();
             } catch(err) { }
         }
-    }
+    };
     CortadoPlayer.prototype.mute = function() {
         $.oiplayer.msg(this, "Sorry. Cortado currently does not support changing volume with Javascript.");
-    }
+    };
     CortadoPlayer.prototype.volume = function(v) {
         $.oiplayer.msg(this, "Sorry. Cortado currently does not support changing volume with Javascript.");
-    }
+    };
     CortadoPlayer.prototype.position = function() {
         if (this.state != 'init') {
             this.pos = this.player.getPlayPosition();
@@ -1146,16 +1142,16 @@
         } else {
             return 0;
         }
-    }
+    };
     CortadoPlayer.prototype.seek = function(pos) {
         // doSeek(double pos); seek to a new position, must be between 0.0 and 1.0.
         // impossible when duration is unknown (and not really smooth in cortado?)
         // seems to be broke anyway (read similar in some MediaWiki cvs posts)
         this.player.doSeek(pos / this.duration);
-    }
+    };
     CortadoPlayer.prototype.info = function() {
         //return "Playing: " + this.url";
-    }
+    };
     
     function MSCortadoPlayer() {
         this.myname = "msie_cortadoplayer";
@@ -1197,7 +1193,7 @@
         $(element).html(obj_html);
         this.player = element.firstChild;
         return this.player;
-    }
+    };
     
     function FlowPlayer() {
         this.myname = "flowplayer";
@@ -1211,10 +1207,10 @@
         $(div).attr('id', mediaId); // move id to other element cause video tag is replaced with flash
         $(div).addClass('player');
         return this.create(div, url, config);
-    }
+    };
     FlowPlayer.prototype.create = function(el, url, config) {
         var flwplayer = config.server + config.flash;
-        var duration = (this.duration == undefined ? 0 : Math.round(this.duration));
+        var duration = (this.duration === undefined ? 0 : Math.round(this.duration));
         //alert('appending to ' + $(el).attr('class'));
         this.player = $f(el, { src: flwplayer, width: this.width, height: this.height, wmode: 'opaque' }, {
             clip: {
@@ -1238,7 +1234,7 @@
                 $(self.div).find('div.sound').removeClass('muted');
             });
             this.player.onVolume(function(){
-                if (self.player.getStatus().muted || self.volume() == 0) { 
+                if (self.player.getStatus().muted || self.volume() === 0) { 
                     $(self.ctrls).find('div.sound').addClass('muted');
                 } else {
                     $(self.ctrls).find('div.sound').removeClass('muted');
@@ -1251,7 +1247,7 @@
                     if (self.duration < 1) {
                         var fd = self.player.getCommonClip().fullDuration;
                         try {
-                            var fd = self.player.getCommonClip().fullDuration;
+                            fd = self.player.getCommonClip().fullDuration;
                         } catch(err) { }
                         if (fd > 0) { 
                             self.duration = fd; 
@@ -1293,7 +1289,7 @@
             });
             clip.onResume(function() {
                 $(self.div).find('div.play').addClass('pause');
-                if (self.fpstate == undefined && self.duration > 0) {
+                if (self.fpstate === undefined && self.duration > 0) {
                     $.oiplayer.start(self);
                 }
                 self.state = 'play';
@@ -1308,7 +1304,7 @@
             });
         }
         return this.player;
-    }
+    };
     FlowPlayer.prototype.play = function() {
         /* flowplayer states:
         -1	unloaded
@@ -1324,36 +1320,36 @@
             this.player.play();
         }
         this.state = 'play';
-    }
+    };
     FlowPlayer.prototype.pause = function() {
         if (this.player.getState() == 3) this.player.pause();
         this.state = 'pause';
-    }
+    };
     FlowPlayer.prototype.mute = function() {
-        if (this.player.getStatus().muted == true) {
+        if (this.player.getStatus().muted === true) {
             this.player.unmute();
         } else {
             this.player.mute();
         }
-    }
+    };
     FlowPlayer.prototype.position = function() {
         this.pos = parseInt(this.player.getTime());
         return this.pos;
-    }
+    };
     FlowPlayer.prototype.seek = function(pos) {
         pos = parseInt(pos);
         this.player.seek(pos);
-    }
+    };
     FlowPlayer.prototype.volume = function(v) {
         /* in fp an integer: 0-100 */
-        if (v == undefined) {
+        if (v === undefined) {
             return this.player.getVolume();
         } else {
             this.player.setVolume(v);
         }
-    }
+    };
     FlowPlayer.prototype.info = function() {
         //return "Playing: " + this.url;
-    }
+    };
 
 })(jQuery);
