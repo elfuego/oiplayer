@@ -35,10 +35,13 @@
  *
  * @changes: completely redesigned into a 'true' jQuery plugin, added methods to be reached from 
  *           'outside' - sort of a control API for start, jump etc. - added a volume control.
-*/
+ *          These include: player, start, pause, volume, jump, seek., follow, div, controlswidth, msg, totime
+ */
 
 (function( $ ){
     
+    "use strict"
+
     var config, methods = {
     
     /* 
@@ -100,7 +103,7 @@
                 if ((isIpad() || isIphone()) && player.type == 'audio') {
                     $(mt).css('height', '0px').hide();   /* hide audio tag on iPad */
                 }
-                if ($.browser.msie && (player.myname.indexOf('cortado') > -1 || player.myname == 'flowplayer')) {
+                if (player.myname.indexOf('cortado') > -1 || player.myname === 'flowplayer') {
                     $(current).find('.html5warning').hide();
                 }
                 
@@ -167,8 +170,7 @@
                     //console.log("data mediaId: " + mediaId);
                     $('#' + mediaId).data('oiplayer', { player : player });
                 }
-    
-            }); // end for each mt
+ }); // end for each mt
     
         /* html ready, bind controls */
         $.each(players, function(i, pl) {
@@ -770,7 +772,7 @@
                 $(player.ctrls).find('div.timeleft').text("-" + methods.totime(player.duration - pos));
             }
             $(player.ctrls).find('div.time').text( methods.totime(pos) );
-            prevpos = pos;
+            //prevpos = pos;
         }
 
         /* .time .timeleft .changed */ 
@@ -940,7 +942,9 @@
                     if (!isNaN(self.player.duration) && self.player.duration > 0 && self.player.duration != 'Infinity') {
                         self.duration = self.player.duration;
                         if (config.log == 'info') {
-                            $.oiplayer.msg(self, "set duration: " + self.duration);
+                            if ($.oiplayer) {
+                                $.oiplayer.msg(self, "set duration: " + self.duration);
+                            } 
                         }
                         //$(self.ctrls).find('div.timeleft').text("-" + methods.totime(self.duration));
                     }
