@@ -11,14 +11,9 @@ var gulp = require('gulp'),
     lint = require('gulp-jshint'),
     stylish = require('jshint-stylish');
 
-var browserSync = require('browser-sync');
-var reload = browserSync.reload;
+var browserSync = require('browser-sync'),
+    reload = browserSync.reload;
 
-
-gulp.task('watch', function() {
-    // watch all files, run default when something changes
-    gulp.watch('**/*.*', ['default']);
-});
 
 gulp.task('browser-sync', function() {
     browserSync.init({
@@ -41,14 +36,20 @@ gulp.task('browser-sync', function() {
 });
 
 gulp.task('prettify', function(){
-    gulp.src(['./js/**/*', '!./js/*.min.js'])
+    gulp.src([
+            './js/**/*', 
+            '!./js/*.min.js'
+        ])
         .pipe(prettify({config:'./jsbeautify.json'}))
         .pipe(prettify.reporter())
         .pipe(gulp.dest('./js/'));
 });
 
 gulp.task('jslint', function(){
-    gulp.src(['./js/**/*', '!./js/*.min.js'])
+    gulp.src([
+            './js/**/*', 
+            '!./js/*.min.js'
+        ])
         .pipe(lint())
         .pipe(lint.reporter(stylish))
         //.pipe(lint.reporter('fail'))
@@ -59,7 +60,10 @@ gulp.task('jslint', function(){
 
 gulp.task('jsmin', function() {
     gulp.src('js/*.js')
-        .pipe(filter(['**/*', '!*.min.js']))
+        .pipe(filter([
+            '**/*', 
+            '!*.min.js'
+        ]))
         .pipe(concat('jquery.oiplayer.min.js'))
         .pipe(uglify({ 
                 mangle: true,
@@ -79,7 +83,8 @@ gulp.task('cssmin', function(){
 gulp.task('js-watch', ['jslint', 'jsmin'], reload);
 
 gulp.task('default', ['jslint', 'jsmin', 'cssmin'], function() {
-    gulp.watch([ './js/*.js', '!./js/*.min.js' ], ['js-watch']);
+    gulp.watch(['./js/*.js', '!./js/*.min.js'], ['js-watch']);
+    gulp.watch(['./*.html'], reload);
 
     gulp.start('browser-sync');
 });
