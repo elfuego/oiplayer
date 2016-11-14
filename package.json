@@ -4,11 +4,21 @@
     "private": true,
     "version": "1.0.2",
     "devDependencies": {
-        "gulp": "~3.8.11",
-        "gulp-concat": "~2.5.2",
+        
+        "browser-sync": "^2.12.10",
+        "gulp": "^3.9.1",
+
+        "gulp-concat": "^2.6.0",
         "gulp-filter" : "~2.0.2",
-        "gulp-uglify" : "~1.1.0",
+        "gulp-uglify" : "~1.5.3",
         "gulp-minify-css" : "~1.0.0",
-        "gulp-util": "~3.0.4"
-    }
+        "gulp-util": "~3.0.4",
+        "gulp-notify": "^2.2.0",
+
+        "gulp-jsbeautifier": "~2.0.3",
+        "gulp-jshint": "~2.0.1",
+        "jshint": "^2.9.2",
+        "jshint-stylish": "~2.2.0"
+    },
+    "dependencies": {}
 }

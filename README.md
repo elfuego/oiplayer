@@ -51,21 +51,23 @@ You need to target media on which OIPlayer is enabled individually - with an id 
       <source type="video/webm; codecs=vp8,vorbis" src="lovefields.webm" />
     </video>
 
-You can jump to 60 seconds in the video with id #video.
+You can jump to 60 seconds in the video with id #video. The first argument is method, second is the id of the media element you're targetting and third some parameter like number of seconds or volume.
 
-    $.fn.oiplayer('jump','video', 60);
+**Start** video at 60 seconds.
 
-Jump to 60 seconds and start immediately.
+    $.fn.oiplayer('start', 'video', 60);
 
-    $.fn.oiplayer('start','video', 60);
+Just **jump** to 60 seconds, don't start.
 
-Set audio volume of #video to half. This works on a scale from 0 to 100.
+    $.fn.oiplayer('jump', 'video', 60);
 
-    $.fn.oiplayer('volume','video', 50);
+Set audio **volume** of #video to half. This works on a scale from 0 to 100.
+
+    $.fn.oiplayer('volume', 'video', 50);
 
 Put it back at full volume.
 
-    $.fn.oiplayer('volume','video', 100);
+    $.fn.oiplayer('volume', 'video', 100);
 
 
 ### History ###
