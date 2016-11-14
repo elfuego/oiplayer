@@ -808,6 +808,7 @@
          * @param msg    Message
          */
         msg: function (player, msg) {
+            if (player.myname === undefined) player = methods.player(player);
             $('<div class="oiplayerinfo"></div>').text(msg).insertAfter(player.div).hide().fadeIn();
         },
 

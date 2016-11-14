@@ -53,11 +53,11 @@ You need to target media on which OIPlayer is enabled individually - with an id 
 
 You can jump to 60 seconds in the video with id #video. The first argument is method, second is the id of the media element you're targetting and third some parameter like number of seconds or volume.
 
-**Start** video at 60 seconds.
+Just **start** video at 60 seconds.
 
     $.fn.oiplayer('start', 'video', 60);
 
-Just **jump** to 60 seconds, don't start.
+And **jump** to 60 seconds, don't start.
 
     $.fn.oiplayer('jump', 'video', 60);
 
@@ -69,8 +69,15 @@ Put it back at full volume.
 
     $.fn.oiplayer('volume', 'video', 100);
 
+Get current **position** of media in seconds.
+
+    $.fn.oiplayer('position', 'video');
+
 
 ### History ###
+
+13-11-2016
+Updated methods start, jump and volume. Added method position to be able track player position (time in seconds). Added new gulp tasks for minification, browsersync, jslint and reformatted code. Tested on current lastest jQuery.
 
 28-04-2015
 I merged the event-drive branch in develop. It contains several methods to control oiplayer from 'the outside', make it 'jump' to spots several seconds in a video or audio etc. 
