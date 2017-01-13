@@ -1,4 +1,10 @@
-@image-path: "../css";
+/**
+ * @author   André van Toly
+ * @since    May 2009
+ * @name     Stylesheet, less version, to style OIPlayer and its controls
+ */
+
+@image-path: "images";
 
 .oiplayer {
     position: relative;
@@ -94,7 +100,7 @@
         &.top {
             margin: auto auto 10px auto;
             border-radius: 2px;
-            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);            
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
         }
 
         &.audio {
@@ -298,20 +304,20 @@
         .back {
             position: absolute;
             width: 100%;
-            background: url(@{image-path}/slider11-long.png) right 0 no-repeat;
+            background: url("@{image-path}/slider11-long.png") right 0 no-repeat;
             margin-right: 6px;
             pointer-events: auto;
         }
         .loaded {
             position: absolute;
-            background: url(@{image-path}/slider11-long.png) right -25px no-repeat;
+            background: url("@{image-path}/slider11-long.png") right -25px no-repeat;
             margin-right: 6px;
             pointer-events: auto;
         }
         .played
         {
             position: absolute;
-            background: url(@{image-path}/slider11-long.png) right -50px no-repeat;
+            background: url("@{image-path}/slider11-long.png") right -50px no-repeat;
             pointer-events: none;
         }
         
@@ -430,3 +436,27 @@
     display: none;
 }
 
+/* ### example html ### */
+body.oiplayer-example {
+    font-size: 0.85em;
+    font-family: Helvetica, sans-serif;
+    background-color: #efefef;
+    line-height: 1.4em;
+
+    a:link { color: #c00; }
+    a:visited { color: #333; }
+    a:hover, 
+    a:active {
+        color: #c00;
+        text-decoration: underline;
+    }
+    > div.main {
+        width: 640px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 1px 1em;
+        
+        ol { padding-left: 20px; }
+        .license { font-size: 0.8em; }
+    }
+}

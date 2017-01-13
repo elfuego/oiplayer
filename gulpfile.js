@@ -2,10 +2,14 @@
 
 var gulp = require('gulp'),
     //fs = require('fs'),
+    del = require('del'),
     filter = require('gulp-filter'),
+    less = require('gulp-less'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
-    minifyCSS = require('gulp-minify-css'),
+    sourcemaps = require('gulp-sourcemaps'),
+    autoprefixer = require('gulp-autoprefixer'),
+    cleanCSS = require('gulp-clean-css'),
     prettify = require('gulp-jsbeautifier'),
     notify = require('gulp-notify'),
     lint = require('gulp-jshint'),
@@ -31,7 +35,9 @@ gulp.task('browser-sync', function() {
             "!gulpfile.js",
             "!./node_modules/",
             "!./oiplayer.bbprojectd/"
-        ]
+        ],
+        reloadDelay: 500,
+        reloadDebounce: 1000
     });
 });
 
@@ -72,18 +78,40 @@ gulp.task('jsmin', function() {
         .pipe(gulp.dest('./js/'));
 });
 
+gulp.task('less', function() {
+    gulp.src('less/*.less')
+        .pipe(sourcemaps.init())
+        .pipe(less())
+        .on('error', notify.onError( (error) => {
+            return { icon: 'Icon.png', title: 'LESS ERROR ON LINE ' + error.line, message: error.message };
+        }))
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions']
+        }))
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest('./css/'));
+});
+
 gulp.task('cssmin', function(){
-    gulp.src('css/*.css')
-    .pipe(concat('oiplayer.min.css'))
-    .pipe(minifyCSS()) 
-    .pipe(gulp.dest('./css/'));
+    gulp.src('css/oiplayer.css')
+        .pipe(concat('oiplayer.min.css'))
+        .pipe(cleanCSS({compatibility: 'ie8'})) 
+        .pipe(gulp.dest('./css/'));
+});
+
+gulp.task('clean', function() {
+    return del([
+            'css/*.min.css'
+        ]);
 });
 
 // gulp.task('images-watch', ['images'], reload);
 gulp.task('js-watch', ['jslint', 'jsmin'], reload);
+gulp.task('less-watch', ['less', 'cssmin'], reload);
 
-gulp.task('default', ['jslint', 'jsmin', 'cssmin'], function() {
+gulp.task('default', ['jslint', 'jsmin', 'less', 'cssmin'], function() {
     gulp.watch(['./js/*.js', '!./js/*.min.js'], ['js-watch']);
+    gulp.watch(['./less/*.less'], ['less-watch']);
     gulp.watch(['./*.html'], reload);
 
     gulp.start('browser-sync');
