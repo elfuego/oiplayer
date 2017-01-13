@@ -1,0 +1,432 @@
+@image-path: "../css";
+
+.oiplayer {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+    &.fullscreen {
+        position: fixed;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+        z-index: 1000;
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+
+        .player {
+            width: 100%;
+            height: 100%;
+            z-index: 1001;
+
+            video, object, embed {
+                z-index: 1002;
+            }
+        }
+    }
+
+    video, object, embed {
+        display: block;
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    audio
+    {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        display: block;
+        margin: 0;
+        padding: 0;
+        width: 100%;    /* not sure about this */
+    }
+
+    .player {
+        margin: 0;
+        padding: 0;
+        z-index: 10;
+
+        .audio & {
+            bottom: 0;
+        }
+    }
+
+    .preview {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 11;
+        cursor: pointer;
+
+        &.video {
+            background: url("@{image-path}/preview_video.png") left top repeat; 
+        }
+        &.audio {
+            background: url("@{image-path}/preview_audio.png") left top repeat; 
+        }
+    }
+    
+    .oipcontrols {
+        
+        height: 30px;
+        margin: 0;
+        max-width: 640px;
+        color: #555;
+        z-index: 19;
+        background-color: transparent;
+        background-image: url("@{image-path}/bg-whitish.png");
+        
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        
+        .fullscreen & {
+            z-index: 1003;
+            margin: 0 auto;
+        }
+
+        &.top {
+            margin: auto auto 10px auto;
+            border-radius: 2px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);            
+        }
+
+        &.audio {
+            .progress { right: 100px; }
+            .timeleft { right: 30px; }
+        }
+
+
+        > div {
+            position: absolute;
+            margin: 2px 0 0 0;
+            padding: 0;
+            height: 28px;
+        }
+
+        .play {
+            position: absolute;
+            left: 6px;
+            width: 21px;
+
+            a {
+                width: 21px;
+                float: left;
+                background-image: url("@{image-path}/controls-play.png"); 
+                padding: 25px 0 0 0;
+                overflow: hidden;
+                height: 0 !important;
+                height /**/: 25px;  /* for IE5/Win */
+            }
+        }
+        .pause {
+            position: absolute;
+            width: 21px;
+
+            a {
+                width: 21px;
+                float: left;
+                background-image: url("@{image-path}/controls-pause.png");
+                padding: 25px 0 0 0;
+                overflow: hidden;
+                height: 0 !important;
+                height /**/: 25px;  /* for IE5/Win */
+            }
+        }        
+        .time { 
+            position: absolute;
+            width: 50px; 
+            left: 25px; 
+            font-size: 10px;
+            font-family: Monaco, "Courier New", monospaced;
+            line-height: 26px;
+            text-align: right;  /* 83 */ 
+        }
+        .timeleft { 
+            position: absolute;
+            width: 55px; 
+            right: 54px; 
+            font-size: 10px;
+            font-family: Monaco, "Courier New", monospaced;
+            line-height: 26px;
+            text-align: left; /* 115 */ 
+            
+            .audio & {
+                right: 30px;
+            }    
+        }
+        .screen { 
+            position: absolute;
+            width: 23px; 
+            right: 33px; /* 54 */
+
+            .ios & {
+                right: 6px;
+            }
+
+            a {
+                float: right;
+                width: 23px;
+                background-image: url("@{image-path}/controls-fullscreen.png");
+                padding: 25px 0 0 0;
+                overflow: hidden;
+                height: 0 !important;
+                height /**/: 25px;  /* for IE5/Win */                
+            }
+        }
+        .sound { 
+            position: absolute;
+            width: 21px; 
+            right: 6px;
+
+            a {
+                width: 21px;
+                float: left;
+                background-image: url("@{image-path}/controls-soundon.png");
+                padding: 25px 0 0 0;
+                overflow: hidden;
+                height: 0 !important;
+                height /**/: 25px;  /* for IE5/Win */                
+            }
+
+            &.muted {
+                a {
+                    background-image: url("@{image-path}/controls-soundoff.png");
+                }
+            }
+            
+            > .volume { 
+                width: 12px; 
+                height: 60px;
+                position: relative; 
+                top: -6px;
+                left: 6px; 
+                
+                /* container for the volume slider */
+                .slider {
+                  width: 100%;
+                  height: 100%;
+                  background-color: #808080;
+                  box-shadow: 0px 2px 4px rgba(0,0,0,0.8);
+                  /* by default does not register for pointer events
+                     so that only the VOL label acts as a hover trigger */
+                  pointer-events: none;
+                  /* volume slider is invisible by default */
+                  opacity: 0;
+                  transform: translateY(0);
+                  /* set up the opacity transition */
+                  transition-property: opacity, transform;
+                  transition-duration: 0.25s;
+                }
+
+            }
+        }
+
+        /* matches the slider when the volume button is hovered */
+        div.sound:hover > div.volume .slider,
+        div.sound a:hover > div.volume .slider, 
+        .volume:hover .slider {
+          /* turn pointer events back on so that we now only
+             hide the slider when we exit the VOL label or the slider */
+          pointer-events: auto;
+          /* show the slider */
+          opacity: 1;
+          transform: translateY(-50px);
+        }
+
+        /* the bar filling up to the thumb position */
+        .slider .fill {
+          height: 100%;
+          background-color: #333;
+        }
+
+        /* the container for the thumb, shorter from the overall
+           slider width by the width of the thumb so that we can
+           use percentages to position the thumb */
+        .slider .thumb {
+          //left: 0;
+          //margin-top: 0;
+        }
+
+        /* the actual thumb element */
+        .slider .thumb > div {
+          position: absolute;
+          top: 0;
+          margin-top: -6px;
+          left: -6px;
+          width: 24px;
+          height: 12px;
+          background-color: #CCCCCC;
+          box-shadow: 0px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        /* hover state for the thumb */
+        .slider .thumb > div:hover {
+          background-color: #EAEAEA;
+        }
+
+        /* ### progress bar & position ### */
+        .progress { 
+            position: absolute;
+            left: 83px;    /* 10px margin left and right */
+            right: 122px; 
+            
+            .oiprogress  { 
+                background: url("@{image-path}/slider11-long.png") left -50px no-repeat;
+                height: 25px;
+                left: 0;
+                right: 0;
+                pointer-events: none;
+            }
+
+            .audio & {
+                right: 100px;
+            }                
+        }
+        .bar {
+            position: absolute;
+            height: 25px;
+            left: 6px;
+            top: 0;
+        }
+        .back {
+            position: absolute;
+            width: 100%;
+            background: url(@{image-path}/slider11-long.png) right 0 no-repeat;
+            margin-right: 6px;
+            pointer-events: auto;
+        }
+        .loaded {
+            position: absolute;
+            background: url(@{image-path}/slider11-long.png) right -25px no-repeat;
+            margin-right: 6px;
+            pointer-events: auto;
+        }
+        .played
+        {
+            position: absolute;
+            background: url(@{image-path}/slider11-long.png) right -50px no-repeat;
+            pointer-events: none;
+        }
+        
+        .oiprogress-container {
+            position: absolute;
+            left: 0;
+            right: 6px;
+
+            .oiprogress-push {
+                position: absolute;
+                width: 11px;
+                height: 25px;
+                pointer-events: auto;
+
+                .pos {
+                    position: absolute;
+                    width: 11px;
+                    height: 25px;
+
+                    a {
+                        background: url("@{image-path}/slider11-pos.png") left -75px no-repeat;
+                        width: 13px;
+                        float: left;
+                        padding: 25px 0 0 0;
+                        overflow: hidden;
+                        height: 0 !important;
+                        height /**/: 25px;  /* for IE5/Win */                
+
+                    }
+                }
+
+            }
+        }
+
+
+        &.dark {
+            color: #efefef;
+            background-color: transparent;
+            background-image: url("@{image-path}/bg-blackish.png");
+
+            a { background-position: 0 -50px; }
+            a:hover { background-position: 0 0; }
+
+            .progress.changed div.oiprogress { background: url("@{image-path}/slider11-long.png") left -50px no-repeat; }
+            .back { background: url("@{image-path}/slider11-long.png") right 0 no-repeat; }
+            .loaded { background: url("@{image-path}/slider11-long.png") right -25px no-repeat; }
+            .played { background: url("@{image-path}/slider11-long.png") right -50px no-repeat; }
+        }
+        
+        &.ios {
+            position: relative;
+            margin: 0;
+            padding: 0;
+            
+            /* on iOS sound (iPad) or screen (iPhone) are hidden */
+           .progress { right: 100px; }
+           .timeleft { right: 30px; }
+           .screen { right: 6px; }
+            
+            /* ios: bit different color scheme */
+            .back { background: url("@{image-path}/slider11-long.png") right -25px no-repeat; }
+            .loaded { background: url("@{image-path}/slider11-long.png") right -50px no-repeat; }
+            .player { background: url("@{image-path}/slider11-long.png") right -75px no-repeat; }
+            .dark .back { background: url("@{image-path}/slider11-long.png") right 0 no-repeat; }
+            .dark .loaded { background: url("@{image-path}/slider11-long.png") right -25px no-repeat; }
+            .dark .played { background: url("@{image-path}/slider11-long.png") right -50px no-repeat; }
+        }
+
+
+    }
+
+    &.inavailable { 
+        &.video {
+            background: url("@{image-path}/preview_video.png") left top repeat;
+        }
+        &.audio {
+            background: url("@{image-path}/preview_audio.png") left top repeat;
+        }
+        div.player { display: none; }
+        p {
+            width: 80%;
+            text-align: center;
+            font-size: 1.4em;
+            margin: 0 auto;
+            padding-top: 32%;
+            font-weight: bold;
+        }
+    }
+
+}
+
+.oiplayerinfo
+{
+    font-size: xx-small;
+    padding: 2px;
+    background-color: #efefef;
+    color: black;
+    z-index: 99;
+    border-top: 1px solid #bbb;
+    font-family: Monaco, "Courier New", monospaced;
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    &.bottom {
+        position: static;
+        margin-top: 32px;        
+    }
+}
+
+/* MSIE Java plugin detection, sigh :-( */
+#clientcaps
+{
+    behavior: url(#default#clientCaps);
+    display: none;
+}
+

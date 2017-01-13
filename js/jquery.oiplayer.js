@@ -1,7 +1,7 @@
 /*
  * OIPlayer - jQuery plugin to control html5 video and audio tags and serve alternatives if needed.
  *
- * Copyright (c) 2009-2015 André van Toly
+ * Copyright (c) 2009-2017 André van Toly
  * Licensed under GPL http://www.gnu.org/licenses/gpl.html
  *
  * Inits and controls video- or audioplayer based on the html5 video- or audiotag. Depends on jquery. 
