@@ -1,7 +1,7 @@
 // gulp tasks to minify script and css
 
 var gulp = require('gulp'),
-    fs = require('fs'),
+    //fs = require('fs'),
     filter = require('gulp-filter'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),

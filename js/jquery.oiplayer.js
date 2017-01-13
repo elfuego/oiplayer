@@ -31,6 +31,7 @@
  *                    Simply 'true' means show me controls below player.
  *                    Value 'top' will add a css class of that name and will hide/show controls on top of the player window.
  *                    Add a css class of your own to edit the appearance of the controls (f.e. 'top dark').
+                      Still in development: to enable a volume control add a string 'volume'.
  *       'log' : when your specify 'info' some debug messages are shown about the media playing 
  *
  * @changes: completely redesigned into a 'true' jQuery plugin, added methods to be reached from 
@@ -200,20 +201,22 @@
                             //console.log("player state: " + pl.state);
                         });
 
-                        methods.volume(pl, 80); // volume slider at 80%
                         $(pl.ctrls).find('div.sound a').click(function (ev) {
                             ev.preventDefault();
                             $(pl.ctrls).find('div.sound').toggleClass('muted');
                             pl.mute();
                         });
-                        $(pl.ctrls).find('div.volume').click(function (ev) {
-                            ev.preventDefault();
-                            setVolumeFromSliderClick(pl, ev, this);
-                        });
-                        $(pl.ctrls).find('div.volume div.thumb > div').mousedown(function (ev) {
-                            ev.preventDefault();
-                            setVolumeFromThumbScrub(pl, ev, this);
-                        });
+                        if (config.controls.indexOf('volume') > -1) {
+                            methods.volume(pl, 80); // volume slider at 80%
+                            $(pl.ctrls).find('div.volume').click(function (ev) {
+                                ev.preventDefault();
+                                setVolumeFromSliderClick(pl, ev, this);
+                            });
+                            $(pl.ctrls).find('div.volume div.thumb > div').mousedown(function (ev) {
+                                ev.preventDefault();
+                                setVolumeFromThumbScrub(pl, ev, this);
+                            });
+                        }
 
                         $(pl.ctrls).find('div.screen a').click(function (ev) {
                             ev.preventDefault();
@@ -644,9 +647,9 @@
                         (player.type == 'video' && !isIphone() ? '<div class="screen"><a href="#fullscreen">fullscreen</a></div>' : '') +
                         (isIpad() ? '' : '<div class="sound">' +
                             '<a href="#sound">mute</a>' +
-                            '<div class="volume"><div class="slider">' +
-                            '<div class="fill"><!-- empty --></div><div class="thumb"><div><!-- empty --></div></div>' +
-                            '</div></div>' +
+                                ((config.controls.indexOf('volume') > -1) ? '<div class="volume"><div class="slider">' +
+                                    '<div class="fill"><!-- empty --></div><div class="thumb"><div><!-- empty --></div></div>' +
+                                '</div></div>' : '') +
                             '</div>') +
                         '</div>';
                     return html;
