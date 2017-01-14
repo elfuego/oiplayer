@@ -358,8 +358,21 @@
                 }
 
                 function fullscreen(player) {
-                    if (isIpad() || isIphone()) {
-                        player.player.webkitEnterFullscreen();
+                    if (document.fullscreenElement) {
+                        //console.log('exit fullscreen');
+                        document.exitFullscreen();
+                        return;
+                    } else if (player.player.requestFullscreen) {
+                        //console.log('player.requestFullscreen');
+                        player.player.requestFullscreen();
+                        return;
+                    } else if (player.player.MozRequestFullscreen) {
+                        //console.log('player.MozRequestFullscreen');
+                        player.player.MozRequestFullscreen();
+                        return;
+                    } else if (player.player.webkitEnterFullscreen) {
+                        //console.log('player.webkitEnterFullscreen');
+                        player.player.webkitEnterFullscreen();  // @TODO: deprecated?
                         return;
                     }
                     if (player.owidth === undefined) {
@@ -405,7 +418,7 @@
 
                         $(document).bind('keydown', function (ev) {
                             // bind escape key to switch back from fullscreen
-                            if (ev.keyCode == '27') {
+                            if (ev.keyCode == 13 || ev.keyCode == 27) {
                                 fullscreen(player);
                             }
                         });
@@ -638,17 +651,17 @@
 
                 function controlsHtml(player) {
                     var html = '<div class="oipcontrols">' +
-                        '<div class="play"><a href="#play">play</a></div>' +
+                        '<div class="play"><a href="#play" title="play"></a></div>' +
                         '<div class="time">00:00</div>' +
                         '<div class="progress">' +
-                        '<div class="oiprogress"><div class="back bar"></div><div class="loaded bar"></div><div class="played bar"></div><div class="oiprogress-container"><div class="oiprogress-push"><div class="pos"><a href="#pos">pos</a></div></div></div></div>' +
+                        '<div class="oiprogress"><div class="back bar"></div><div class="loaded bar"></div><div class="played bar"></div><div class="oiprogress-container"><div class="oiprogress-push"><div class="pos"><a href="#pos" title="position"></a></div></div></div></div>' +
                         '</div>' +
                         '<div class="timeleft">-' + (player.position() > 0 ? methods._totime(player.duration - player.position()) : methods._totime(player.duration)) + '</div>' +
-                        (player.type == 'video' && !isIphone() ? '<div class="screen"><a href="#fullscreen">fullscreen</a></div>' : '') +
+                        (player.type == 'video' && !isIphone() ? '<div class="screen"><a href="#fullscreen" title="fullscreen"></a></div>' : '') +
                         (isIpad() ? '' : '<div class="sound">' +
-                            '<a href="#sound">mute</a>' +
+                            '<a href="#sound" title="sound"></a>' +
                                 ((config.controls.indexOf('volume') > -1) ? '<div class="volume"><div class="slider">' +
-                                    '<div class="fill"><!-- empty --></div><div class="thumb"><div><!-- empty --></div></div>' +
+                                    '<div class="fill"></div><div class="thumb"><div></div></div>' +
                                 '</div></div>' : '') +
                             '</div>') +
                         '</div>';
