@@ -112,7 +112,6 @@
             .timeleft { right: 30px; }
         }
 
-
         > div {
             position: absolute;
             margin: 2px 0 0 0;
@@ -133,24 +132,25 @@
                 .icon(play);
                 width: 22px;
                 height: 25px;
+                color: rgba(128, 128, 128, 1);
 
                 &:before {
-                    font-size: 17px;
-                    margin-top: 5px;
-                    color: #808080;
+                    font-size: 19px;
+                    margin-top: 4px;
                     float: left;
                     text-indent: 0;
                 }
-                //float: left;
-                //background-image: url("@{image-path}/controls-play.png");
-                //padding: 25px 0 0 0;
-                //overflow: hidden;
-                //height: 0 !important;
-                //height /**/: 25px;  /* for IE5/Win */
+
+                &:hover {
+                    color: rgba(10, 10, 10, 1);
+                }
             }
             &.pause {
                 a {
                     .icon(pause);
+                    &:before {
+                        font-size: 19px;
+                    }
                 }
             }
         }
@@ -178,7 +178,7 @@
         }
         .screen { 
             position: absolute;
-            right: 39px;
+            right: 40px;
 
             .ios & {
                 right: 6px;
@@ -189,17 +189,19 @@
             display: inline-block;
 
             a {
-                width: 24px;
+                width: 28px;
+                color: rgba(128, 128, 128, 1);
                 .icon(fullscreen);
 
                 &:before {
-                    font-size: 16px;
+                    font-size: 17px;
                     margin-top: 5px;
-                    color: #808080;
                     float: right;
                     text-indent: 0;
                 }
-             
+                &:hover {
+                    color: rgba(96, 96, 96, 1);
+                }
             }
         }
         .sound { 
@@ -212,19 +214,22 @@
 
             a {
                 width: 22px;
+                color: rgba(128, 128, 128, 1);
                 .icon(sound);
 
                 &:before {
                     font-size: 16px;
                     margin-top: 5px;
-                    color: #808080;
                     float: left;
                     text-indent: 0;
                 }
-             
+                &:hover {
+                    color: rgba(96, 96, 96, 1);
+                }             
             }
 
             &.muted {
+                right: 15px;
                 a {
                     .icon(mute);
                 }
@@ -357,7 +362,7 @@
                     height: @slider-height;
 
                     a {
-                        background-color: rgba(128, 128, 128, 1);;
+                        background-color: rgba(128, 128, 128, 1);
                         border-radius: @slider-border-radius;
                         width: @slider-height;
                         float: left;
@@ -367,6 +372,9 @@
                         height: 0 !important;
                         height /**/: @slider-height;  /* for IE5/Win */
 
+                        &:hover {
+                            background-color: rgba(96, 96, 96, 1);
+                        }
                     }
                 }
 
@@ -378,23 +386,41 @@
             color: #efefef;
             background-color: rgba(0, 0, 0, .85);
 
-            a { background-position: 0 -50px; }
-            a:hover { background-position: 0 0; }
+            .play,
+            .screen,
+            .sound {
+                a {
+                    color: white;
 
+                    &:hover {
+                        color: rgba(166, 166, 166, 1);
+                    }
+                }
+            }
+
+            .oiprogress-container { 
+                .oiprogress-push {
+                    .pos {
+                        a { 
+                            background-color: rgba(96, 96, 96, 1);
+
+                            &:hover {
+                                background-color: rgba(48, 48, 48, 1);                                
+                            }
+                        }
+                    }
+                }
+            }
             .progress.changed div.oiprogress { 
-                //background: url("@{image-path}/slider11-long.png") left -50px no-repeat; 
                 background-color: rgba(166, 166, 166, 1);
             }
             .back { 
-                //background: url("@{image-path}/slider11-long.png") right 0 no-repeat; 
                 background-color: rgba(255, 255, 255, 1);
             }
             .loaded { 
-                //background: url("@{image-path}/slider11-long.png") right -25px no-repeat; 
                 background-color: rgba(204, 204, 204, 1);
             }
             .played { 
-                //background: url("@{image-path}/slider11-long.png") right -50px no-repeat;
                 background-color: rgba(166, 166, 166, 1);
             }
         }

@@ -79,7 +79,7 @@ gulp.task('jsmin', function() {
 });
 
 gulp.task('less', function() {
-    gulp.src('less/*.less')
+    gulp.src('less/oiplayer.less')
         .pipe(sourcemaps.init())
         .pipe(less())
         .on('error', notify.onError( (error) => {
