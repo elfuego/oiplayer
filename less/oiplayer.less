@@ -4,7 +4,12 @@
  * @name     Stylesheet, less version, to style OIPlayer and its controls
  */
 
+/* webfont with icons */
+@import "icons";
+/* variables */
 @image-path: "images";
+@slider-height: 12px;
+@slider-border-radius: 6px;
 
 .oiplayer {
     position: relative;
@@ -85,8 +90,7 @@
         max-width: 640px;
         color: #555;
         z-index: 19;
-        background-color: transparent;
-        background-image: url("@{image-path}/bg-whitish.png");
+        background-color: rgba(255, 255, 255, .85);
         
         position: absolute;
         bottom: 0;
@@ -118,33 +122,38 @@
 
         .play {
             position: absolute;
-            left: 6px;
-            width: 21px;
+            top: 0;
+            left: 12px;
+            
+            text-indent: -9999px;
+            overflow: hidden;
+            display: inline-block;
 
             a {
-                width: 21px;
-                float: left;
-                background-image: url("@{image-path}/controls-play.png"); 
-                padding: 25px 0 0 0;
-                overflow: hidden;
-                height: 0 !important;
-                height /**/: 25px;  /* for IE5/Win */
+                .icon(play);
+                width: 22px;
+                height: 25px;
+
+                &:before {
+                    font-size: 17px;
+                    margin-top: 5px;
+                    color: #808080;
+                    float: left;
+                    text-indent: 0;
+                }
+                //float: left;
+                //background-image: url("@{image-path}/controls-play.png");
+                //padding: 25px 0 0 0;
+                //overflow: hidden;
+                //height: 0 !important;
+                //height /**/: 25px;  /* for IE5/Win */
+            }
+            &.pause {
+                a {
+                    .icon(pause);
+                }
             }
         }
-        .pause {
-            position: absolute;
-            width: 21px;
-
-            a {
-                width: 21px;
-                float: left;
-                background-image: url("@{image-path}/controls-pause.png");
-                padding: 25px 0 0 0;
-                overflow: hidden;
-                height: 0 !important;
-                height /**/: 25px;  /* for IE5/Win */
-            }
-        }        
         .time { 
             position: absolute;
             width: 50px; 
@@ -152,7 +161,7 @@
             font-size: 10px;
             font-family: Monaco, "Courier New", monospaced;
             line-height: 26px;
-            text-align: right;  /* 83 */ 
+            text-align: right;
         }
         .timeleft { 
             position: absolute;
@@ -161,7 +170,7 @@
             font-size: 10px;
             font-family: Monaco, "Courier New", monospaced;
             line-height: 26px;
-            text-align: left; /* 115 */ 
+            text-align: left;
             
             .audio & {
                 right: 30px;
@@ -169,41 +178,55 @@
         }
         .screen { 
             position: absolute;
-            width: 23px; 
-            right: 33px; /* 54 */
+            right: 39px;
 
             .ios & {
                 right: 6px;
             }
+            
+            text-indent: -9999px;
+            overflow: hidden;
+            display: inline-block;
 
             a {
-                float: right;
-                width: 23px;
-                background-image: url("@{image-path}/controls-fullscreen.png");
-                padding: 25px 0 0 0;
-                overflow: hidden;
-                height: 0 !important;
-                height /**/: 25px;  /* for IE5/Win */                
+                width: 24px;
+                .icon(fullscreen);
+
+                &:before {
+                    font-size: 16px;
+                    margin-top: 5px;
+                    color: #808080;
+                    float: right;
+                    text-indent: 0;
+                }
+             
             }
         }
         .sound { 
             position: absolute;
-            width: 21px; 
-            right: 6px;
+            right: 9px;
+
+            text-indent: -9999px;
+            overflow: hidden;
+            display: inline-block;
 
             a {
-                width: 21px;
-                float: left;
-                background-image: url("@{image-path}/controls-soundon.png");
-                padding: 25px 0 0 0;
-                overflow: hidden;
-                height: 0 !important;
-                height /**/: 25px;  /* for IE5/Win */                
+                width: 22px;
+                .icon(sound);
+
+                &:before {
+                    font-size: 16px;
+                    margin-top: 5px;
+                    color: #808080;
+                    float: left;
+                    text-indent: 0;
+                }
+             
             }
 
             &.muted {
                 a {
-                    background-image: url("@{image-path}/controls-soundoff.png");
+                    .icon(mute);
                 }
             }
             
@@ -238,43 +261,33 @@
         div.sound:hover > div.volume .slider,
         div.sound a:hover > div.volume .slider, 
         .volume:hover .slider {
-          /* turn pointer events back on so that we now only
+            
+            /* turn pointer events back on so that we now only
              hide the slider when we exit the VOL label or the slider */
-          pointer-events: auto;
-          /* show the slider */
-          opacity: 1;
-          transform: translateY(-50px);
-        }
+            pointer-events: auto;
+            /* show the slider */
+            opacity: 1;
+            transform: translateY(-50px);
 
-        /* the bar filling up to the thumb position */
-        .slider .fill {
-          height: 100%;
-          background-color: #333;
-        }
+            .fill {
+                height: 100%;
+                background-color: #333;
+            }
 
-        /* the container for the thumb, shorter from the overall
-           slider width by the width of the thumb so that we can
-           use percentages to position the thumb */
-        .slider .thumb {
-          //left: 0;
-          //margin-top: 0;
-        }
+            .thumb > div {
+                position: absolute;
+                top: 0;
+                margin-top: -6px;
+                left: -6px;
+                width: 24px;
+                height: 12px;
+                background-color: #CCCCCC;
+                box-shadow: 0px 2px 4px rgba(0,0,0,0.8);
 
-        /* the actual thumb element */
-        .slider .thumb > div {
-          position: absolute;
-          top: 0;
-          margin-top: -6px;
-          left: -6px;
-          width: 24px;
-          height: 12px;
-          background-color: #CCCCCC;
-          box-shadow: 0px 2px 4px rgba(0,0,0,0.8);
-        }
-
-        /* hover state for the thumb */
-        .slider .thumb > div:hover {
-          background-color: #EAEAEA;
+                &:hover {
+                    background-color: #EAEAEA;
+                }
+            }
         }
 
         /* ### progress bar & position ### */
@@ -284,10 +297,13 @@
             right: 122px; 
             
             .oiprogress  { 
-                background: url("@{image-path}/slider11-long.png") left -50px no-repeat;
-                height: 25px;
-                left: 0;
-                right: 0;
+                //background: url("@{image-path}/slider11-long.png") left -50px no-repeat;
+                background-color: rgba(166, 166, 166, 1);
+                border-radius: @slider-border-radius;
+                height: @slider-height;
+                position: relative;
+                top: 7px;
+                left: 5px;
                 pointer-events: none;
             }
 
@@ -296,30 +312,33 @@
             }                
         }
         .bar {
+            height: @slider-height;
+            border-radius: @slider-border-radius;
             position: absolute;
-            height: 25px;
-            left: 6px;
+            left: 0;
             top: 0;
+
+            &.back {
+                width: 100%;
+                background-color: rgba(255, 255, 255, 1);
+                //margin-right: 6px;
+                pointer-events: auto;
+            }
+            &.loaded {
+                position: absolute;
+                background-color: rgba(204, 204, 204, 1);
+                //margin-right: 6px;
+                pointer-events: auto;
+            }
+            &.played
+            {
+                position: absolute;
+                background-color: rgba(166, 166, 166, 1);;
+                pointer-events: none;
+                border-radius: @slider-border-radius 0 0 @slider-border-radius; 
+            }
         }
-        .back {
-            position: absolute;
-            width: 100%;
-            background: url("@{image-path}/slider11-long.png") right 0 no-repeat;
-            margin-right: 6px;
-            pointer-events: auto;
-        }
-        .loaded {
-            position: absolute;
-            background: url("@{image-path}/slider11-long.png") right -25px no-repeat;
-            margin-right: 6px;
-            pointer-events: auto;
-        }
-        .played
-        {
-            position: absolute;
-            background: url("@{image-path}/slider11-long.png") right -50px no-repeat;
-            pointer-events: none;
-        }
+
         
         .oiprogress-container {
             position: absolute;
@@ -328,23 +347,25 @@
 
             .oiprogress-push {
                 position: absolute;
-                width: 11px;
-                height: 25px;
+                width: 0;
+                height: @slider-height;
                 pointer-events: auto;
 
                 .pos {
                     position: absolute;
-                    width: 11px;
-                    height: 25px;
+                    width: @slider-height;
+                    height: @slider-height;
 
                     a {
-                        background: url("@{image-path}/slider11-pos.png") left -75px no-repeat;
-                        width: 13px;
+                        background-color: rgba(128, 128, 128, 1);;
+                        border-radius: @slider-border-radius;
+                        width: @slider-height;
                         float: left;
-                        padding: 25px 0 0 0;
+                        margin: 0 0 0 -3px;
+                        padding: @slider-height 0 0 0;
                         overflow: hidden;
                         height: 0 !important;
-                        height /**/: 25px;  /* for IE5/Win */                
+                        height /**/: @slider-height;  /* for IE5/Win */
 
                     }
                 }
@@ -355,16 +376,27 @@
 
         &.dark {
             color: #efefef;
-            background-color: transparent;
-            background-image: url("@{image-path}/bg-blackish.png");
+            background-color: rgba(0, 0, 0, .85);
 
             a { background-position: 0 -50px; }
             a:hover { background-position: 0 0; }
 
-            .progress.changed div.oiprogress { background: url("@{image-path}/slider11-long.png") left -50px no-repeat; }
-            .back { background: url("@{image-path}/slider11-long.png") right 0 no-repeat; }
-            .loaded { background: url("@{image-path}/slider11-long.png") right -25px no-repeat; }
-            .played { background: url("@{image-path}/slider11-long.png") right -50px no-repeat; }
+            .progress.changed div.oiprogress { 
+                //background: url("@{image-path}/slider11-long.png") left -50px no-repeat; 
+                background-color: rgba(166, 166, 166, 1);
+            }
+            .back { 
+                //background: url("@{image-path}/slider11-long.png") right 0 no-repeat; 
+                background-color: rgba(255, 255, 255, 1);
+            }
+            .loaded { 
+                //background: url("@{image-path}/slider11-long.png") right -25px no-repeat; 
+                background-color: rgba(204, 204, 204, 1);
+            }
+            .played { 
+                //background: url("@{image-path}/slider11-long.png") right -50px no-repeat;
+                background-color: rgba(166, 166, 166, 1);
+            }
         }
         
         &.ios {
@@ -378,12 +410,32 @@
            .screen { right: 6px; }
             
             /* ios: bit different color scheme */
-            .back { background: url("@{image-path}/slider11-long.png") right -25px no-repeat; }
-            .loaded { background: url("@{image-path}/slider11-long.png") right -50px no-repeat; }
-            .player { background: url("@{image-path}/slider11-long.png") right -75px no-repeat; }
-            .dark .back { background: url("@{image-path}/slider11-long.png") right 0 no-repeat; }
-            .dark .loaded { background: url("@{image-path}/slider11-long.png") right -25px no-repeat; }
-            .dark .played { background: url("@{image-path}/slider11-long.png") right -50px no-repeat; }
+            .back { 
+                //background: url("@{image-path}/slider11-long.png") right -25px no-repeat; 
+                background-color: rgba(204, 204, 204, 1);
+            }
+            .loaded { 
+                //background: url("@{image-path}/slider11-long.png") right -50px no-repeat;
+                background-color: rgba(166, 166, 166, 1);
+            }
+            .played { 
+                //background: url("@{image-path}/slider11-long.png") right -75px no-repeat; 
+                background-color: rgba(128, 128, 128, 1);
+            }
+            &.dark {
+                .back { 
+                    //background: url("@{image-path}/slider11-long.png") right 0 no-repeat; 
+                    background-color: rgba(255, 255, 255, 1);
+                }
+                .loaded { 
+                    //background: url("@{image-path}/slider11-long.png") right -25px no-repeat;
+                    background-color: rgba(204, 204, 204, 1);
+                }
+                .played { 
+                    //background: url("@{image-path}/slider11-long.png") right -50px no-repeat;
+                    background-color: rgba(166, 166, 166, 1);
+                }
+            }
         }
 
 

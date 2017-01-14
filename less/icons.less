@@ -1,0 +1,76 @@
+@font-face {
+    font-family: "oiplayer-webfont";
+    src: url('icons/oiplayer-webfont.eot');
+    src: url('icons/oiplayer-webfont.eot?#iefix') format('eot'),
+        url('icons/oiplayer-webfont.woff2') format('woff2'),
+        url('icons/oiplayer-webfont.woff') format('woff'),
+        url('icons/oiplayer-webfont.ttf') format('truetype'),
+        url('icons/oiplayer-webfont.svg#oiplayer-webfont') format('svg');
+}
+
+[class^="icon-"],
+[class*=" icon-"],
+.icon-base-pseudo {
+    display: inline-block;
+    vertical-align: middle;
+    font-family: "oiplayer-webfont";
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    // speak: none; // only necessary if not using the private unicode range (firstGlyph option)
+    text-decoration: none;
+    text-transform: none;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.icon-char(@filename) {
+    @fullscreen: "\E001";
+    @mute: "\E002";
+    @pause: "\E003";
+    @play: "\E004";
+    @position: "\E005";
+    @sound: "\E006";
+    
+    content: @@filename;
+}
+
+.icon(@filename, @insert: before) {
+    @pseudo-selector: ~":@{insert}";
+
+    &@{pseudo-selector} {
+        &:extend(.icon-base-pseudo);
+        .icon-char(@filename);
+    }
+}
+
+//
+// Icons
+//
+
+.icon-fullscreen:before {
+    content: "\E001";
+}
+
+.icon-mute:before {
+    content: "\E002";
+}
+
+.icon-pause:before {
+    content: "\E003";
+}
+
+.icon-play:before {
+    content: "\E004";
+}
+
+.icon-position:before {
+    content: "\E005";
+}
+
+.icon-sound:before {
+    content: "\E006";
+}
+
