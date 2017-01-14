@@ -74,13 +74,30 @@ Get current **position** of media in seconds.
     $.fn.oiplayer('position', 'video');
 
 
+## Development ##
+
+This project can be build with Gulp. At least, less needs to be made into css, after that the css and js sources are checked and minified. Run NPM to install all needed developer dependencies listed in `package.json`.
+
+```bash
+$ npm install
+```
+
+Or use `yarn` if you prefer. To start developing and run a simultaneous watch task, run the default task:
+
+```bash
+$ gulp
+```
+
+It will do a first build and starts a watch task with BrowserSync.
+
+
 ### History ###
 
 13-11-2016
 Updated methods start, jump and volume. Added method position to be able track player position (time in seconds). Added new gulp tasks for minification, browsersync, jslint and reformatted code. Tested on current lastest jQuery.
 
 28-04-2015
-I merged the event-drive branch in develop. It contains several methods to control oiplayer from 'the outside', make it 'jump' to spots several seconds in a video or audio etc. 
+I merged the event-driven branch in develop. It contains several methods to control oiplayer from 'the outside', make it 'jump' to spots several seconds in a video or audio etc. 
 
 13-07-2011
 I moved OIPlayer from the Open Images project in MMBase svn to this <https://github.com/elfuego/oiplayer> location in github to make it a bit easier to experiment with its code. 
