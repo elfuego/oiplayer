@@ -31,7 +31,8 @@
  *                    Simply 'true' means show me controls below player.
  *                    Value 'top' will add a css class of that name and will hide/show controls on top of the player window.
  *                    Add a css class of your own to edit the appearance of the controls (f.e. 'top dark').
-                      Still in development: to enable a volume control add a string 'volume'.
+                      Still in development: to enable a volume control add 'volume' as a css class.
+         'show' : Show controls on start
  *       'log' : when your specify 'info' some debug messages are shown about the media playing 
  *
  * @changes: completely redesigned into a 'true' jQuery plugin, added methods to be reached from 
@@ -56,6 +57,7 @@
                 jar: '/oiplayer/plugins/cortado-ovt-stripped-0.6.0.jar',
                 flash: '/oiplayer/plugins/flowplayer-3.2.7.swf',
                 controls: true,
+                show: true,
                 log: 'error'
             };
 
@@ -237,12 +239,17 @@
 
                         // show/hide
                         if (pl.ctrlspos == 'top' && pl.type != 'audio') {
+                            if (! config.show) {
+                                $(pl.ctrls).hide();
+                            }
                             $(pl.div).mouseover(
                                 function (ev) {
-                                    $(pl.ctrls).fadeIn();
+                                    if (pl.state !== 'init') {
+                                        $(pl.ctrls).fadeIn();
+                                    }
                                 }).mouseleave(
                                 function (ev) {
-                                    if (pl.state != 'init') {
+                                    if (pl.state !== 'init') {
                                         $(pl.ctrls).fadeOut('slow');
                                     }
                                 }
@@ -270,11 +277,9 @@
                     player.scrubStart = $(self).offset().left;
 
                     $(player.div).mousemove(function (ev) {
-                        //ev.preventDefault();
                         updateScrubber(player, ev);
                     });
                     $(player.div).mouseup(function (ev) {
-                        //ev.preventDefault();
                         $(player.ctrls).find('div.pos a').css("background-position", "0 -75px");
                         endScrubbing(player, ev);
                     });
@@ -837,7 +842,7 @@
             if (!isNaN(pos) && pos > 0) {
                 var perc = (pos / player.duration) * 100;
                 perc = perc + "%";
-                $(player.ctrls).find('div.played').width(perc);
+                $(player.ctrls).find('div.played').width((1 + ((pos / player.duration) * 100)) + "%");
                 $(player.ctrls).find('div.oiprogress-push').css('left', perc);
                 if (player.duration > 0) {
                     $(player.ctrls).find('div.timeleft').text("-" + methods._totime(player.duration - pos));

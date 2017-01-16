@@ -12,6 +12,25 @@
 @slider-border-radius: 6px;
 
 .oiplayer {
+
+    //Set the base box-sizing that will be inherited by all other elements
+    box-sizing: border-box;
+    
+    *,
+    *::before,
+    *::after {
+        box-sizing: inherit;
+    }
+
+    a:focus {
+        outline: none;
+        background-color: transparent;
+    }
+
+    // Add cross-browser antialiasing
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
     position: relative;
     margin: 0;
     padding: 0;
@@ -79,6 +98,7 @@
     .oipcontrols {
         
         height: 30px;
+        line-height: 25px;
         margin: 0;
         max-width: 640px;
         color: #555;
@@ -115,7 +135,7 @@
         .play {
             position: absolute;
             top: 0;
-            left: 12px;
+            left: 9px;
             
             a {
                 .icon(play);
@@ -125,7 +145,6 @@
 
                 &:before {
                     font-size: 19px;
-                    margin-top: 4px;
                 }
 
                 &:hover {
@@ -144,19 +163,19 @@
         .time { 
             position: absolute;
             width: 50px; 
-            left: 25px; 
+            left: 23px;
             font-size: 10px;
             font-family: Monaco, "Courier New", monospaced;
-            line-height: 26px;
+            line-height: 28px;
             text-align: right;
         }
         .timeleft { 
             position: absolute;
             width: 55px; 
-            right: 54px; 
+            right: 59px; 
             font-size: 10px;
             font-family: Monaco, "Courier New", monospaced;
-            line-height: 26px;
+            line-height: 28px;
             text-align: left;
             
             .audio & {
@@ -178,7 +197,6 @@
 
                 &:before {
                     font-size: 17px;
-                    margin-top: 5px;
                 }
                 &:hover {
                     color: rgba(96, 96, 96, 1);
@@ -196,7 +214,6 @@
 
                 &:before {
                     font-size: 16px;
-                    margin-top: 5px;
                 }
                 &:hover {
                     color: rgba(96, 96, 96, 1);
@@ -207,6 +224,9 @@
                 right: 15px;
                 a {
                     .icon(mute);
+                    &:before {
+                        font-size: 16px;
+                    }
                 }
             }
             
@@ -273,8 +293,12 @@
         /* ### progress bar & position ### */
         .progress { 
             position: absolute;
-            left: 83px;    /* 10px margin left and right */
-            right: 122px; 
+            left: 76px;    /* 10px margin left and right */
+            right: 124px;
+
+            .audio & {
+                right: 100px;
+            }
             
             .oiprogress  { 
                 //background: url("@{image-path}/slider11-long.png") left -50px no-repeat;
@@ -287,9 +311,36 @@
                 pointer-events: none;
             }
 
-            .audio & {
-                right: 100px;
-            }                
+            .pos {
+                position: absolute;
+                width: @slider-height;
+                height: @slider-height;
+
+                a {
+                    background-color: rgba(128, 128, 128, 1);
+                    border-radius: @slider-border-radius;
+                    width: @slider-height;
+                    float: left;
+                    margin: 0 0 0 -3px;
+                    height: @slider-height;
+
+                    &:hover {
+                        background-color: rgba(96, 96, 96, 1);
+                    }
+                }
+            }
+
+            .oiprogress-container {
+                position: absolute;
+                left: 0;
+                right: 6px;
+
+                .oiprogress-push {
+                    position: absolute;
+                    height: @slider-height;
+                    pointer-events: auto;
+                }
+            }
         }
         .bar {
             height: @slider-height;
@@ -301,61 +352,20 @@
             &.back {
                 width: 100%;
                 background-color: rgba(255, 255, 255, 1);
-                //margin-right: 6px;
                 pointer-events: auto;
             }
             &.loaded {
-                position: absolute;
+                height: auto;
                 background-color: rgba(204, 204, 204, 1);
-                //margin-right: 6px;
                 pointer-events: auto;
             }
             &.played
             {
-                position: absolute;
                 background-color: rgba(166, 166, 166, 1);;
                 pointer-events: none;
-                border-radius: @slider-border-radius 0 0 @slider-border-radius; 
+                //border-radius: @slider-border-radius 0 0 @slider-border-radius; 
             }
         }
-
-        
-        .oiprogress-container {
-            position: absolute;
-            left: 0;
-            right: 6px;
-
-            .oiprogress-push {
-                position: absolute;
-                width: 0;
-                height: @slider-height;
-                pointer-events: auto;
-
-                .pos {
-                    position: absolute;
-                    width: @slider-height;
-                    height: @slider-height;
-
-                    a {
-                        background-color: rgba(128, 128, 128, 1);
-                        border-radius: @slider-border-radius;
-                        width: @slider-height;
-                        float: left;
-                        margin: 0 0 0 -3px;
-                        padding: @slider-height 0 0 0;
-                        overflow: hidden;
-                        height: 0 !important;
-                        height /**/: @slider-height;  /* for IE5/Win */
-
-                        &:hover {
-                            background-color: rgba(96, 96, 96, 1);
-                        }
-                    }
-                }
-
-            }
-        }
-
 
         &.dark {
             color: #efefef;
@@ -373,20 +383,16 @@
                 }
             }
 
-            .oiprogress-container { 
-                .oiprogress-push {
-                    .pos {
-                        a { 
-                            background-color: rgba(96, 96, 96, 1);
+            .pos {
+                a { 
+                    background-color: rgba(96, 96, 96, 1);
 
-                            &:hover {
-                                background-color: rgba(48, 48, 48, 1);                                
-                            }
-                        }
+                    &:hover {
+                        background-color: rgba(48, 48, 48, 1);                                
                     }
                 }
             }
-            .progress.changed div.oiprogress { 
+            .progress.changed .oiprogress { 
                 background-color: rgba(166, 166, 166, 1);
             }
             .back { 
