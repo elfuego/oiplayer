@@ -31,7 +31,8 @@
  *                    Simply 'true' means show me controls below player.
  *                    Value 'top' will add a css class of that name and will hide/show controls on top of the player window.
  *                    Add a css class of your own to edit the appearance of the controls (f.e. 'top dark').
-                      Still in development: to enable a volume control add a string 'volume'.
+                      Still in development: to enable a volume control add 'volume' as a css class.
+         'show' : Show controls on start
  *       'log' : when your specify 'info' some debug messages are shown about the media playing 
  *
  * @changes: completely redesigned into a 'true' jQuery plugin, added methods to be reached from 
@@ -56,6 +57,7 @@
                 jar: '/oiplayer/plugins/cortado-ovt-stripped-0.6.0.jar',
                 flash: '/oiplayer/plugins/flowplayer-3.2.7.swf',
                 controls: true,
+                show: true,
                 log: 'error'
             };
 
@@ -150,7 +152,9 @@
                             }
                         }
                         var ctrlsWidth = controlsWidth(player);
-                        if (player.type == 'video' || $(player.div).find('img').length > 0) {
+                        if (isIpad() || isIphone() ) {
+                            // do nada
+                        } else if ((player.type == 'video' || $(player.div).find('img').length > 0)) {
                             $(player.ctrls).css('margin-left', Math.round((player.width - ctrlsWidth) / 2) + 'px');
                         } else {
                             $(player.ctrls).css('margin-left', '0px');
@@ -237,12 +241,17 @@
 
                         // show/hide
                         if (pl.ctrlspos == 'top' && pl.type != 'audio') {
+                            if (! config.show) {
+                                $(pl.ctrls).hide();
+                            }
                             $(pl.div).mouseover(
                                 function (ev) {
-                                    $(pl.ctrls).fadeIn();
+                                    if (pl.state !== 'init') {
+                                        $(pl.ctrls).fadeIn();
+                                    }
                                 }).mouseleave(
                                 function (ev) {
-                                    if (pl.state != 'init') {
+                                    if (pl.state !== 'init') {
                                         $(pl.ctrls).fadeOut('slow');
                                     }
                                 }
@@ -270,11 +279,9 @@
                     player.scrubStart = $(self).offset().left;
 
                     $(player.div).mousemove(function (ev) {
-                        //ev.preventDefault();
                         updateScrubber(player, ev);
                     });
                     $(player.div).mouseup(function (ev) {
-                        //ev.preventDefault();
                         $(player.ctrls).find('div.pos a').css("background-position", "0 -75px");
                         endScrubbing(player, ev);
                     });
@@ -358,8 +365,21 @@
                 }
 
                 function fullscreen(player) {
-                    if (isIpad() || isIphone()) {
-                        player.player.webkitEnterFullscreen();
+                    if (document.fullscreenElement) {
+                        //console.log('exit fullscreen');
+                        document.exitFullscreen();
+                        return;
+                    } else if (player.player.requestFullscreen) {
+                        //console.log('player.requestFullscreen');
+                        player.player.requestFullscreen();
+                        return;
+                    } else if (player.player.MozRequestFullscreen) {
+                        //console.log('player.MozRequestFullscreen');
+                        player.player.MozRequestFullscreen();
+                        return;
+                    } else if (player.player.webkitEnterFullscreen) {
+                        //console.log('player.webkitEnterFullscreen');
+                        player.player.webkitEnterFullscreen();  // @TODO: deprecated?
                         return;
                     }
                     if (player.owidth === undefined) {
@@ -405,7 +425,7 @@
 
                         $(document).bind('keydown', function (ev) {
                             // bind escape key to switch back from fullscreen
-                            if (ev.keyCode == '27') {
+                            if (ev.keyCode == 13 || ev.keyCode == 27) {
                                 fullscreen(player);
                             }
                         });
@@ -638,17 +658,17 @@
 
                 function controlsHtml(player) {
                     var html = '<div class="oipcontrols">' +
-                        '<div class="play"><a href="#play">play</a></div>' +
+                        '<div class="play"><a href="#play" title="play"></a></div>' +
                         '<div class="time">00:00</div>' +
                         '<div class="progress">' +
-                        '<div class="oiprogress"><div class="back bar"></div><div class="loaded bar"></div><div class="played bar"></div><div class="oiprogress-container"><div class="oiprogress-push"><div class="pos"><a href="#pos">pos</a></div></div></div></div>' +
+                        '<div class="oiprogress"><div class="back bar"></div><div class="loaded bar"></div><div class="played bar"></div><div class="oiprogress-container"><div class="oiprogress-push"><div class="pos"><a href="#pos" title="position"></a></div></div></div></div>' +
                         '</div>' +
                         '<div class="timeleft">-' + (player.position() > 0 ? methods._totime(player.duration - player.position()) : methods._totime(player.duration)) + '</div>' +
-                        (player.type == 'video' && !isIphone() ? '<div class="screen"><a href="#fullscreen">fullscreen</a></div>' : '') +
+                        (player.type == 'video' && !isIphone() ? '<div class="screen"><a href="#fullscreen" title="fullscreen"></a></div>' : '') +
                         (isIpad() ? '' : '<div class="sound">' +
-                            '<a href="#sound">mute</a>' +
+                            '<a href="#sound" title="sound"></a>' +
                                 ((config.controls.indexOf('volume') > -1) ? '<div class="volume"><div class="slider">' +
-                                    '<div class="fill"><!-- empty --></div><div class="thumb"><div><!-- empty --></div></div>' +
+                                    '<div class="fill"></div><div class="thumb"><div></div></div>' +
                                 '</div></div>' : '') +
                             '</div>') +
                         '</div>';
@@ -824,7 +844,7 @@
             if (!isNaN(pos) && pos > 0) {
                 var perc = (pos / player.duration) * 100;
                 perc = perc + "%";
-                $(player.ctrls).find('div.played').width(perc);
+                $(player.ctrls).find('div.played').width((1 + ((pos / player.duration) * 100)) + "%");
                 $(player.ctrls).find('div.oiprogress-push').css('left', perc);
                 if (player.duration > 0) {
                     $(player.ctrls).find('div.timeleft').text("-" + methods._totime(player.duration - pos));
