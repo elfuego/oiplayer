@@ -1,0 +1,522 @@
+/**
+ * @author   André van Toly
+ * @since    May 2009
+ * @name     Stylesheet, less version, to style OIPlayer and its controls
+ */
+
+/* webfont with icons */
+@import "icons";
+/* variables */
+@image-path: "images";
+@slider-height: 12px;
+@slider-border-radius: 6px;
+
+.oiplayer {
+
+    //Set the base box-sizing that will be inherited by all other elements
+    box-sizing: border-box;
+    
+    *,
+    *::before,
+    *::after {
+        box-sizing: inherit;
+    }
+
+    a:focus {
+        outline: none;
+        background-color: transparent;
+    }
+
+    // Add cross-browser antialiasing
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+    &.fullscreen {
+        position: fixed;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+        z-index: 1000;
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+
+        .player {
+            width: 100%;
+            height: 100%;
+            z-index: 1001;
+
+            video, object, embed {
+                z-index: 1002;
+            }
+        }
+    }
+
+    video, object, embed {
+        display: block;
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    audio
+    {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        display: block;
+        margin: 0;
+        padding: 0;
+        width: 100%;    /* not sure about this */
+    }
+
+    .player {
+        margin: 0;
+        padding: 0;
+        z-index: 10;
+
+        .audio & {
+            bottom: 0;
+        }
+    }
+
+    .preview {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 11;
+        cursor: pointer;
+    }
+    
+    &.inavailable { 
+        &.video {
+            background: url("@{image-path}/preview_video.png") left top repeat;
+        }
+        &.audio {
+            background: url("@{image-path}/preview_audio.png") left top repeat;
+        }
+        div.player { display: none; }
+        p {
+            width: 80%;
+            text-align: center;
+            font-size: 1.4em;
+            margin: 0 auto;
+            padding-top: 32%;
+            font-weight: bold;
+        }
+    }
+
+}
+
+.oipcontrols {
+    
+    height: 30px;
+    line-height: 25px;
+    margin: 0;
+    max-width: 640px;
+    color: #555;
+    z-index: 19;
+    background-color: rgba(255, 255, 255, .85);
+    
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    
+    .fullscreen & {
+        z-index: 1003;
+        margin: 0 auto;
+    }
+
+    &.top {
+        margin: auto auto 10px auto;
+        border-radius: 2px;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    &.audio {
+        .progress { right: 100px; }
+        .timeleft { right: 30px; }
+    }
+
+    > div {
+        position: absolute;
+        margin: 2px 0 0 0;
+        padding: 0;
+        height: 28px;
+    }
+
+    .play {
+        position: absolute;
+        top: 0;
+        left: 9px;
+        
+        a {
+            .icon(play);
+            width: 22px;
+            height: 25px;
+            color: rgba(128, 128, 128, 1);
+
+            &:before {
+                font-size: 19px;
+            }
+
+            &:hover {
+                color: rgba(10, 10, 10, 1);
+            }
+        }
+        &.pause {
+            a {
+                .icon(pause);
+                &:before {
+                    font-size: 19px;
+                }
+            }
+        }
+    }
+    .time { 
+        position: absolute;
+        width: 50px; 
+        left: 23px;
+        font-size: 10px;
+        font-family: Monaco, "Courier New", monospaced;
+        line-height: 28px;
+        text-align: right;
+    }
+    .timeleft { 
+        position: absolute;
+        width: 55px; 
+        right: 59px; 
+        font-size: 10px;
+        font-family: Monaco, "Courier New", monospaced;
+        line-height: 28px;
+        text-align: left;
+        
+        .audio & {
+            right: 30px;
+        }    
+    }
+    .screen { 
+        position: absolute;
+        right: 40px;
+
+        .ios & {
+            right: 6px;
+        }
+        
+        a {
+            width: 28px;
+            color: rgba(128, 128, 128, 1);
+            .icon(fullscreen);
+
+            &:before {
+                font-size: 17px;
+            }
+            &:hover {
+                color: rgba(96, 96, 96, 1);
+            }
+        }
+    }
+    .sound { 
+        position: absolute;
+        right: 9px;
+
+        a {
+            width: 22px;
+            color: rgba(128, 128, 128, 1);
+            .icon(sound);
+
+            &:before {
+                font-size: 16px;
+            }
+            &:hover {
+                color: rgba(96, 96, 96, 1);
+            }             
+        }
+
+        &.muted {
+            right: 15px;
+            a {
+                .icon(mute);
+                &:before {
+                    font-size: 16px;
+                }
+            }
+        }
+        
+        > .volume { 
+            width: 12px; 
+            height: 60px;
+            position: relative; 
+            top: -6px;
+            left: 6px; 
+            
+            /* container for the volume slider */
+            .slider {
+              width: 100%;
+              height: 100%;
+              background-color: #808080;
+              box-shadow: 0px 2px 4px rgba(0,0,0,0.8);
+              /* by default does not register for pointer events
+                 so that only the VOL label acts as a hover trigger */
+              pointer-events: none;
+              /* volume slider is invisible by default */
+              opacity: 0;
+              transform: translateY(0);
+              /* set up the opacity transition */
+              transition-property: opacity, transform;
+              transition-duration: 0.25s;
+            }
+
+        }
+    }
+
+    /* matches the slider when the volume button is hovered */
+    div.sound:hover > div.volume .slider,
+    div.sound a:hover > div.volume .slider, 
+    .volume:hover .slider {
+        
+        /* turn pointer events back on so that we now only
+         hide the slider when we exit the VOL label or the slider */
+        pointer-events: auto;
+        /* show the slider */
+        opacity: 1;
+        transform: translateY(-50px);
+
+        .fill {
+            height: 100%;
+            background-color: #333;
+        }
+
+        .thumb > div {
+            position: absolute;
+            top: 0;
+            margin-top: -6px;
+            left: -6px;
+            width: 24px;
+            height: 12px;
+            background-color: #CCCCCC;
+            box-shadow: 0px 2px 4px rgba(0,0,0,0.8);
+
+            &:hover {
+                background-color: #EAEAEA;
+            }
+        }
+    }
+
+    /* ### progress bar & position ### */
+    .progress { 
+        position: absolute;
+        left: 76px;    /* 10px margin left and right */
+        right: 124px;
+
+        .audio & {
+            right: 100px;
+        }
+        
+        .oiprogress  { 
+            //background: url("@{image-path}/slider11-long.png") left -50px no-repeat;
+            background-color: rgba(166, 166, 166, 1);
+            border-radius: @slider-border-radius;
+            height: @slider-height;
+            position: relative;
+            top: 7px;
+            left: 5px;
+            pointer-events: none;
+        }
+
+        .pos {
+            position: absolute;
+            width: @slider-height;
+            height: @slider-height;
+
+            a {
+                background-color: rgba(128, 128, 128, 1);
+                border-radius: @slider-border-radius;
+                width: @slider-height;
+                float: left;
+                margin: 0 0 0 -3px;
+                height: @slider-height;
+
+                &:hover {
+                    background-color: rgba(96, 96, 96, 1);
+                }
+            }
+        }
+
+        .oiprogress-container {
+            position: absolute;
+            left: 0;
+            right: 6px;
+
+            .oiprogress-push {
+                position: absolute;
+                height: @slider-height;
+                pointer-events: auto;
+            }
+        }
+    }
+    .bar {
+        height: @slider-height;
+        border-radius: @slider-border-radius;
+        position: absolute;
+        left: 0;
+        top: 0;
+
+        &.back {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 1);
+            pointer-events: auto;
+        }
+        &.loaded {
+            height: auto;
+            background-color: rgba(204, 204, 204, 1);
+            pointer-events: auto;
+        }
+        &.played
+        {
+            background-color: rgba(166, 166, 166, 1);;
+            pointer-events: none;
+            //border-radius: @slider-border-radius 0 0 @slider-border-radius; 
+        }
+    }
+
+    &.dark {
+        color: #efefef;
+        background-color: rgba(0, 0, 0, .85);
+
+        .play,
+        .screen,
+        .sound {
+            a {
+                color: white;
+
+                &:hover {
+                    color: rgba(166, 166, 166, 1);
+                }
+            }
+        }
+
+        .pos {
+            a { 
+                background-color: rgba(96, 96, 96, 1);
+
+                &:hover {
+                    background-color: rgba(48, 48, 48, 1);                                
+                }
+            }
+        }
+        .progress.changed .oiprogress { 
+            background-color: rgba(166, 166, 166, 1);
+        }
+        .back { 
+            background-color: rgba(255, 255, 255, 1);
+        }
+        .loaded { 
+            background-color: rgba(204, 204, 204, 1);
+        }
+        .played { 
+            background-color: rgba(166, 166, 166, 1);
+        }
+    }
+    
+    &.ios {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        
+        /* on iOS sound (iPad) or screen (iPhone) are hidden */
+       .progress { right: 100px; }
+       .timeleft { right: 30px; }
+       .screen { right: 6px; }
+        
+        /* ios: bit different color scheme */
+        .back { 
+            //background: url("@{image-path}/slider11-long.png") right -25px no-repeat; 
+            background-color: rgba(204, 204, 204, 1);
+        }
+        .loaded { 
+            //background: url("@{image-path}/slider11-long.png") right -50px no-repeat;
+            background-color: rgba(166, 166, 166, 1);
+        }
+        .played { 
+            //background: url("@{image-path}/slider11-long.png") right -75px no-repeat; 
+            background-color: rgba(128, 128, 128, 1);
+        }
+        &.dark {
+            .back { 
+                //background: url("@{image-path}/slider11-long.png") right 0 no-repeat; 
+                background-color: rgba(255, 255, 255, 1);
+            }
+            .loaded { 
+                //background: url("@{image-path}/slider11-long.png") right -25px no-repeat;
+                background-color: rgba(204, 204, 204, 1);
+            }
+            .played { 
+                //background: url("@{image-path}/slider11-long.png") right -50px no-repeat;
+                background-color: rgba(166, 166, 166, 1);
+            }
+        }
+    }
+
+
+}
+
+
+.oiplayerinfo
+{
+    font-size: xx-small;
+    padding: 2px;
+    background-color: #efefef;
+    color: black;
+    z-index: 99;
+    border-top: 1px solid #bbb;
+    font-family: Monaco, "Courier New", monospaced;
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    &.bottom {
+        position: static;
+        margin-top: 32px;        
+    }
+}
+
+/* MSIE Java plugin detection, sigh :-( */
+#clientcaps
+{
+    behavior: url(#default#clientCaps);
+    display: none;
+}
+
+/* ### example html ### */
+body.oiplayer-example {
+    font-size: 0.85em;
+    font-family: Helvetica, sans-serif;
+    background-color: #efefef;
+    line-height: 1.4em;
+
+    a { color: #c00; }
+    a:visited { color: #333; }
+    a:hover, 
+    a:active {
+        color: #c00;
+        text-decoration: underline;
+    }
+    > div.main {
+        width: 640px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 1px 1em;
+        
+        ol { padding-left: 20px; }
+        .license { font-size: 0.8em; }
+    }
+}

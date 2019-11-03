@@ -1,0 +1,37 @@
+{
+  "name": "oiplayer",
+  "appname": "HTML5 video and audio player",
+  "private": true,
+  "version": "1.0.2",
+  "engines": {
+    "node": "<9.0.0"
+  },
+  "browserslist": [
+    "last 1 version",
+    "> 1%",
+    "maintained node versions",
+    "not dead"
+  ],
+  "devDependencies": {
+    "browser-sync": "^2.12.10",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^7.0.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-filter": "~6.0.0",
+    "gulp-iconfont": "^10.0.3",
+    "gulp-iconfont-css": "^3.0.0",
+    "gulp-jsbeautifier": "~3.0.1",
+    "gulp-jshint": "~2.1.0",
+    "gulp-less": "^4.0.1",
+    "gulp-notify": "^3.2.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify": "~3.0.2",
+    "gulp-util": "~3.0.8",
+    "jshint": "^2.10.2",
+    "jshint-stylish": "~2.2.1"
+  },
+  "dependencies": {
+    "del": "^5.1.0",
+    "gulp-clean-css": "^4.2.0"
+  }
+}

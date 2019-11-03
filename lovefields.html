@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Lovefields</title> 
+  <meta name="viewport" content="width=device-width" />
+  <script src="js/jquery-3.1.1.min.js" type="text/javascript"> </script>
+  <!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"> </script> -->
+  <script src="plugins/flowplayer-3.2.6.min.js" type="text/javascript"> </script>
+  <script src="js/jquery.oiplayer.js" type="text/javascript"> </script>
+  <link href="css/oiplayer.css" rel="stylesheet" type="text/css" />
+<style type="text/css" media="all">
+#content
+{
+	margin: 10px auto;
+	width: 520px;
+}
+div.oiplayer.video > div.player { background-color: #333; }
+#playerwithsubs { position: relative; }
+#subs
+{
+	/*
+          this.container.style.position   = "absolute";
+          this.container.style.color      = "white";
+          this.container.style.textShadow = "black 2px 2px 6px";
+          this.container.style.fontSize   = "18px";
+          this.container.style.fontWeight = "bold";
+          this.container.style.textAlign  = "center";
+*/
+	position: absolute;
+	left: 0;
+	bottom: 50px;
+	color: #FFF;
+	font-size: 12pt;
+	text-align: center;
+	text-shadow: black 2px 2px 6px;
+	z-index: 99;
+	width: 384px;
+	font-family: Helvetica, sans-serif;
+}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  
+    // on all video and audio tags in #content
+    $('#content').oiplayer({
+        server : 'http://localhost/~andre', 
+        jar : '/oiplayer/cortado-ovt-stripped-0.6.0.jar',
+        flash : '/oiplayer/plugins/flowplayer-3.2.7.swf',
+        controls : 'dark top',
+        log: 'info'
+    });
+
+    function startFollowing(player) {
+      console.log('#startFollowing');
+      var i = 0,
+          now = 0,
+          progress = null;
+      clearInterval(progress);
+      progress = setInterval(function () {
+          var pos = player.position();
+          $('#lovefields-position').html('' + Math.round(pos));
+      }, 250);
+    }
+    
+    $("a.start").click(function(ev) {
+        ev.preventDefault();
+        $.fn.oiplayer('start', 'theplayerid');
+    });
+    $("a.jump60").click(function(ev) {
+        ev.preventDefault();
+        $.fn.oiplayer('jump','theplayerid', 60);
+    });
+    $("a.jump").click(function(ev) {
+        ev.preventDefault();
+        $.fn.oiplayer('jump','theplayerid', 69);
+    });
+    $("a.start69").click(function(ev) {
+        ev.preventDefault();
+        $.fn.oiplayer('start','theplayerid', 69);
+    });
+    $("a.pause").click(function(ev) {
+        ev.preventDefault();
+        $.fn.oiplayer('pause','theplayerid');
+    });
+    $("a.volume").click(function(ev) {
+        ev.preventDefault();
+        var vol = $(ev.target).text();
+        $.fn.oiplayer('volume','theplayerid', vol);
+    });
+    // bind play event on all div's .oiplayer
+    $('div.oiplayer').bind("oiplayerplay", function(ev, player) {
+        console.log("I started playing: " + $(player.el).attr('id'));
+        startFollowing(player);
+    });
+    
+    // try to do something with subtitles
+    /* var subsInterval = null;
+    clearInterval(subsInterval);
+    subsInterval = setInterval(function() {
+        var pos = $.fn.oiplayer('position', 'theplayerid');
+        console.log('subs ' + pos);
+        
+    }, 500); */
+    
+    var subtitles = document.getElementById('subs');
+    var video = document.getElementById('theplayerid');
+    console.log(video);
+    for (var i = 0; i < video.textTracks.length; i++) {
+        console.log('textTrack ' + i);
+        var textTrack = video.textTracks[i];
+        
+        var kind = textTrack.kind; // e.g. "subtitles"
+        //textTrack.mode = "showing";//"disabled", hidden" or "showing"
+        var mode = textTrack.mode;
+        console.log('kind: ' + kind + ', mode: ' + mode);
+        
+
+        /* for (var j = 0; j < textTrack.cues.length; ++j) {
+            var cue = textTrack.cues[j];
+            // do something
+            //var cue = cues[0];
+        
+            //var cueId = (cue.id != null ? cue.id : 'niks');
+            var cueText = cue.text;
+            console.log('text ' + cueText);
+        } */
+    }
+    
+
+});
+</script>
+
+</head>
+<body>
+  <div id="clientcaps"><!-- just for msie and java --></div>
+  <p>
+    <a href="../index.html">index</a>
+    <a href="index.html">oiplayer</a>
+    <a href="lovefields.html">lovefields</a>
+  </p>
+  
+<div id="content">
+  <p>
+  controls: what do we want (all from 'outside' of plater): 
+  start play,
+  jump to point (in sec.), start playing from there.<br />
+  tracking: (fire event?) show text at point (in sec.),
+  use 'standard' subtitle files
+  </p>
+
+  <p> 
+    <a class="start" href="#start">start</a> -    
+    <a class="jump" href="#goto">jump</a> -
+    <a class="pause" href="#stop">stop/pauze</a> - 
+    <a class="jump60" href="#start">jumpat60</a> -
+    <a class="start69" href="#start">jump and start at 69</a> -
+    <br />
+    Bit old but describes what AirPlay can do http://bit.ly/gYX5W6 + how to enable it in #html5 video tag attr. x-webkit-airplay="allow"
+    </p>
+  <div id="playerwithsubs">
+    <video id="theplayerid" controls="controls" width="384" height="288" poster="lovefields.png" x-webkit-airplay="allow">
+      <source type="video/webm; codecs=vp8,vorbis" src="http://www.toly.net/media/lovefields.webm" />
+      <source type="video/mp4; codecs=h264" src="http://www.toly.net/media/lovefields.mp4" />
+      <!-- <source type="video/mp4; codecs=h264" src="../oiplayer-svn/lovefields.mp4" /> -->
+      <!-- <source type="video/ogg; codecs=theora" src="../oiplayer-svn/lovefields.ogv" /> -->
+      
+      <track src="lovefields.vtt" label="English" kind="subtitles" srclang="en" default="default" />
+    </video>
+    <div id="subs"> </div>
+  </div>
+<h2>position: <span id="lovefields-position">0</span></h2>
+
+<pre style="width:200px; float:right;">
+WEBVTT FILE
+
+1
+00:00:00.070 --> 00:00:03.000
+OK
+
+2
+00:00:09.510 --> 00:00:15.000
+This piece is called "Please Humiliate Me Mr. More"
+
+3
+00:01:07.350 --> 00:01:09.000
+_something_ *** genius
+
+4
+00:01:09.400 --> 00:01:13.000
+This song is called "Bull In The Heather"
+</pre>
+
+  <p class="one">
+    Looking into using: <a href="lovefields.vtt">lovefields.vtt</a> for subtitles.
+  </p>
+  
+  <p class="two">Volume: 
+    <a class="volume" href="#volume">0</a> -
+    <a class="volume" href="#volume">30</a> -
+    <a class="volume" href="#volume">50</a> -
+    <a class="volume" href="#volume">750</a> -
+    <a class="volume" href="#volume">100</a> 
+  </p>
+  
+</div>
+
+
+</body>
+</html>
