@@ -85,9 +85,7 @@ gulp.task('less', function() {
         .on('error', notify.onError( (error) => {
             return { icon: 'Icon.png', title: 'LESS ERROR ON LINE ' + error.line, message: error.message };
         }))
-        .pipe(autoprefixer({
-            browsers: ['last 2 versions']
-        }))
+        .pipe(autoprefixer())
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('./css/'));
 });
