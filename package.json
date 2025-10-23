@@ -1,37 +1,27 @@
 {
-  "name": "oiplayer",
-  "appname": "HTML5 video and audio player",
-  "private": true,
-  "version": "1.0.2",
-  "engines": {
-    "node": "<9.0.0"
+  "name": "just-scss-to-css",
+  "version": "1.0.0",
+  "description": "Compiles from styles.scss to styles.css",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "scss": "node-sass --watch ./src/scss -o ./styles",
+    "start": "webpack serve --open"
   },
-  "browserslist": [
-    "last 1 version",
-    "> 1%",
-    "maintained node versions",
-    "not dead"
-  ],
+  "author": "André",
+  "license": "ISC",
   "devDependencies": {
-    "browser-sync": "^2.12.10",
-    "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^7.0.1",
-    "gulp-concat": "^2.6.0",
-    "gulp-filter": "~6.0.0",
-    "gulp-iconfont": "^10.0.3",
-    "gulp-iconfont-css": "^3.0.0",
-    "gulp-jsbeautifier": "~3.0.1",
-    "gulp-jshint": "~2.1.0",
-    "gulp-less": "^4.0.1",
-    "gulp-notify": "^3.2.0",
-    "gulp-sourcemaps": "^2.6.5",
-    "gulp-uglify": "~3.0.2",
-    "gulp-util": "~3.0.8",
-    "jshint": "^2.10.2",
-    "jshint-stylish": "~2.2.1"
-  },
-  "dependencies": {
-    "del": "^5.1.0",
-    "gulp-clean-css": "^4.2.0"
+    "css-loader": "^6.8.1",
+    "html-loader": "^4.2.0",
+    "html-webpack-plugin": "^5.5.2",
+    "node-sass": "^8.0.0",
+    "path": "^0.12.7",
+    "raw-loader": "^4.0.2",
+    "sass-loader": "^13.0.2",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.84.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-middleware": "^5.3.3",
+    "webpack-dev-server": "^4.11.1"
   }
 }
