@@ -6,16 +6,16 @@
     init(el, url, config) {
       this._init(el, url, config);
     }
-    mute() { }
-    play() { }
-    pause() { }
+    mute() {}
+    play() {}
+    pause() {}
     /* current position of audio or video */
-    position() { }
+    position() {}
     /* go to this position */
-    seek(pos) { }
-    info() { }
+    seek(pos) {}
+    info() {}
     /* value between 0 - 100 */
-    volume(vol) { }
+    volume(vol) {}
     _init(el, url, config) {
       this.state = "init";
       this.el = el;
@@ -32,15 +32,16 @@
       if (this.controls === undefined) this.controls = false;
       if (this.duration === undefined) this.duration = 0;
       this.width = parseInt(this.player.getAttribute("width")) || 320;
-        // $(this.player).attr("width") > 0
-        //   ? parseInt(this.player.getAttribute("width"))
-        //   : 320;
+      // $(this.player).attr("width") > 0
+      //   ? parseInt(this.player.getAttribute("width"))
+      //   : 320;
       var default_height = 240;
       if (this.type == "audio") default_height = 32;
-      this.height = parseInt(this.player.getAttribute("height")) || default_height;
-        // $(this.player).attr("height") > 0
-        //   ? parseInt(this.player.getAttribute("height"))
-        //   : default_height;
+      this.height =
+        parseInt(this.player.getAttribute("height")) || default_height;
+      // $(this.player).attr("height") > 0
+      //   ? parseInt(this.player.getAttribute("height"))
+      //   : default_height;
       if (this.type == "audio") {
         $(this.player).removeAttr("width").removeAttr("height");
       }
@@ -59,9 +60,11 @@
         this.player.addEventListener(
           "durationchange",
           function (ev) {
-            if (!isNaN(self.player.duration) &&
+            if (
+              !isNaN(self.player.duration) &&
               self.player.duration > 0 &&
-              self.player.duration != "Infinity") {
+              self.player.duration != "Infinity"
+            ) {
               self.duration = self.player.duration;
               if (config.log == "info") {
                 if ($.oiplayer) {
@@ -105,8 +108,10 @@
         this.player.addEventListener(
           "loadedmetadata",
           function (ev) {
-            if (self.type == "video" &&
-              (self.width == 320 || self.height == 240)) {
+            if (
+              self.type == "video" &&
+              (self.width == 320 || self.height == 240)
+            ) {
               self.width =
                 $(self.player).attr("width") > 0
                   ? parseInt($(self.player).attr("width"))
@@ -204,7 +209,7 @@
         this.pos = this.player.currentTime;
         return this.pos;
       } catch (err) {
-        $.oiplayer.msg(self, "Error: " + err);
+        // $.oiplayer.msg(self, "Error: " + err);
       }
       return -1;
     }
@@ -235,12 +240,23 @@
   class OIPlayer {
     constructor(elem, config) {
       this.elem = elem;
+      this.config = config;
 
       this.init();
     }
 
     init() {
-      console.log("elem", this.urls, this.types);
+      // first wrap
+      this.div = document.createElement("div");
+      const innerdiv = document.createElement("div");
+      this.div.classList.add("oiplayer");
+      innerdiv.classList.add("player");
+
+      this.elem.replaceWith(this.div);
+      innerdiv.appendChild(this.elem);
+      this.div.appendChild(innerdiv);
+
+      console.log("INIT", this.urls, this.types);
       const proposal = this.selectPlayer(this.types, this.urls);
       console.log("proposal", proposal);
 
@@ -252,6 +268,9 @@
         default:
           break;
       }
+
+      this.div.append(this.controlsHtml());
+      console.log("ELEM", this.elem);
     }
 
     /*
@@ -261,7 +280,7 @@
      * @param types mimetype (and codec) attributes
      * @param urls  media links
      */
-    selectPlayer(types, urls) {
+    selectPlayer = (types, urls) => {
       const proposal = {};
       let probably = this.canPlayMedia(types, urls);
       console.log("probably", probably);
@@ -340,12 +359,12 @@
         return proposal;
       }
       return proposal;
-    }
+    };
 
     /*
      * Returns (first) url it expects to be able to play with html5 video- or audiotag based on mimetype.
      */
-    canPlayMedia(types, urls) {
+    canPlayMedia = (types, urls) => {
       var vEl = document.createElement("video");
       var aEl = document.createElement("audio");
       if (vEl.canPlayType || aEl.canPlayType) {
@@ -364,12 +383,12 @@
           }
         }
       }
-    }
+    };
 
     /*
      * Examines mimetypes and returns belonging ogg url it expects to be able to play.
      */
-    canPlayCortado(types, urls) {
+    canPlayCortado = (types, urls) => {
       for (var i = 0; i < types.length; i++) {
         if (
           types[i].indexOf("video/ogg") > -1 ||
@@ -382,6 +401,105 @@
       }
 
       return null;
+    };
+
+    controlsHtml = () => {
+      const htm = `<div class="play"><a href="#play" title="play"></a></div>
+        <div class="time">00:00</div>
+        <div class="progress">
+          <div class="oiprogress">
+            <div class="back bar"></div>
+            <div class="loaded bar"></div>
+            <div class="played bar"></div>
+            <div class="oiprogress-container">
+              <div class="oiprogress-push">
+                <div class="pos"><a href="#pos" title="position"></a></div>
+              </div>
+            </div>
+          </div>
+          <div class="timeleft">
+            ${-(this.player.position() > 0
+              ? this._totime(this.player.duration - this.player.position())
+              : this._totime(this.player.duration))}
+          </div>
+          ${
+            this.player.type === "video" && !this._isIphone()
+              ? `<div class="screen"><a href="#fullscreen" title="fullscreen"></a></div>`
+              : ""
+          }
+        </div>`;
+
+      const div = document.createElement("div");
+      div.classList.add("oipcontrols");
+      div.innerHTML = htm;
+      return div;
+
+      var html =
+        '<div class="oipcontrols">' +
+        '<div class="play"><a href="#play" title="play"></a></div>' +
+        '<div class="time">00:00</div>' +
+        '<div class="progress">' +
+        '<div class="oiprogress"><div class="back bar"></div><div class="loaded bar"></div><div class="played bar"></div><div class="oiprogress-container"><div class="oiprogress-push"><div class="pos"><a href="#pos" title="position"></a></div></div></div></div>' +
+        "</div>" +
+        '<div class="timeleft">-' +
+        (player.position() > 0
+          ? this._totime(player.duration - player.position())
+          : this._totime(player.duration)) +
+        "</div>" +
+        (player.type == "video" && !this._isIphone()
+          ? '<div class="screen"><a href="#fullscreen" title="fullscreen"></a></div>'
+          : "") +
+        (this._isIpad()
+          ? ""
+          : '<div class="sound">' +
+            '<a href="#sound" title="sound"></a>' +
+            (this.config?.controls?.indexOf("volume") > -1
+              ? '<div class="volume"><div class="slider">' +
+                '<div class="fill"></div><div class="thumb"><div></div></div>' +
+                "</div></div>"
+              : "") +
+            "</div>") +
+        "</div>";
+    };
+
+    /*
+     * Returns time formatted as 00:00
+     * @param pos Seconds
+     */
+    _totime = (pos) => {
+      if (pos < 0) {
+        pos = 0;
+      }
+
+      function toTime(sec) {
+        var h = Math.floor(sec / 3600);
+        var min = Math.floor(sec / 60);
+        sec = Math.floor(sec - min * 60);
+
+        if (h >= 1) {
+          min -= h * 60;
+          return h + ":" + addZero(min) + ":" + addZero(sec);
+        }
+
+        return addZero(min) + ":" + addZero(sec);
+      }
+
+      function addZero(time) {
+        time = parseInt(time, 10);
+        return time < 10 ? "0" + time : time;
+      }
+
+      return toTime(Math.floor(pos));
+    };
+
+    /* sorry about these :-( could not find suitable abilities checks */
+    _isIphone() {
+      // iPhone and iPod act the same
+      return navigator.userAgent.match(/iPhone|iPod/i) !== null;
+    }
+
+    _isIpad() {
+      return navigator.userAgent.match(/iPad/i) !== null;
     }
 
     get sources() {
@@ -414,16 +532,6 @@
 
     media.forEach((mt) => {
       const mediaId = mt.getAttribute("id");
-
-      const div = document.createElement("div");
-      const innerdiv = document.createElement("div");
-      div.classList.add("oiplayer");
-      innerdiv.classList.add("player");
-
-      mt.replaceWith(div);
-      innerdiv.appendChild(mt);
-      div.appendChild(innerdiv);
-
       const player = new OIPlayer(mt);
       console.log("player", player);
     });
