@@ -246,6 +246,7 @@ class MediaPlayer extends Player {
 (function () {
   class OIPlayer {
     constructor(elem, config) {
+      this.id = elem.id || "id" + Math.random().toString(16).slice(2);
       this.elem = elem;
       this.config = config || {};
 
@@ -263,10 +264,8 @@ class MediaPlayer extends Player {
       innerdiv.appendChild(this.elem);
       this.div.appendChild(innerdiv);
 
-      console.log("INIT", this.urls, this.types);
       const proposal = this.selectPlayer(this.types, this.urls);
-      console.log("proposal", proposal);
-      console.log("ELEM", this.elem);
+      console.log("INIT - proposal", proposal);
 
       switch (proposal.type) {
         case "media":
@@ -278,7 +277,6 @@ class MediaPlayer extends Player {
       }
 
       this.div.append(this.controlsHtml());
-      console.log("ELEM", this.elem, this.player.width);
     }
 
     /*
@@ -533,13 +531,9 @@ class MediaPlayer extends Player {
   }
 
   const elements = document.querySelectorAll(".testplayer");
-  console.log("elements", elements);
   elements.forEach((elem) => {
     const media = elem.querySelectorAll("video, audio");
-    console.log(media, media.length);
-
     media.forEach((mt) => {
-      const mediaId = mt.getAttribute("id");
       const player = new OIPlayer(mt);
       console.log("player", player);
     });
