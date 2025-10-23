@@ -68,8 +68,10 @@
                 if (options) {
                     $.extend(config, options);
                 }
+                console.log(this);
 
                 var mediatags = $(this).find('video,audio');
+                console.log('tags ', mediatags);
                 if (mediatags.length === 0) {
                     /* navigate MSIE8 around a bug (?) introduced in jquery 1.4.4 (does not recognize audio or video) 
                     that seems partly fixed in jquery 1.5.1 (does not recognize "video, audio" but recognizes them solo) */
@@ -113,7 +115,7 @@
                     var poster = createPoster(div, player);
                     $(div).prepend(poster);
                     $(div).height(player.height).width(player.width);
-                    //console.log("ctrls: " + config.controls + " , " + player.url);
+                    console.log("ctrls: " + config.controls + " , " + player.url);
                     if (config.controls && player.url !== undefined) {
 
                         if (isIphone() || isIpad()) {
@@ -182,6 +184,7 @@
                 }); // end for each mt
 
                 /* html ready, bind controls */
+                var self = this;
                 $.each(players, function (i, pl) {
                     $(pl.div).find('.preview').click(function (ev) {
                         ev.preventDefault();
@@ -189,7 +192,7 @@
                     });
 
                     if (config.controls) {
-                        $(pl.ctrls).find('div.play a').click(function (ev) {
+                        pl.div.find('div.play a').click(function (ev) {
                             ev.preventDefault();
                             if (pl.state == 'pause') {
                                 pl.play();
@@ -202,38 +205,38 @@
                             } else {
                                 methods.start(pl);
                             }
-                            //console.log("player state: " + pl.state);
+                            console.log("player state: " + pl.state);
                         });
 
-                        $(pl.ctrls).find('div.sound a').click(function (ev) {
+                        $(self).find('div.sound a').click(function (ev) {
                             ev.preventDefault();
                             $(pl.ctrls).find('div.sound').toggleClass('muted');
                             pl.mute();
                         });
                         if (config.controls.indexOf('volume') > -1) {
                             methods.volume(pl, 80); // volume slider at 80%
-                            $(pl.ctrls).find('div.volume').click(function (ev) {
+                            $(self).find('div.volume').click(function (ev) {
                                 ev.preventDefault();
                                 setVolumeFromSliderClick(pl, ev, this);
                             });
-                            $(pl.ctrls).find('div.volume div.thumb > div').mousedown(function (ev) {
+                            $(self).find('div.volume div.thumb > div').mousedown(function (ev) {
                                 ev.preventDefault();
                                 setVolumeFromThumbScrub(pl, ev, this);
                             });
                         }
 
-                        $(pl.ctrls).find('div.screen a').click(function (ev) {
+                        $(self).find('div.screen a').click(function (ev) {
                             ev.preventDefault();
                             fullscreen(pl);
                         });
 
-                        $(pl.ctrls).find('div.loaded, div.back').click(function (ev) {
+                        $(self).find('div.loaded, div.back').click(function (ev) {
                             jumpScrubberOnClick(pl, ev);
                         });
-                        $(pl.ctrls).find('div.pos a').click(function (ev) {
+                        $(self).find('div.pos a').click(function (ev) {
                             ev.preventDefault();
                         });
-                        $(pl.ctrls).find('div.oiprogress-push').mousedown(function (ev) {
+                        $(self).find('div.oiprogress-push').mousedown(function (ev) {
                             ev.preventDefault();
                             $(this).find('a').css("background-position", "0 -100px");
                             startScrubbing(pl, ev, this);

@@ -15,7 +15,7 @@ You can use OIPlayer on more specific for certain sections of your web page and 
 
 You will need to include these files: jQuery library, Flowplayer jQuery plugin, OIPlayer jQuery plugin and its css stylesheet.
 
-    <script src="oiplayer/js/jquery-1.5.1.min.js" type="text/javascript"></script>
+    <script src="oiplayer/js/jquery-3.4.1.min.js" type="text/javascript"></script>
     <script src="oiplayer/plugins/flowplayer-3.1.4.min.js" type="text/javascript"></script>
     <script src="oiplayer/js/jquery.oiplayer.js" type="text/javascript"></script>
     <link href="oiplayer/css/oiplayer.css" rel="stylesheet" type="text/css" />
