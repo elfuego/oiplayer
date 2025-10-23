@@ -1,4 +1,5 @@
 README
+=======
 ========
 
 OIPlayer is a jQuery plugin to create a HTML5 audio and video player with fallback to Java and Flash. It is originally being developed for the media platform [Open Images](http://www.openimages.eu)

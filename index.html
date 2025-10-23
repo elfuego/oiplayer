@@ -13,7 +13,8 @@
           server : 'http://www.openimages.eu', /* msie (or java) has issues with just a dir */
           jar : '/oiplayer/plugins/cortado-ovt-stripped-0.6.0.jar',
           flash : '/oiplayer/plugins/flowplayer-3.2.7.swf',
-          controls : 'top'
+          controls : 'top',
+          log : 'info'
       });
   });
   </script>
@@ -26,8 +27,8 @@
   <div class="testplayer"><p>Empty testing 123...</p></div>
   <!-- div#clientcaps is needed for Java detection in MSIE -->
   <div id="clientcaps">  </div> 
-  <div class="testplayer">
-  <!-- video directly copied from http://www.openimages.eu/media/9728#share with added width and height attributes -->
+  <div class="testplayer">  
+  <!-- video embed tag copied from http://www.openimages.eu/media/9728#share with added width and height attributes -->
   <div xmlns:dct="http://purl.org/dc/terms/" xmlns:cc="http://creativecommons.org/ns#" class="oip_media" about="http://www.openimages.eu/files/09/88068.9730.WEEKNUMMER364-HRE0000D9C6.webm">
     <video width="512" height="288" poster="http://www.openimages.eu/images/599192/WEEKNUMMER364-HRE0000D9C6.png" controls="controls">
       <source type="video/webm; codecs=vp8" src="http://www.openimages.eu/files/09/88068.9730.WEEKNUMMER364-HRE0000D9C6.webm" />
@@ -49,7 +50,8 @@
   </p>
 <pre>
 $(document).ready(function() {
-    $('body').oiplayer();   // on all video and audio tags in body
+    // on all video and audio tags in body
+    $('body').oiplayer();
 });
 </pre>
   <h3>Download</h3>
@@ -81,6 +83,7 @@ $(document).ready(function() {
     <li>Safari (v4.0+)</li>
     <li>Google Chrome (v5.0+)</li>
     <li>Firefox (v3.5+)</li>
+    <li>Internet Explorer (v9.0+)</li>
     <li>Internet Explorer (v6.0+) with Flash or Java installed</li>
     <li>And maybe some untested others with HTML5 support, Flash or Java installed</li>
   </ul>
@@ -97,10 +100,14 @@ $(document).ready(function() {
       'oiplayer' directory to your site. Include these Javascript and css files in the head of your 
       html document. Note that the 'flowplayer-3.2.6.min.js' script is only needed for FlowPlayer.
 <pre>
-&lt;script src="js/jquery-1.5.1.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
-&lt;script src="plugins/flowplayer-3.2.6.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
-&lt;script src="js/jquery.oiplayer.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
-&lt;link href="css/oiplayer.css" rel="stylesheet" type="text/css" /&gt;
+&lt;script src="js/jquery-1.5.1.min.js" 
+  type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
+&lt;script src="plugins/flowplayer-3.2.6.min.js" 
+  type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
+&lt;script src="js/jquery.oiplayer.js" 
+  type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
+&lt;link href="css/oiplayer.css" 
+  rel="stylesheet" type="text/css" /&gt;
 </pre>
     </li>
     <li>
@@ -122,11 +129,12 @@ $(document).ready(function() {
         <li>server: web server (msie (or windows java) has issues with finding directories)</li>
         <li>jar: location of Cortado jar</li>
         <li>flash: location of Flowplayer and its files</li>
-        <li>controls:
+        <li>controls: current possible values and combintions are 'true', 'top', 'white', 'dark', 'top dark' and 'top white'.
            <ul>   
-              <li>Simply 'true' means show controls below player.</li>
-              <li>Value 'top' will add a class of that name and will hide/show controls on top of the player window.</li>
-              <li>Add a css class of your own to edit the appearance of the controls (f.e. 'top dark').</li>
+              <li>Simply 'true' means show controls below player,</li>
+              <li>'top' will add a class of that name and will hide/show controls on top of the player window,</li>
+              <li>and 'white' and 'dark' refer to light or dark styled versions which both can be used below or on top of your video.</li>
+              <li>Or add a css class of your own to edit the appearance of the controls.</li>
             </ul>
         </li>
         <li>
