@@ -305,6 +305,7 @@ class MediaPlayer extends Player {
       ctrls.buttonScreen = this.div.querySelector('[data-button="screen"]');
       ctrls.progressTime = this.div.querySelector('[data-progress="time"]');
       ctrls.progressTotal = this.div.querySelector('[data-progress="total"]');
+      ctrls.progressBack = this.div.querySelector('[data-progress="back"]');
       ctrls.progressLoaded = this.div.querySelector('[data-progress="loaded"]');
       ctrls.progressPlayed = this.div.querySelector('[data-progress="played"]');
       ctrls.progressPush = this.div.querySelector('[data-progress="push"]');
@@ -325,6 +326,12 @@ class MediaPlayer extends Player {
       this.ctrls.buttonScreen.addEventListener("click", (ev) =>
         this.fullscreen(ev)
       );
+
+      this.ctrls.progressLoaded.addEventListener("click", (ev) =>
+        this.scrub(ev)
+      );
+
+      this.ctrls.progressBack.addEventListener("click", (ev) => this.scrub(ev));
     }
 
     play(ev) {
@@ -337,7 +344,7 @@ class MediaPlayer extends Player {
         this.ctrls.buttonPlay.classList.add("pause");
       } else if (this.player.state === "playing") {
         this.player.pause();
-        this.follow(false);
+        // this.follow(false);
         this.ctrls.buttonPlay.classList.remove("pause");
       } else {
         this.player.play();
@@ -351,27 +358,29 @@ class MediaPlayer extends Player {
       console.log("fullscreen");
     }
 
-    follow(playing = true) {
-      clearInterval(this.following);
-      let i = 0;
+    scrub(ev) {
+      ev.preventDefault();
+      console.log("scrub");
+    }
 
-      if (!playing) {
-        return;
-      }
+    follow() {
+      const followProgress = () => {
+        var perc = ((this.player.position / this.player.duration) * 100).toFixed(1);
 
-      this.following = setInterval(() => {
-        const pos = this.player.position;
-        var perc = (pos / this.player.duration) * 100;
-        console.log("pos", pos, this.player.duration, perc);
+        this.ctrls.progressPlayed.style.width = `${1 + Number(perc)}%`;
+        this.ctrls.progressPush.style.left = `${perc}%`;
 
-        this.ctrls.progressTotal.innerText = this._totime(pos);
-        this.ctrls.progressTime.innerText = `- ${this._totime(this.player.duration - pos)}`;
+        this.ctrls.progressTotal.innerText = this._totime(this.player.position);
+        this.ctrls.progressTime.innerText = `- ${this._totime(
+          this.player.duration - this.player.position
+        )}`;
 
-        i++;
-        if (i > 99) {
-          clearInterval(this.following);
+        if (this.player.state === "playing") {
+          requestAnimationFrame(followProgress);
         }
-      }, 100);
+      };
+
+      requestAnimationFrame(followProgress);
     }
 
     /*
@@ -511,7 +520,7 @@ class MediaPlayer extends Player {
         <div data-progress="total" class="time">00:00</div>
         <div class="progress">
           <div class="oiprogress">
-            <div class="back bar"></div>
+            <div data-progress="back" class="back bar"></div>
             <div data-progress="loaded" class="loaded bar"></div>
             <div data-progress="played" class="played bar"></div>
             <div class="oiprogress-container">
