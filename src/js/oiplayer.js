@@ -34,7 +34,8 @@ class Player {
     this.controls = this.player.getAttribute("controls") || false;
     if (!this.duration) this.duration = 0;
     if (this.type == "audio") {
-      $(this.player).removeAttr("width").removeAttr("height");
+      this.player.removeAttribute("width");
+      this.player.removeAttribute("height");
     }
   }
 
@@ -51,7 +52,6 @@ class Player {
 
 class MediaPlayer extends Player {
   constructor(el, url, config) {
-    console.log("MediaPlayer", el);
     super(el, url, config);
 
     this.myname = "mediaplayer";
@@ -74,9 +74,9 @@ class MediaPlayer extends Player {
           ) {
             self.duration = self.player.duration;
             if (config.log == "info") {
-              if ($.oiplayer) {
-                $.oiplayer.msg(self, "set duration: " + self.duration);
-              }
+              //if ($.oiplayer) {
+                // $.oiplayer.msg(self, "set duration: " + self.duration);
+              // }
             }
             //$(self.ctrls).find('div.timeleft').text("-" + methods.totime(self.duration));
           }
@@ -92,7 +92,7 @@ class MediaPlayer extends Player {
             if (buf > self.buffered) {
               self.buffered = buf;
               var perc = (buf / self.duration) * 100 + "%";
-              $(self.ctrls).find("div.loaded").width(perc);
+              // $(self.ctrls).find("div.loaded").width(perc);
             }
           }
         },
@@ -106,7 +106,7 @@ class MediaPlayer extends Player {
             if (buf > self.buffered) {
               self.buffered = buf;
               var perc = (buf / self.duration) * 100 + "%";
-              $(self.ctrls).find("div.loaded").width(perc);
+              // $(self.ctrls).find("div.loaded").width(perc);
             }
           }
         },
@@ -119,16 +119,16 @@ class MediaPlayer extends Player {
             self.type == "video" &&
             (self.width == 320 || self.height == 240)
           ) {
-            self.width =
-              $(self.player).attr("width") > 0
-                ? parseInt($(self.player).attr("width"))
-                : self.player.videoWidth;
-            self.height =
-              $(self.player).attr("height") > 0
-                ? parseInt($(self.player).attr("height"))
-                : self.player.videoHeight;
-            $.oiplayer._controlswidth(self);
-            $(self.div).width(self.width).height(self.height);
+            // self.width =
+            //   $(self.player).attr("width") > 0
+            //     ? parseInt($(self.player).attr("width"))
+            //     : self.player.videoWidth;
+            // self.height =
+            //   $(self.player).attr("height") > 0
+            //     ? parseInt($(self.player).attr("height"))
+            //     : self.player.videoHeight;
+            // $.oiplayer._controlswidth(self);
+            // $(self.div).width(self.width).height(self.height);
           }
         },
         false
@@ -142,7 +142,7 @@ class MediaPlayer extends Player {
             if (buf > self.buffered) {
               self.buffered = buf;
               var perc = (buf / self.duration) * 100 + "%";
-              $(self.ctrls).find("div.loaded").width(perc);
+              //self.ctrls.find("div.loaded").width(perc);
             }
           }
         },
@@ -153,10 +153,10 @@ class MediaPlayer extends Player {
         function (ev) {
           if (self.state == "init" || self.state == "ended") {
             /* when started outside controls */
-            $.oiplayer.start(self);
+            // $.oiplayer.start(self);
           }
           self.state = "play";
-          $(self.ctrls).find("div.play").addClass("pause");
+          // $(self.ctrls).find("div.play").addClass("pause");
         },
         false
       );
@@ -164,7 +164,7 @@ class MediaPlayer extends Player {
         "pause",
         function (ev) {
           self.state = "pause";
-          $(self.ctrls).find("div.play").removeClass("pause");
+          // $(self.ctrls).find("div.play").removeClass("pause");
         },
         false
       );
@@ -172,9 +172,9 @@ class MediaPlayer extends Player {
         "volumechange",
         function (ev) {
           if (self.player.muted || self.volume() === 0) {
-            $(self.ctrls).find("div.sound").addClass("muted");
+            //$(self.ctrls).find("div.sound").addClass("muted");
           } else {
-            $(self.ctrls).find("div.sound").removeClass("muted");
+            //$(self.ctrls).find("div.sound").removeClass("muted");
           }
         },
         false
@@ -184,9 +184,9 @@ class MediaPlayer extends Player {
         function (ev) {
           if (self.state != "ended") {
             self.state = "ended";
-            $(self.div).trigger("oiplayerended", [self]);
+            //$(self.div).trigger("oiplayerended", [self]);
           }
-          $(self.div).find("div.play").removeClass("pause");
+          //$(self.div).find("div.play").removeClass("pause");
         },
         false
       );
@@ -248,7 +248,15 @@ class MediaPlayer extends Player {
     constructor(elem, config) {
       this.id = elem.id || "id" + Math.random().toString(16).slice(2);
       this.elem = elem;
-      this.config = config || {};
+      this.config = {
+        server: "http://www.openimages.eu",
+        jar: "/oiplayer/plugins/cortado-ovt-stripped-0.6.0.jar",
+        flash: "/oiplayer/plugins/flowplayer-3.2.7.swf",
+        controls: true,
+        show: true,
+        log: "error",
+        ...config,
+      };
 
       this.init();
     }
@@ -276,6 +284,7 @@ class MediaPlayer extends Player {
           break;
       }
 
+      // this.div.append(this.createPoster(this.player));
       this.div.append(this.controlsHtml());
     }
 
@@ -410,37 +419,37 @@ class MediaPlayer extends Player {
     };
 
     controlsHtml = () => {
-      const htm = `<div class="play"><a href="#play" title="play"></a></div>
+      const html = `<div class="play"><a data-button="play" href="#play" title="play"></a></div>
         <div class="time">00:00</div>
         <div class="progress">
           <div class="oiprogress">
             <div class="back bar"></div>
-            <div class="loaded bar"></div>
-            <div class="played bar"></div>
+            <div data-progress-bar="loaded" class="loaded bar"></div>
+            <div data-progress-bar="played" class="played bar"></div>
             <div class="oiprogress-container">
-              <div class="oiprogress-push">
+              <div data-progress-bar="push" class="oiprogress-push">
                 <div class="pos"><a href="#pos" title="position"></a></div>
               </div>
             </div>
           </div>
-          <div class="timeleft">
+          <div data-progress-bar="timeleft" class="timeleft">
             ${-(this.player.position() > 0
               ? this._totime(this.player.duration - this.player.position())
               : this._totime(this.player.duration))}
           </div>
           ${
             this.player.type === "video" && !this._isIphone()
-              ? `<div class="screen"><a href="#fullscreen" title="fullscreen"></a></div>`
+              ? `<div class="screen"><a data-button="fullscreen" href="#fullscreen" title="fullscreen"></a></div>`
               : ""
           }
         </div>`;
 
       const div = document.createElement("div");
       div.classList.add("oipcontrols");
-      div.innerHTML = htm;
+      div.innerHTML = html;
       return div;
 
-      var html =
+      /* var html =
         '<div class="oipcontrols">' +
         '<div class="play"><a href="#play" title="play"></a></div>' +
         '<div class="time">00:00</div>' +
@@ -465,8 +474,58 @@ class MediaPlayer extends Player {
                 "</div></div>"
               : "") +
             "</div>") +
-        "</div>";
+        "</div>"; */
     };
+
+    /**
+     * Copies poster and puts it in front, in case of an audio tag it searches for
+     * an image and presents that.
+     *
+     * @param {OIPlayer} player
+     * @returns html
+     * @memberof OIPlayer
+     */
+    createPoster(player) {
+      let poster = player.poster; // src
+      console.log('createPoster', poster);
+      if (!poster && player.type === "audio") {
+        // for audio-tags (no attribute poster but image inside audio-tag)
+        const pic = this.elem.querySelector("img");
+        player.width = pic.getAttribute("width") || player.width;
+        player.height = pic.getAttribute("height") || player.height;
+        console.log("pic", pic);
+
+        /* make height and width of audio those of img inside audio body */
+        // var img = $(el).find("img")[0];
+        // player.width =
+        //   $(img).attr("width") > 0
+        //     ? parseInt($(img).attr("width"))
+        //     : player.width;
+        // player.height =
+        //   $(img).attr("height") > 0
+        //     ? parseInt($(img).attr("height"))
+        //     : player.height;
+        // src = $(img).attr("src");
+        // $(img).remove();
+      }
+
+      if (poster) {
+        return `<img class="preview ${player.type}"
+          src="${poster}" width="${player.width}" height="${player.height}" 
+          alt="click to play" title="click to play" />`;
+        // return (
+        //   '<img class="preview ' +
+        //   player.type +
+        //   '" src="' +
+        //   poster +
+        //   '" width="' +
+        //   player.width +
+        //   '" height="' +
+        //   player.height +
+        //   '" alt="click to play" title="click to play" />'
+        // );
+      }
+    }
 
     /*
      * Returns time formatted as 00:00
