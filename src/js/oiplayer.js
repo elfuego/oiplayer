@@ -1,12 +1,7 @@
 class Player {
-  constructor(el, url, config) {
+  constructor(el, oiplayer, config) {
     this.myname = "super";
-    this.init(el, url, config);
-  }
-
-  init(el, url, config) {
-    console.log("INIT player", el);
-    this._init(el, url, config);
+    this._init(el, oiplayer, config);
   }
 
   mute() {}
@@ -19,48 +14,50 @@ class Player {
   info() {}
   /* value between 0 - 100 */
   volume(vol) {}
-  _init(el, url, config) {
+  _init(el, oiplayer, config) {
     this.state = "init";
     this.el = el;
     this.player = el;
-    this.url = url;
+    this.oiplayer = oiplayer;
+    this.url = config.url;
     this.config = config;
+
     this.type = el.tagName.toLowerCase(); // video or audio
-    this.poster = this.player.getAttribute("poster");
-    this.autoplay = this.player.getAttribute("autoplay");
+    this.poster = this.el.getAttribute("poster");
+    this.autoplay = this.el.getAttribute("autoplay");
     if (!this.autoplay) this.autoplay = false;
-    this.autobuffer = this.player.getAttribute("autobuffer");
+    this.autobuffer = this.el.getAttribute("autobuffer");
     if (!this.autobuffer) this.autobuffer = false;
-    this.controls = this.player.getAttribute("controls") || false;
+    this.controls = this.el.getAttribute("controls") || false;
     if (!this.duration) this.duration = 0;
     if (this.type == "audio") {
-      this.player.removeAttribute("width");
-      this.player.removeAttribute("height");
+      this.el.removeAttribute("width");
+      this.el.removeAttribute("height");
     }
   }
 
   get height() {
     let default_height = 288;
     if (this.type == "audio") default_height = 32;
-    return parseInt(this.player.getAttribute("height")) || default_height;
+    return parseInt(this.el.getAttribute("height")) || default_height;
   }
 
   get width() {
-    return parseInt(this.player.getAttribute("width")) || 512;
+    return parseInt(this.el.getAttribute("width")) || 512;
   }
 }
 
 class MediaPlayer extends Player {
-  constructor(el, url, config) {
-    super(el, url, config);
+  constructor(el, oiplayer, config) {
+    super(el, oiplayer, config);
 
     this.myname = "mediaplayer";
-    this.init(el, url, config);
+    this.init(el, oiplayer, config);
   }
 
-  init(el, url, config) {
-    this._init(el, url, config);
-    this.url = url;
+  init(el, oiplayer, config) {
+    this._init(el, oiplayer, config);
+
     if (config.controls) {
       var self = this;
       self.buffered = 0;
@@ -73,12 +70,15 @@ class MediaPlayer extends Player {
             self.player.duration != "Infinity"
           ) {
             self.duration = self.player.duration;
-            if (config.log == "info") {
-              //if ($.oiplayer) {
-                // $.oiplayer.msg(self, "set duration: " + self.duration);
-              // }
-            }
+            // if (config.log == "info") {
+            //if ($.oiplayer) {
+            // $.oiplayer.msg(self, "set duration: " + self.duration);
+            // }
+            // }
             //$(self.ctrls).find('div.timeleft').text("-" + methods.totime(self.duration));
+            self.oiplayer.ctrls.progressTime.innerText = `${self.oiplayer._totime(
+              self.duration
+            )}`;
           }
         },
         false
@@ -93,6 +93,7 @@ class MediaPlayer extends Player {
               self.buffered = buf;
               var perc = (buf / self.duration) * 100 + "%";
               // $(self.ctrls).find("div.loaded").width(perc);
+              self.oiplayer.ctrls.progressLoaded.style.width = perc;
             }
           }
         },
@@ -107,6 +108,7 @@ class MediaPlayer extends Player {
               self.buffered = buf;
               var perc = (buf / self.duration) * 100 + "%";
               // $(self.ctrls).find("div.loaded").width(perc);
+              self.oiplayer.ctrls.progressLoaded.style.width = perc;
             }
           }
         },
@@ -115,10 +117,12 @@ class MediaPlayer extends Player {
       this.player.addEventListener(
         "loadedmetadata",
         function (ev) {
+          console.log("loadedmetadata", self.player.videoWidth);
           if (
             self.type == "video" &&
             (self.width == 320 || self.height == 240)
           ) {
+            console.log("loadedmetadata", self.player.videoWidth);
             // self.width =
             //   $(self.player).attr("width") > 0
             //     ? parseInt($(self.player).attr("width"))
@@ -143,6 +147,7 @@ class MediaPlayer extends Player {
               self.buffered = buf;
               var perc = (buf / self.duration) * 100 + "%";
               //self.ctrls.find("div.loaded").width(perc);
+              self.oiplayer.ctrls.progressLoaded.style.width = perc;
             }
           }
         },
@@ -156,7 +161,9 @@ class MediaPlayer extends Player {
             // $.oiplayer.start(self);
           }
           self.state = "play";
+          console.log("play", self.state, self.oiplayer.ctrls.buttonPlay);
           // $(self.ctrls).find("div.play").addClass("pause");
+          self.oiplayer.ctrls.buttonPlay.classList.add("pause");
         },
         false
       );
@@ -165,6 +172,7 @@ class MediaPlayer extends Player {
         function (ev) {
           self.state = "pause";
           // $(self.ctrls).find("div.play").removeClass("pause");
+          self.oiplayer.ctrls.buttonPlay.classList.remove("pause");
         },
         false
       );
@@ -187,6 +195,7 @@ class MediaPlayer extends Player {
             //$(self.div).trigger("oiplayerended", [self]);
           }
           //$(self.div).find("div.play").removeClass("pause");
+          self.oiplayer.ctrls.buttonPlay.classList.remove("pause");
         },
         false
       );
@@ -247,12 +256,15 @@ class MediaPlayer extends Player {
   class OIPlayer {
     constructor(elem, config) {
       this.id = elem.id || "id" + Math.random().toString(16).slice(2);
+      this.type = elem.tagName.toLowerCase();
       this.elem = elem;
+
       this.config = {
         server: "http://www.openimages.eu",
         jar: "/oiplayer/plugins/cortado-ovt-stripped-0.6.0.jar",
         flash: "/oiplayer/plugins/flowplayer-3.2.7.swf",
         controls: true,
+        ctrls: {},
         show: true,
         log: "error",
         ...config,
@@ -262,7 +274,7 @@ class MediaPlayer extends Player {
     }
 
     init() {
-      // first wrap
+      // wrap mediatag
       this.div = document.createElement("div");
       const innerdiv = document.createElement("div");
       this.div.classList.add("oiplayer");
@@ -274,18 +286,53 @@ class MediaPlayer extends Player {
 
       const proposal = this.selectPlayer(this.types, this.urls);
       console.log("INIT - proposal", proposal);
+      this.config.url = proposal.url;
+      this.config.proposalType = proposal.type;
+
+      // this.div.append(this.createPoster(this.player));
+      this.div.append(this.controlsHtml());
+
+      const ctrls = {};
+      ctrls.buttonPlay = this.div.querySelector('[data-button="play"]');
+      ctrls.buttonScreen = this.div.querySelector('[data-button="screen"]');
+      ctrls.progressTime = this.div.querySelector('[data-progress="time"]');
+      ctrls.progressTotal = this.div.querySelector('[data-progress="total"]');
+      ctrls.progressLoaded = this.div.querySelector('[data-progress="loaded"]');
+      ctrls.progressPlayed = this.div.querySelector('[data-progress="played"]');
+      ctrls.progressPush = this.div.querySelector('[data-progress="push"]');
+
+      this.ctrls = ctrls;
+      console.log("config", this.config);
 
       switch (proposal.type) {
         case "media":
-          this.player = new MediaPlayer(this.elem, proposal.url, this.config);
+          this.player = new MediaPlayer(this.elem, this, this.config);
           break;
 
         default:
           break;
       }
 
-      // this.div.append(this.createPoster(this.player));
-      this.div.append(this.controlsHtml());
+      this.ctrls.buttonPlay.addEventListener("click", (ev) => this.play(ev));
+      this.ctrls.buttonScreen.addEventListener("click", (ev) =>
+        this.fullscreen(ev)
+      );
+    }
+
+    play(ev) {
+      ev.preventDefault();
+      console.log("play", this.player.state);
+
+      if (this.player.state === "play") {
+        this.player.pause();
+      } else {
+        this.player.play();
+      }
+    }
+
+    fullscreen(ev) {
+      ev.preventDefault();
+      console.log("fullscreen");
     }
 
     /*
@@ -419,27 +466,25 @@ class MediaPlayer extends Player {
     };
 
     controlsHtml = () => {
-      const html = `<div class="play"><a data-button="play" href="#play" title="play"></a></div>
-        <div class="time">00:00</div>
+      const html = `<div class="play">
+          <button data-button="play" title="play"></button>
+        </div>
+        <div data-progress="total" class="time">00:00</div>
         <div class="progress">
           <div class="oiprogress">
             <div class="back bar"></div>
-            <div data-progress-bar="loaded" class="loaded bar"></div>
-            <div data-progress-bar="played" class="played bar"></div>
+            <div data-progress="loaded" class="loaded bar"></div>
+            <div data-progress="played" class="played bar"></div>
             <div class="oiprogress-container">
-              <div data-progress-bar="push" class="oiprogress-push">
+              <div data-progress="push" class="oiprogress-push">
                 <div class="pos"><a href="#pos" title="position"></a></div>
               </div>
             </div>
           </div>
-          <div data-progress-bar="timeleft" class="timeleft">
-            ${-(this.player.position() > 0
-              ? this._totime(this.player.duration - this.player.position())
-              : this._totime(this.player.duration))}
-          </div>
+          <div data-progress="time" class="timeleft">0:00</div>
           ${
-            this.player.type === "video" && !this._isIphone()
-              ? `<div class="screen"><a data-button="fullscreen" href="#fullscreen" title="fullscreen"></a></div>`
+            this.type === "video" && !this._isIphone()
+              ? `<div class="screen"><a data-button="screen" href="#fullscreen" title="fullscreen"></a></div>`
               : ""
           }
         </div>`;
@@ -487,7 +532,7 @@ class MediaPlayer extends Player {
      */
     createPoster(player) {
       let poster = player.poster; // src
-      console.log('createPoster', poster);
+      console.log("createPoster", poster);
       if (!poster && player.type === "audio") {
         // for audio-tags (no attribute poster but image inside audio-tag)
         const pic = this.elem.querySelector("img");

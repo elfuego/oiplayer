@@ -163,10 +163,10 @@ $slider-border-radius: 6px;
     top: 0;
     left: 9px;
 
-    a {
+    a, button {
       @include icon("play");
-      display: block;
-      width: 22px;
+
+      width: 25px;
       height: 25px;
       color: rgba(128, 128, 128, 1);
 
@@ -178,15 +178,18 @@ $slider-border-radius: 6px;
         color: rgba(10, 10, 10, 1);
       }
     }
+
     &.pause {
       a {
         @include icon("pause");
+
         &:before {
           font-size: 19px;
         }
       }
     }
   }
+
   .time {
     position: absolute;
     width: 50px;
