@@ -7,8 +7,6 @@ class Player {
   mute() {}
   play() {}
   pause() {}
-  /* current position of audio or video */
-  position() {}
   /* go to this position */
   seek(pos) {}
   info() {}
@@ -45,6 +43,10 @@ class Player {
   get width() {
     return parseInt(this.el.getAttribute("width")) || 512;
   }
+
+  get position() {
+    return -1;
+  }
 }
 
 class MediaPlayer extends Player {
@@ -64,6 +66,7 @@ class MediaPlayer extends Player {
       this.player.addEventListener(
         "durationchange",
         function (ev) {
+          console.log("durationchange", self.player.duration);
           if (
             !isNaN(self.player.duration) &&
             self.player.duration > 0 &&
@@ -76,9 +79,9 @@ class MediaPlayer extends Player {
             // }
             // }
             //$(self.ctrls).find('div.timeleft').text("-" + methods.totime(self.duration));
-            self.oiplayer.ctrls.progressTime.innerText = `${self.oiplayer._totime(
-              self.duration
-            )}`;
+            // self.oiplayer.ctrls.progressTime.innerText = `${self.oiplayer._totime(
+            //   self.duration
+            // )}`;
           }
         },
         false
@@ -86,6 +89,7 @@ class MediaPlayer extends Player {
       this.player.addEventListener(
         "progress",
         function (ev) {
+          console.log("progress", self.player.buffered.end);
           /* FF will support this in v4 */
           if (self.player.buffered && self.player.buffered.length > 0) {
             var buf = self.player.buffered.end(0);
@@ -102,6 +106,7 @@ class MediaPlayer extends Player {
       this.player.addEventListener(
         "canplaythrough",
         function (ev) {
+          console.log("canplaythrough", self.player.buffered.end);
           if (self.player.buffered && self.player.buffered.length > 0) {
             var buf = self.player.buffered.end(0);
             if (buf > self.buffered) {
@@ -140,6 +145,7 @@ class MediaPlayer extends Player {
       this.player.addEventListener(
         "loadeddata",
         function (ev) {
+          console.log("loadeddata", self.duration);
           /* FF will support this in v4 */
           if (self.player.buffered && self.player.buffered.length > 0) {
             var buf = self.player.buffered.end(0);
@@ -156,14 +162,14 @@ class MediaPlayer extends Player {
       this.player.addEventListener(
         "playing",
         function (ev) {
+          console.log("playing", self.position);
           if (self.state == "init" || self.state == "ended") {
             /* when started outside controls */
             // $.oiplayer.start(self);
           }
-          self.state = "play";
-          console.log("play", self.state, self.oiplayer.ctrls.buttonPlay);
+          self.state = "playing";
           // $(self.ctrls).find("div.play").addClass("pause");
-          self.oiplayer.ctrls.buttonPlay.classList.add("pause");
+          // self.oiplayer.ctrls.buttonPlay.classList.add("pause");
         },
         false
       );
@@ -172,7 +178,7 @@ class MediaPlayer extends Player {
         function (ev) {
           self.state = "pause";
           // $(self.ctrls).find("div.play").removeClass("pause");
-          self.oiplayer.ctrls.buttonPlay.classList.remove("pause");
+          // self.oiplayer.ctrls.buttonPlay.classList.remove("pause");
         },
         false
       );
@@ -195,7 +201,7 @@ class MediaPlayer extends Player {
             //$(self.div).trigger("oiplayerended", [self]);
           }
           //$(self.div).find("div.play").removeClass("pause");
-          self.oiplayer.ctrls.buttonPlay.classList.remove("pause");
+          // self.oiplayer.ctrls.buttonPlay.classList.remove("pause");
         },
         false
       );
@@ -207,7 +213,7 @@ class MediaPlayer extends Player {
       this.player.load();
     }
     this.player.play();
-    this.state = "play";
+    this.state = "playing";
   }
   pause() {
     this.player.pause();
@@ -220,15 +226,16 @@ class MediaPlayer extends Player {
       this.player.muted = true;
     }
   }
-  position() {
+
+  get position() {
     try {
-      this.pos = this.player.currentTime;
-      return this.pos;
+      return this.player.currentTime;
     } catch (err) {
       // $.oiplayer.msg(self, "Error: " + err);
     }
     return -1;
   }
+
   seek(pos) {
     // TODO: investigate pause() and play() needed?
     //this.player.pause();
@@ -258,6 +265,7 @@ class MediaPlayer extends Player {
       this.id = elem.id || "id" + Math.random().toString(16).slice(2);
       this.type = elem.tagName.toLowerCase();
       this.elem = elem;
+      this.following = null;
 
       this.config = {
         server: "http://www.openimages.eu",
@@ -321,18 +329,49 @@ class MediaPlayer extends Player {
 
     play(ev) {
       ev.preventDefault();
-      console.log("play", this.player.state);
+      console.log("play: ", this.player.state);
 
-      if (this.player.state === "play") {
+      if (this.player.state === "init") {
+        this.player.play();
+        this.follow();
+        this.ctrls.buttonPlay.classList.add("pause");
+      } else if (this.player.state === "playing") {
         this.player.pause();
+        this.follow(false);
+        this.ctrls.buttonPlay.classList.remove("pause");
       } else {
         this.player.play();
+        this.follow();
+        this.ctrls.buttonPlay.classList.add("pause");
       }
     }
 
     fullscreen(ev) {
       ev.preventDefault();
       console.log("fullscreen");
+    }
+
+    follow(playing = true) {
+      clearInterval(this.following);
+      let i = 0;
+
+      if (!playing) {
+        return;
+      }
+
+      this.following = setInterval(() => {
+        const pos = this.player.position;
+        var perc = (pos / this.player.duration) * 100;
+        console.log("pos", pos, this.player.duration, perc);
+
+        this.ctrls.progressTotal.innerText = this._totime(pos);
+        this.ctrls.progressTime.innerText = `- ${this._totime(this.player.duration - pos)}`;
+
+        i++;
+        if (i > 99) {
+          clearInterval(this.following);
+        }
+      }, 100);
     }
 
     /*
@@ -484,7 +523,7 @@ class MediaPlayer extends Player {
           <div data-progress="time" class="timeleft">0:00</div>
           ${
             this.type === "video" && !this._isIphone()
-              ? `<div class="screen"><a data-button="screen" href="#fullscreen" title="fullscreen"></a></div>`
+              ? `<div class="screen"><button data-button="screen" title="fullscreen"></button></div>`
               : ""
           }
         </div>`;

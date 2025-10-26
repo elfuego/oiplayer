@@ -8,6 +8,7 @@
 @import "icons";
 
 $image-path: "images";
+$button-size: 32px;
 $slider-height: 12px;
 $slider-border-radius: 6px;
 
@@ -146,16 +147,10 @@ $slider-border-radius: 6px;
     .progress {
       right: 100px;
     }
+
     .timeleft {
       right: 30px;
     }
-  }
-
-  > div {
-    position: absolute;
-    margin: 2px 0 0 0;
-    padding: 0;
-    height: 28px;
   }
 
   .play {
@@ -163,42 +158,36 @@ $slider-border-radius: 6px;
     top: 0;
     left: 9px;
 
-    a, button {
+    > button {
       @include icon("play");
 
-      width: 25px;
-      height: 25px;
+      border: none;
+      background-color: transparent;
       color: rgba(128, 128, 128, 1);
-
-      &:before {
-        font-size: 19px;
-      }
+      width: $button-size;
+      height: $button-size;
 
       &:hover {
         color: rgba(10, 10, 10, 1);
       }
-    }
 
-    &.pause {
-      a {
+      &.pause {
         @include icon("pause");
-
-        &:before {
-          font-size: 19px;
-        }
       }
     }
   }
 
   .time {
     position: absolute;
+    z-index: 2;
     width: 50px;
-    left: 23px;
+    left: 41px;
     font-size: 10px;
     font-family: Monaco, "Courier New", monospaced;
     line-height: 28px;
     text-align: right;
   }
+
   .timeleft {
     position: absolute;
     width: 55px;
@@ -212,6 +201,7 @@ $slider-border-radius: 6px;
       right: 30px;
     }
   }
+
   .screen {
     position: absolute;
     right: 40px;
@@ -220,19 +210,22 @@ $slider-border-radius: 6px;
       right: 6px;
     }
 
-    a {
-      width: 28px;
-      color: rgba(128, 128, 128, 1);
+    > button {
       @include icon("fullscreen");
 
-      &:before {
-        font-size: 17px;
-      }
+      border: none;
+      background-color: transparent;
+      pointer-events: all;
+      height: $button-size;
+      width: $button-size;
+      color: rgba(128, 128, 128, 1);
+
       &:hover {
         color: rgba(96, 96, 96, 1);
       }
     }
   }
+
   .sound {
     position: absolute;
     right: 9px;
@@ -245,6 +238,7 @@ $slider-border-radius: 6px;
       &:before {
         font-size: 16px;
       }
+
       &:hover {
         color: rgba(96, 96, 96, 1);
       }
@@ -252,6 +246,7 @@ $slider-border-radius: 6px;
 
     &.muted {
       right: 15px;
+
       a {
         @include icon("mute");
         &:before {
@@ -370,6 +365,7 @@ $slider-border-radius: 6px;
       }
     }
   }
+
   .bar {
     height: $slider-height;
     border-radius: $slider-border-radius;
@@ -382,11 +378,13 @@ $slider-border-radius: 6px;
       background-color: rgba(255, 255, 255, 1);
       pointer-events: auto;
     }
+
     &.loaded {
-      height: auto;
+      // height: auto;
       background-color: rgba(204, 204, 204, 1);
-      pointer-events: auto;
+      pointer-events: none;
     }
+
     &.played {
       background-color: rgba(166, 166, 166, 1);
       pointer-events: none;
