@@ -6,7 +6,6 @@
 
 /* webfont with icons */
 @import "icons";
-/* variables */
 
 $image-path: "images";
 $slider-height: 12px;
@@ -165,7 +164,8 @@ $slider-border-radius: 6px;
     left: 9px;
 
     a {
-      // .icon(play);
+      @include icon("play");
+      display: block;
       width: 22px;
       height: 25px;
       color: rgba(128, 128, 128, 1);
@@ -180,7 +180,7 @@ $slider-border-radius: 6px;
     }
     &.pause {
       a {
-        //.icon(pause);
+        @include icon("pause");
         &:before {
           font-size: 19px;
         }
@@ -220,7 +220,7 @@ $slider-border-radius: 6px;
     a {
       width: 28px;
       color: rgba(128, 128, 128, 1);
-      // .icon(fullscreen);
+      @include icon("fullscreen");
 
       &:before {
         font-size: 17px;
@@ -237,7 +237,7 @@ $slider-border-radius: 6px;
     a {
       width: 22px;
       color: rgba(128, 128, 128, 1);
-      // .icon(sound);
+      @include icon("sound");
 
       &:before {
         font-size: 16px;
@@ -250,7 +250,7 @@ $slider-border-radius: 6px;
     &.muted {
       right: 15px;
       a {
-        //.icon(mute);
+        @include icon("mute");
         &:before {
           font-size: 16px;
         }
