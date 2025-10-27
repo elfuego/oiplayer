@@ -32,6 +32,7 @@ $slider-border-radius: 6px;
   -moz-osx-font-smoothing: grayscale;
 
   position: relative;
+  display: inline-block;
   margin: 0;
   padding: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -49,6 +50,7 @@ $slider-border-radius: 6px;
     background-color: #000;
 
     .player {
+      display: inline-block;
       width: 100%;
       height: 100%;
       z-index: 1001;
@@ -99,15 +101,16 @@ $slider-border-radius: 6px;
   }
 
   &.inavailable {
-    &.video {
-      // background: url($image-path"/preview_video.png") left top repeat;
-    }
-    &.audio {
-      // background: url($image-path"/preview_audio.png") left top repeat;
-    }
-    div.player {
+    // &.video {
+    //   // background: url($image-path"/preview_video.png") left top repeat;
+    // }
+    // &.audio {
+    //   // background: url($image-path"/preview_audio.png") left top repeat;
+    // }
+    figure.player {
       display: none;
     }
+
     p {
       width: 80%;
       text-align: center;
@@ -123,14 +126,16 @@ $slider-border-radius: 6px;
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 30px;
+  height: $button-size;
   width: 100%;
-  line-height: 25px;
-  margin: 0;
   max-width: 640px;
+  margin: 0;
   color: #555;
   z-index: 19;
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: silver;
+
+  display: flex;
+  align-items: center;
 
   .fullscreen & {
     z-index: 1003;
@@ -143,20 +148,18 @@ $slider-border-radius: 6px;
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
   }
 
-  &.audio {
-    .progress {
-      right: 100px;
-    }
+  // &.audio {
+  //   .progress {
+  //     right: 100px;
+  //   }
 
-    .timeleft {
-      right: 30px;
-    }
-  }
+  //   .timeleft {
+  //     right: 30px;
+  //   }
+  // }
 
   .play {
-    position: absolute;
-    top: 0;
-    left: 9px;
+    margin-left: 8px;
 
     > button {
       @include icon("play");
@@ -177,11 +180,11 @@ $slider-border-radius: 6px;
     }
   }
 
-  .time {
-    position: absolute;
+  .time,
+  .timeleft {
+    margin-left: 16px;
     z-index: 2;
     width: 50px;
-    left: 41px;
     font-size: 10px;
     font-family: Monaco, "Courier New", monospaced;
     line-height: 28px;
@@ -189,26 +192,17 @@ $slider-border-radius: 6px;
   }
 
   .timeleft {
-    position: absolute;
+    margin-left: 8px;
     width: 55px;
-    right: 59px;
-    font-size: 10px;
-    font-family: Monaco, "Courier New", monospaced;
-    line-height: 28px;
-    text-align: left;
 
-    .audio & {
-      right: 30px;
-    }
+    // .audio & {
+    //   right: 30px;
+    // }
   }
 
   .screen {
-    position: absolute;
-    right: 40px;
-
-    .ios & {
-      right: 6px;
-    }
+    margin-left: 8px;
+    margin-right: 8px;
 
     > button {
       @include icon("fullscreen");
@@ -227,9 +221,6 @@ $slider-border-radius: 6px;
   }
 
   .sound {
-    position: absolute;
-    right: 9px;
-
     a {
       width: 22px;
       color: rgba(128, 128, 128, 1);
@@ -245,8 +236,6 @@ $slider-border-radius: 6px;
     }
 
     &.muted {
-      right: 15px;
-
       a {
         @include icon("mute");
         &:before {
@@ -315,21 +304,19 @@ $slider-border-radius: 6px;
 
   /* ### progress bar & position ### */
   .progress {
-    position: absolute;
-    left: 76px; /* 10px margin left and right */
-    right: 124px;
-
-    .audio & {
-      right: 100px;
-    }
+    margin-left: 8px;
+    position: relative;
+    height: $button-size;
+    width: 100%;
 
     .oiprogress {
-      //background: url("@{image-path}/slider11-long.png") left -50px no-repeat;
       background-color: rgba(166, 166, 166, 1);
       border-radius: $slider-border-radius;
       height: $slider-height;
-      position: relative;
-      top: 7px;
+      width: 100%;
+
+      position: absolute;
+      top: 10px;
       left: 5px;
       pointer-events: none;
     }
@@ -339,13 +326,13 @@ $slider-border-radius: 6px;
       width: $slider-height;
       height: $slider-height;
 
-      a {
+      span {
+        float: left;
         background-color: rgba(128, 128, 128, 1);
         border-radius: $slider-border-radius;
-        width: $slider-height;
-        float: left;
         margin: 0 0 0 -3px;
         height: $slider-height;
+        width: $slider-height;
 
         &:hover {
           background-color: rgba(96, 96, 96, 1);
@@ -357,6 +344,7 @@ $slider-border-radius: 6px;
       position: absolute;
       left: 0;
       right: 6px;
+      width: 100%;
 
       .oiprogress-push {
         position: absolute;

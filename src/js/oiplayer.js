@@ -64,24 +64,20 @@ class MediaPlayer extends Player {
       var self = this;
       self.buffered = 0;
       this.player.addEventListener(
-        "durationchange",
+        "timeupdate",
         function (ev) {
-          console.log("durationchange", self.player.duration);
-          if (
-            !isNaN(self.player.duration) &&
-            self.player.duration > 0 &&
-            self.player.duration != "Infinity"
-          ) {
-            self.duration = self.player.duration;
-            // if (config.log == "info") {
-            //if ($.oiplayer) {
-            // $.oiplayer.msg(self, "set duration: " + self.duration);
-            // }
-            // }
-            //$(self.ctrls).find('div.timeleft').text("-" + methods.totime(self.duration));
-            // self.oiplayer.ctrls.progressTime.innerText = `${self.oiplayer._totime(
-            //   self.duration
-            // )}`;
+          console.log(
+            "timeupdate",
+            self.player.duration,
+            self.player.currentTime
+          );
+          const duration = self.player.duration;
+          if (duration > 0) {
+            const perc = (self.player.currentTime / duration) * 100;
+            console.log("timeupdate - perc", perc);
+            self.oiplayer.ctrls.progressTime.innerText = `${self.oiplayer._totime(
+              self.duration
+            )}`;
           }
         },
         false
@@ -90,14 +86,25 @@ class MediaPlayer extends Player {
         "progress",
         function (ev) {
           console.log("progress", self.player.buffered.end);
-          /* FF will support this in v4 */
-          if (self.player.buffered && self.player.buffered.length > 0) {
-            var buf = self.player.buffered.end(0);
-            if (buf > self.buffered) {
-              self.buffered = buf;
-              var perc = (buf / self.duration) * 100 + "%";
-              // $(self.ctrls).find("div.loaded").width(perc);
-              self.oiplayer.ctrls.progressLoaded.style.width = perc;
+          const duration = self.player.duration;
+
+          if (duration > 0) {
+            for (let i = 0; i < self.player.buffered.length; i++) {
+              if (
+                self.player.buffered.start(
+                  self.player.buffered.length - 1 - i
+                ) < self.player.currentTime
+              ) {
+                const perc =
+                  (self.player.buffered.end(
+                    self.player.buffered.length - 1 - i
+                  ) *
+                    100) /
+                  duration;
+                console.log("progress - prec", perc);
+                self.oiplayer.ctrls.progressLoaded.style.width = `${perc}%`;
+                break;
+              }
             }
           }
         },
@@ -111,9 +118,9 @@ class MediaPlayer extends Player {
             var buf = self.player.buffered.end(0);
             if (buf > self.buffered) {
               self.buffered = buf;
-              var perc = (buf / self.duration) * 100 + "%";
-              // $(self.ctrls).find("div.loaded").width(perc);
-              self.oiplayer.ctrls.progressLoaded.style.width = perc;
+              const perc = (buf / self.duration) * 100 + "%";
+              console.log("canplaythrough - prec", perc);
+              // self.oiplayer.ctrls.progressLoaded.style.width = perc;
             }
           }
         },
@@ -122,7 +129,10 @@ class MediaPlayer extends Player {
       this.player.addEventListener(
         "loadedmetadata",
         function (ev) {
-          console.log("loadedmetadata", self.player.videoWidth);
+          console.log("loadedmetadata", self.player.duration);
+          if (self.player.duration) {
+            self.duration = self.player.duration;
+          }
           if (
             self.type == "video" &&
             (self.width == 320 || self.height == 240)
@@ -236,13 +246,18 @@ class MediaPlayer extends Player {
     return -1;
   }
 
-  seek(pos) {
+  seek(sec) {
     // TODO: investigate pause() and play() needed?
-    //this.player.pause();
-    this.player.currentTime = pos; // float
-
-    //this.player.play();
+    // this.player.pause();
+    console.log("SEEK", sec);
+    if (this.player.fastSeek) {
+      this.player.fastSeek(sec);
+    } else {
+      this.player.currentTime = sec;
+    }
+    // this.player.play();
   }
+
   volume(v) {
     // html5 has range 0.0 to 1.0, we use as in flowplayer 0 - 100
     if (v === undefined) {
@@ -284,13 +299,13 @@ class MediaPlayer extends Player {
     init() {
       // wrap mediatag
       this.div = document.createElement("div");
-      const innerdiv = document.createElement("div");
+      const figure = document.createElement("figure");
       this.div.classList.add("oiplayer");
-      innerdiv.classList.add("player");
+      figure.classList.add("player");
 
       this.elem.replaceWith(this.div);
-      innerdiv.appendChild(this.elem);
-      this.div.appendChild(innerdiv);
+      figure.appendChild(this.elem);
+      this.div.appendChild(figure);
 
       const proposal = this.selectPlayer(this.types, this.urls);
       console.log("INIT - proposal", proposal);
@@ -360,12 +375,19 @@ class MediaPlayer extends Player {
 
     scrub(ev) {
       ev.preventDefault();
-      console.log("scrub");
+
+      const box = this.ctrls.progressBack.getBoundingClientRect();
+      const pos = (ev.pageX - box.left) / this.ctrls.progressBack.offsetWidth;
+      const sec = Math.round((pos * this.player.duration) * 100) / 100;
+      this.player.seek(sec);
     }
 
     follow() {
       const followProgress = () => {
-        var perc = ((this.player.position / this.player.duration) * 100).toFixed(1);
+        var perc = (
+          (this.player.position / this.player.duration) *
+          100
+        ).toFixed(1);
 
         this.ctrls.progressPlayed.style.width = `${1 + Number(perc)}%`;
         this.ctrls.progressPush.style.left = `${perc}%`;
@@ -525,17 +547,17 @@ class MediaPlayer extends Player {
             <div data-progress="played" class="played bar"></div>
             <div class="oiprogress-container">
               <div data-progress="push" class="oiprogress-push">
-                <div class="pos"><a href="#pos" title="position"></a></div>
+                <div class="pos"><span title="position"></span></div>
               </div>
             </div>
           </div>
-          <div data-progress="time" class="timeleft">0:00</div>
-          ${
-            this.type === "video" && !this._isIphone()
-              ? `<div class="screen"><button data-button="screen" title="fullscreen"></button></div>`
-              : ""
-          }
-        </div>`;
+        </div>
+        <div data-progress="time" class="timeleft">0:00</div>
+        ${
+          this.type === "video" && !this._isIphone()
+            ? `<div class="screen"><button data-button="screen" title="fullscreen"></button></div>`
+            : ""
+        }`;
 
       const div = document.createElement("div");
       div.classList.add("oipcontrols");
