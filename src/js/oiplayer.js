@@ -66,18 +66,12 @@ class MediaPlayer extends Player {
       this.player.addEventListener(
         "timeupdate",
         function (ev) {
-          console.log(
-            "timeupdate",
-            self.player.duration,
-            self.player.currentTime
-          );
+          console.log("timeupdate", self.player.duration, self.player.currentTime);
           const duration = self.player.duration;
           if (duration > 0) {
             const perc = (self.player.currentTime / duration) * 100;
             console.log("timeupdate - perc", perc);
-            self.oiplayer.ctrls.progressTime.innerText = `${self.oiplayer._totime(
-              self.duration
-            )}`;
+            self.oiplayer.ctrls.progressTime.innerText = `${self.oiplayer._totime(self.duration)}`;
           }
         },
         false
@@ -90,17 +84,8 @@ class MediaPlayer extends Player {
 
           if (duration > 0) {
             for (let i = 0; i < self.player.buffered.length; i++) {
-              if (
-                self.player.buffered.start(
-                  self.player.buffered.length - 1 - i
-                ) < self.player.currentTime
-              ) {
-                const perc =
-                  (self.player.buffered.end(
-                    self.player.buffered.length - 1 - i
-                  ) *
-                    100) /
-                  duration;
+              if (self.player.buffered.start(self.player.buffered.length - 1 - i) < self.player.currentTime) {
+                const perc = (self.player.buffered.end(self.player.buffered.length - 1 - i) * 100) / duration;
                 console.log("progress - prec", perc);
                 self.oiplayer.ctrls.progressLoaded.style.width = `${perc}%`;
                 break;
@@ -133,10 +118,7 @@ class MediaPlayer extends Player {
           if (self.player.duration) {
             self.duration = self.player.duration;
           }
-          if (
-            self.type == "video" &&
-            (self.width == 320 || self.height == 240)
-          ) {
+          if (self.type == "video" && (self.width == 320 || self.height == 240)) {
             console.log("loadedmetadata", self.player.videoWidth);
             // self.width =
             //   $(self.player).attr("width") > 0
@@ -338,13 +320,9 @@ class MediaPlayer extends Player {
       }
 
       this.ctrls.buttonPlay.addEventListener("click", (ev) => this.play(ev));
-      this.ctrls.buttonScreen.addEventListener("click", (ev) =>
-        this.fullscreen(ev)
-      );
+      this.ctrls.buttonScreen.addEventListener("click", (ev) => this.fullscreen(ev));
 
-      this.ctrls.progressLoaded.addEventListener("click", (ev) =>
-        this.scrub(ev)
-      );
+      this.ctrls.progressLoaded.addEventListener("click", (ev) => this.scrub(ev));
 
       this.ctrls.progressBack.addEventListener("click", (ev) => this.scrub(ev));
     }
@@ -378,24 +356,19 @@ class MediaPlayer extends Player {
 
       const box = this.ctrls.progressBack.getBoundingClientRect();
       const pos = (ev.pageX - box.left) / this.ctrls.progressBack.offsetWidth;
-      const sec = Math.round((pos * this.player.duration) * 100) / 100;
+      const sec = Math.round(pos * this.player.duration * 100) / 100;
       this.player.seek(sec);
     }
 
     follow() {
       const followProgress = () => {
-        var perc = (
-          (this.player.position / this.player.duration) *
-          100
-        ).toFixed(1);
+        var perc = ((this.player.position / this.player.duration) * 100).toFixed(1);
 
         this.ctrls.progressPlayed.style.width = `${1 + Number(perc)}%`;
         this.ctrls.progressPush.style.left = `${perc}%`;
 
         this.ctrls.progressTotal.innerText = this._totime(this.player.position);
-        this.ctrls.progressTime.innerText = `- ${this._totime(
-          this.player.duration - this.player.position
-        )}`;
+        this.ctrls.progressTime.innerText = `- ${this._totime(this.player.duration - this.player.position)}`;
 
         if (this.player.state === "playing") {
           requestAnimationFrame(followProgress);
@@ -425,11 +398,7 @@ class MediaPlayer extends Player {
       } else {
         probably = this.canPlayCortado(types, urls);
 
-        if (
-          !probably &&
-          (supportMimetype("application/x-java-applet") ||
-            navigator.javaEnabled())
-        ) {
+        if (!probably && (supportMimetype("application/x-java-applet") || navigator.javaEnabled())) {
           // @TODO replace this
           if ($.browser.msie) {
             // Argh! A browser check!
@@ -437,10 +406,7 @@ class MediaPlayer extends Player {
                 that's why we need to check for the java plugin IE style. 
                 It needs an element with id 'clientcaps' somewhere in the page. 
             */
-            const javaVersionIE = clientcaps.getComponentVersion(
-              "{08B0E5C0-4FCB-11CF-AAA5-00401C608500}",
-              "ComponentID"
-            );
+            const javaVersionIE = clientcaps.getComponentVersion("{08B0E5C0-4FCB-11CF-AAA5-00401C608500}", "ComponentID");
             if (javaVersionIE) {
               proposal.type = "msie_cortado";
               proposal.url = probably;
@@ -462,10 +428,7 @@ class MediaPlayer extends Player {
       if (!proposal.type) {
         let flash_url;
         for (let i = 0; i < types.length; i++) {
-          if (
-            types[i].indexOf("video/flv") > -1 ||
-            types[i].indexOf("video/x-flv") > -1
-          ) {
+          if (types[i].indexOf("video/flv") > -1 || types[i].indexOf("video/x-flv") > -1) {
             proposal.url = urls[i];
             proposal.type = "flash";
             return proposal;
@@ -501,16 +464,10 @@ class MediaPlayer extends Player {
       var aEl = document.createElement("audio");
       if (vEl.canPlayType || aEl.canPlayType) {
         for (var i = 0; i < types.length; i++) {
-          if (
-            vEl.canPlayType(types[i]) == "probably" ||
-            aEl.canPlayType(types[i]) == "probably"
-          ) {
+          if (vEl.canPlayType(types[i]) == "probably" || aEl.canPlayType(types[i]) == "probably") {
             return urls[i]; // this is the best we can do
           }
-          if (
-            vEl.canPlayType(types[i]) == "maybe" ||
-            aEl.canPlayType(types[i]) == "maybe"
-          ) {
+          if (vEl.canPlayType(types[i]) == "maybe" || aEl.canPlayType(types[i]) == "maybe") {
             return urls[i]; // if we find nothing better
           }
         }
