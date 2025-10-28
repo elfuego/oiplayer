@@ -66,12 +66,11 @@ class MediaPlayer extends Player {
       this.player.addEventListener(
         "timeupdate",
         function (ev) {
-          console.log("timeupdate", self.player.duration, self.player.currentTime);
+          // console.log("timeupdate", self.player.duration, self.player.currentTime);
           const duration = self.player.duration;
-          if (duration > 0) {
+          if (self.player.duration > 0) {
             const perc = (self.player.currentTime / duration) * 100;
-            console.log("timeupdate - perc", perc);
-            self.oiplayer.ctrls.progressTime.innerText = `${self.oiplayer._totime(self.duration)}`;
+            self.oiplayer.follow(perc);
           }
         },
         false
@@ -79,14 +78,14 @@ class MediaPlayer extends Player {
       this.player.addEventListener(
         "progress",
         function (ev) {
-          console.log("progress", self.player.buffered.end);
+          console.log("progress", self.player.duration);
           const duration = self.player.duration;
 
           if (duration > 0) {
             for (let i = 0; i < self.player.buffered.length; i++) {
               if (self.player.buffered.start(self.player.buffered.length - 1 - i) < self.player.currentTime) {
                 const perc = (self.player.buffered.end(self.player.buffered.length - 1 - i) * 100) / duration;
-                console.log("progress - prec", perc);
+                console.log("progress - perc", perc);
                 self.oiplayer.ctrls.progressLoaded.style.width = `${perc}%`;
                 break;
               }
@@ -95,6 +94,9 @@ class MediaPlayer extends Player {
         },
         false
       );
+      this.player.addEventListener("seeked", (ev) => {
+        console.log("seeked");
+      });
       this.player.addEventListener(
         "canplaythrough",
         function (ev) {
@@ -154,7 +156,7 @@ class MediaPlayer extends Player {
       this.player.addEventListener(
         "playing",
         function (ev) {
-          console.log("playing", self.position);
+          console.log("playing");
           if (self.state == "init" || self.state == "ended") {
             /* when started outside controls */
             // $.oiplayer.start(self);
@@ -168,6 +170,7 @@ class MediaPlayer extends Player {
       this.player.addEventListener(
         "pause",
         function (ev) {
+          console.log("pause");
           self.state = "pause";
           // $(self.ctrls).find("div.play").removeClass("pause");
           // self.oiplayer.ctrls.buttonPlay.classList.remove("pause");
@@ -232,11 +235,12 @@ class MediaPlayer extends Player {
     // TODO: investigate pause() and play() needed?
     // this.player.pause();
     console.log("SEEK", sec);
-    if (this.player.fastSeek) {
-      this.player.fastSeek(sec);
-    } else {
-      this.player.currentTime = sec;
-    }
+    this.player.currentTime = sec;
+    // if (this.player.fastSeek) {
+    //   this.player.fastSeek(sec);
+    // } else {
+    //   this.player.currentTime = sec;
+    // }
     // this.player.play();
   }
 
@@ -321,9 +325,7 @@ class MediaPlayer extends Player {
 
       this.ctrls.buttonPlay.addEventListener("click", (ev) => this.play(ev));
       this.ctrls.buttonScreen.addEventListener("click", (ev) => this.fullscreen(ev));
-
-      this.ctrls.progressLoaded.addEventListener("click", (ev) => this.scrub(ev));
-
+      // this.ctrls.progressLoaded.addEventListener("click", (ev) => this.scrub(ev));
       this.ctrls.progressBack.addEventListener("click", (ev) => this.scrub(ev));
     }
 
@@ -354,6 +356,10 @@ class MediaPlayer extends Player {
     scrub(ev) {
       ev.preventDefault();
 
+      if (!Number.isFinite(this.player.duration)) {
+        return;
+      }
+
       const box = this.ctrls.progressBack.getBoundingClientRect();
       const pos = (ev.pageX - box.left) / this.ctrls.progressBack.offsetWidth;
       const sec = Math.round(pos * this.player.duration * 100) / 100;
@@ -361,21 +367,33 @@ class MediaPlayer extends Player {
     }
 
     follow() {
-      const followProgress = () => {
-        var perc = ((this.player.position / this.player.duration) * 100).toFixed(1);
+      const duration = this.player.duration;
+      if (duration < 1) {
+        return;
+      }
 
-        this.ctrls.progressPlayed.style.width = `${1 + Number(perc)}%`;
-        this.ctrls.progressPush.style.left = `${perc}%`;
+      const perc = (this.player.currentTime / duration) * 100;
+      this.ctrls.progressPlayed.style.width = `${1 + Number(perc)}%`;
+      this.ctrls.progressPush.style.left = `${perc}%`;
 
-        this.ctrls.progressTotal.innerText = this._totime(this.player.position);
-        this.ctrls.progressTime.innerText = `- ${this._totime(this.player.duration - this.player.position)}`;
+      this.ctrls.progressTotal.innerText = this._totime(this.player.position);
+      this.ctrls.progressTime.innerText = this._totime(this.player.duration - this.player.position);
 
-        if (this.player.state === "playing") {
-          requestAnimationFrame(followProgress);
-        }
-      };
+      // const followProgress = () => {
+      //   var perc = ((this.player.position / this.player.duration) * 100).toFixed(1);
 
-      requestAnimationFrame(followProgress);
+      //   this.ctrls.progressPlayed.style.width = `${1 + Number(perc)}%`;
+      //   this.ctrls.progressPush.style.left = `${perc}%`;
+
+      //   this.ctrls.progressTotal.innerText = this._totime(this.player.position);
+      //   this.ctrls.progressTime.innerText = `- ${this._totime(this.player.duration - this.player.position)}`;
+
+      //   if (this.player.state === "playing") {
+      //     requestAnimationFrame(followProgress);
+      //   }
+      // };
+
+      // requestAnimationFrame(followProgress);
     }
 
     /*
@@ -509,7 +527,7 @@ class MediaPlayer extends Player {
             </div>
           </div>
         </div>
-        <div data-progress="time" class="timeleft">0:00</div>
+        <div data-progress="time" class="timeleft">00:00</div>
         ${
           this.type === "video" && !this._isIphone()
             ? `<div class="screen"><button data-button="screen" title="fullscreen"></button></div>`
