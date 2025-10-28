@@ -349,7 +349,7 @@ $slider-border-radius: 6px;
       .oiprogress-push {
         position: absolute;
         height: $slider-height;
-        pointer-events: auto;
+        // pointer-events: auto;
       }
     }
   }
@@ -370,7 +370,7 @@ $slider-border-radius: 6px;
     &.loaded {
       // height: auto;
       background-color: rgba(204, 204, 204, 1);
-      pointer-events: none;
+      // pointer-events: none;
     }
 
     &.played {

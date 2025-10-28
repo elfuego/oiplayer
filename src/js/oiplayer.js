@@ -95,7 +95,7 @@ class MediaPlayer extends Player {
         false
       );
       this.player.addEventListener("seeked", (ev) => {
-        console.log("seeked");
+        console.log("seeked", self.player.currentTime);
       });
       this.player.addEventListener(
         "canplaythrough",
@@ -136,11 +136,10 @@ class MediaPlayer extends Player {
         },
         false
       );
-      this.player.addEventListener(
+      /* this.player.addEventListener(
         "loadeddata",
         function (ev) {
           console.log("loadeddata", self.duration);
-          /* FF will support this in v4 */
           if (self.player.buffered && self.player.buffered.length > 0) {
             var buf = self.player.buffered.end(0);
             if (buf > self.buffered) {
@@ -152,7 +151,7 @@ class MediaPlayer extends Player {
           }
         },
         false
-      );
+      ); */
       this.player.addEventListener(
         "playing",
         function (ev) {
@@ -164,8 +163,7 @@ class MediaPlayer extends Player {
           self.state = "playing";
           // $(self.ctrls).find("div.play").addClass("pause");
           // self.oiplayer.ctrls.buttonPlay.classList.add("pause");
-        },
-        false
+        }
       );
       this.player.addEventListener(
         "pause",
@@ -174,10 +172,9 @@ class MediaPlayer extends Player {
           self.state = "pause";
           // $(self.ctrls).find("div.play").removeClass("pause");
           // self.oiplayer.ctrls.buttonPlay.classList.remove("pause");
-        },
-        false
+        }
       );
-      this.player.addEventListener(
+      /* this.player.addEventListener(
         "volumechange",
         function (ev) {
           if (self.player.muted || self.volume() === 0) {
@@ -199,7 +196,7 @@ class MediaPlayer extends Player {
           // self.oiplayer.ctrls.buttonPlay.classList.remove("pause");
         },
         false
-      );
+      ); */
     }
     return this.player;
   }
@@ -208,11 +205,9 @@ class MediaPlayer extends Player {
       this.player.load();
     }
     this.player.play();
-    this.state = "playing";
   }
   pause() {
     this.player.pause();
-    this.state = "pause";
   }
   mute() {
     if (this.player.muted) {
@@ -235,12 +230,11 @@ class MediaPlayer extends Player {
     // TODO: investigate pause() and play() needed?
     // this.player.pause();
     console.log("SEEK", sec);
-    this.player.currentTime = sec;
-    // if (this.player.fastSeek) {
-    //   this.player.fastSeek(sec);
-    // } else {
-    //   this.player.currentTime = sec;
-    // }
+    if (this.player.fastSeek) {
+      this.player.fastSeek(sec);
+    } else {
+      this.player.currentTime = sec;
+    }
     // this.player.play();
   }
 
@@ -316,6 +310,7 @@ class MediaPlayer extends Player {
 
       switch (proposal.type) {
         case "media":
+          this.elem.setAttribute("preload", "metadata");
           this.player = new MediaPlayer(this.elem, this, this.config);
           break;
 
@@ -355,7 +350,6 @@ class MediaPlayer extends Player {
 
     scrub(ev) {
       ev.preventDefault();
-
       if (!Number.isFinite(this.player.duration)) {
         return;
       }
