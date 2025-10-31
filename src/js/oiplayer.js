@@ -152,28 +152,22 @@ class MediaPlayer extends Player {
         },
         false
       ); */
-      this.player.addEventListener(
-        "playing",
-        function (ev) {
-          console.log("playing");
-          if (self.state == "init" || self.state == "ended") {
-            /* when started outside controls */
-            // $.oiplayer.start(self);
-          }
-          self.state = "playing";
-          // $(self.ctrls).find("div.play").addClass("pause");
-          // self.oiplayer.ctrls.buttonPlay.classList.add("pause");
+      this.player.addEventListener("playing", function (ev) {
+        console.log("playing");
+        if (self.state == "init" || self.state == "ended") {
+          /* when started outside controls */
+          // $.oiplayer.start(self);
         }
-      );
-      this.player.addEventListener(
-        "pause",
-        function (ev) {
-          console.log("pause");
-          self.state = "pause";
-          // $(self.ctrls).find("div.play").removeClass("pause");
-          // self.oiplayer.ctrls.buttonPlay.classList.remove("pause");
-        }
-      );
+        self.state = "playing";
+        // $(self.ctrls).find("div.play").addClass("pause");
+        // self.oiplayer.ctrls.buttonPlay.classList.add("pause");
+      });
+      this.player.addEventListener("pause", function (ev) {
+        console.log("pause");
+        self.state = "pause";
+        // $(self.ctrls).find("div.play").removeClass("pause");
+        // self.oiplayer.ctrls.buttonPlay.classList.remove("pause");
+      });
       /* this.player.addEventListener(
         "volumechange",
         function (ev) {
@@ -198,7 +192,7 @@ class MediaPlayer extends Player {
         false
       ); */
     }
-    return this.player;
+    // return this.player;
   }
   play() {
     if (this.player.readyState == "0") {
@@ -288,7 +282,7 @@ class MediaPlayer extends Player {
       this.div.appendChild(figure);
 
       const proposal = this.selectPlayer(this.types, this.urls);
-      console.log("INIT - proposal", proposal);
+      console.log("INIT - proposal", proposal.type, proposal.url);
       this.config.url = proposal.url;
       this.config.proposalType = proposal.type;
 
@@ -361,12 +355,11 @@ class MediaPlayer extends Player {
     }
 
     follow() {
-      const duration = this.player.duration;
-      if (duration < 1) {
+      if (this.player.duration < 1) {
         return;
       }
 
-      const perc = (this.player.currentTime / duration) * 100;
+      const perc = (this.player.currentTime / this.player.duration) * 100;
       this.ctrls.progressPlayed.style.width = `${1 + Number(perc)}%`;
       this.ctrls.progressPush.style.left = `${perc}%`;
 
@@ -410,7 +403,7 @@ class MediaPlayer extends Player {
       } else {
         probably = this.canPlayCortado(types, urls);
 
-        if (!probably && (supportMimetype("application/x-java-applet") || navigator.javaEnabled())) {
+        if (!probably && (this._supportMimetype("application/x-java-applet") || navigator.javaEnabled())) {
           // @TODO replace this
           if ($.browser.msie) {
             // Argh! A browser check!
@@ -649,6 +642,18 @@ class MediaPlayer extends Player {
 
     _isIpad() {
       return navigator.userAgent.match(/iPad/i) !== null;
+    }
+
+    _supportMimetype(mt) {
+      var support = false; /* navigator.mimeTypes is unsupported by MSIE ! */
+      if (navigator.mimeTypes && navigator.mimeTypes.length > 0) {
+        for (var i = 0; i < navigator.mimeTypes.length; i++) {
+          if (navigator.mimeTypes[i].type.indexOf(mt) > -1) {
+            support = true;
+          }
+        }
+      }
+      return support;
     }
 
     get sources() {
