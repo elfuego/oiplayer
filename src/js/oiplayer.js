@@ -1,33 +1,31 @@
 class Player {
-  constructor(el, oiplayer, config) {
+  constructor(media, oiplayer, config) {
+    this.media = media;
+    this.oiplayer = oiplayer;
+    this.config = config;
     this.myname = "super";
-    this._init(el, oiplayer, config);
+
+    this.init();
   }
 
   mute() {}
   play() {}
   pause() {}
   /* go to this position */
-  seek(pos) {}
+  seek(sec) {}
   info() {}
   /* value between 0 - 100 */
   volume(vol) {}
-  _init(el, oiplayer, config) {
+  init() {
     this.state = "init";
-    this.el = el;
-    this.player = el;
-    this.oiplayer = oiplayer;
-    this.url = config.url;
-    this.config = config;
+    // this.url = config.url;
 
-    this.type = el.tagName.toLowerCase(); // video or audio
-    this.poster = this.el.getAttribute("poster");
-    this.autoplay = this.el.getAttribute("autoplay");
+    this.poster = this.media.getAttribute("poster");
+    this.autoplay = this.media.getAttribute("autoplay");
     if (!this.autoplay) this.autoplay = false;
-    this.autobuffer = this.el.getAttribute("autobuffer");
+    this.autobuffer = this.media.getAttribute("autobuffer");
     if (!this.autobuffer) this.autobuffer = false;
-    this.controls = this.el.getAttribute("controls") || false;
-    if (!this.duration) this.duration = 0;
+    // this.controls = this.media.getAttribute("controls") || false;
     if (this.type == "audio") {
       this.el.removeAttribute("width");
       this.el.removeAttribute("height");
@@ -35,655 +33,206 @@ class Player {
   }
 
   get height() {
-    let default_height = 288;
-    if (this.type == "audio") default_height = 32;
-    return parseInt(this.el.getAttribute("height")) || default_height;
+    const default_height = this.type === "audio" ? 32 : 288;
+    return parseInt(this.media.getAttribute("height")) || default_height;
   }
 
   get width() {
-    return parseInt(this.el.getAttribute("width")) || 512;
+    return parseInt(this.media.getAttribute("width")) || 512;
+  }
+
+  get duration() {
+    return -1;
   }
 
   get position() {
     return -1;
+  }
+
+  get type() {
+    return this.media.tagName.toLowerCase(); // video or audio
   }
 }
 
 class MediaPlayer extends Player {
-  constructor(el, oiplayer, config) {
-    super(el, oiplayer, config);
+  constructor(media, oiplayer, config) {
+    super(media, oiplayer, config);
 
     this.myname = "mediaplayer";
-    this.init(el, oiplayer, config);
   }
 
-  init(el, oiplayer, config) {
-    this._init(el, oiplayer, config);
-
-    if (config.controls) {
-      var self = this;
-      self.buffered = 0;
-      this.player.addEventListener(
-        "timeupdate",
-        function (ev) {
-          // console.log("timeupdate", self.player.duration, self.player.currentTime);
-          const duration = self.player.duration;
-          if (self.player.duration > 0) {
-            const perc = (self.player.currentTime / duration) * 100;
-            self.oiplayer.follow(perc);
-          }
-        },
-        false
-      );
-      this.player.addEventListener(
-        "progress",
-        function (ev) {
-          console.log("progress", self.player.duration);
-          const duration = self.player.duration;
-
-          if (duration > 0) {
-            for (let i = 0; i < self.player.buffered.length; i++) {
-              if (self.player.buffered.start(self.player.buffered.length - 1 - i) < self.player.currentTime) {
-                const perc = (self.player.buffered.end(self.player.buffered.length - 1 - i) * 100) / duration;
-                console.log("progress - perc", perc);
-                self.oiplayer.ctrls.progressLoaded.style.width = `${perc}%`;
-                break;
-              }
-            }
-          }
-        },
-        false
-      );
-      this.player.addEventListener("seeked", (ev) => {
-        console.log("seeked", self.player.currentTime);
-      });
-      this.player.addEventListener(
-        "canplaythrough",
-        function (ev) {
-          console.log("canplaythrough", self.player.buffered.end);
-          if (self.player.buffered && self.player.buffered.length > 0) {
-            var buf = self.player.buffered.end(0);
-            if (buf > self.buffered) {
-              self.buffered = buf;
-              const perc = (buf / self.duration) * 100 + "%";
-              console.log("canplaythrough - prec", perc);
-              // self.oiplayer.ctrls.progressLoaded.style.width = perc;
-            }
-          }
-        },
-        false
-      );
-      this.player.addEventListener(
-        "loadedmetadata",
-        function (ev) {
-          console.log("loadedmetadata", self.player.duration);
-          if (self.player.duration) {
-            self.duration = self.player.duration;
-          }
-          if (self.type == "video" && (self.width == 320 || self.height == 240)) {
-            console.log("loadedmetadata", self.player.videoWidth);
-            // self.width =
-            //   $(self.player).attr("width") > 0
-            //     ? parseInt($(self.player).attr("width"))
-            //     : self.player.videoWidth;
-            // self.height =
-            //   $(self.player).attr("height") > 0
-            //     ? parseInt($(self.player).attr("height"))
-            //     : self.player.videoHeight;
-            // $.oiplayer._controlswidth(self);
-            // $(self.div).width(self.width).height(self.height);
-          }
-        },
-        false
-      );
-      /* this.player.addEventListener(
-        "loadeddata",
-        function (ev) {
-          console.log("loadeddata", self.duration);
-          if (self.player.buffered && self.player.buffered.length > 0) {
-            var buf = self.player.buffered.end(0);
-            if (buf > self.buffered) {
-              self.buffered = buf;
-              var perc = (buf / self.duration) * 100 + "%";
-              //self.ctrls.find("div.loaded").width(perc);
-              self.oiplayer.ctrls.progressLoaded.style.width = perc;
-            }
-          }
-        },
-        false
-      ); */
-      this.player.addEventListener("playing", function (ev) {
-        console.log("playing");
-        if (self.state == "init" || self.state == "ended") {
-          /* when started outside controls */
-          // $.oiplayer.start(self);
-        }
-        self.state = "playing";
-        // $(self.ctrls).find("div.play").addClass("pause");
-        // self.oiplayer.ctrls.buttonPlay.classList.add("pause");
-      });
-      this.player.addEventListener("pause", function (ev) {
-        console.log("pause");
-        self.state = "pause";
-        // $(self.ctrls).find("div.play").removeClass("pause");
-        // self.oiplayer.ctrls.buttonPlay.classList.remove("pause");
-      });
-      /* this.player.addEventListener(
-        "volumechange",
-        function (ev) {
-          if (self.player.muted || self.volume() === 0) {
-            //$(self.ctrls).find("div.sound").addClass("muted");
-          } else {
-            //$(self.ctrls).find("div.sound").removeClass("muted");
-          }
-        },
-        false
-      );
-      this.player.addEventListener(
-        "ended",
-        function (ev) {
-          if (self.state != "ended") {
-            self.state = "ended";
-            //$(self.div).trigger("oiplayerended", [self]);
-          }
-          //$(self.div).find("div.play").removeClass("pause");
-          // self.oiplayer.ctrls.buttonPlay.classList.remove("pause");
-        },
-        false
-      ); */
-    }
-    // return this.player;
+  init() {
+    super.init();
+    this.eventHandlers();
+    console.log("mediaplayer", this.type);
   }
+
+  eventHandlers() {
+    this.media.addEventListener("loadedmetadata", () => {
+      console.log("duration", this.myname, this.media.duration);
+      // if (!progress.getAttribute("max")) progress.setAttribute("max", this.media.duration);
+    });
+
+    this.media.addEventListener("timeupdate", () => {
+      // console.log("timeupdate", this.media.duration);
+      // if (!progress.getAttribute("max")) progress.setAttribute("max", this.media.duration);
+    });
+
+    this.media.addEventListener("ended", () => (this.state = "ended"));
+    this.media.addEventListener("playing", () => (this.state = "playing"));
+    this.media.addEventListener("paused", () => (this.state = "paused"));
+    this.media.addEventListener("canplaythrough", () => (this.state = "canplaythrough"));
+  }
+
   play() {
-    if (this.player.readyState == "0") {
-      this.player.load();
-    }
-    this.player.play();
-  }
-  pause() {
-    this.player.pause();
-  }
-  mute() {
-    if (this.player.muted) {
-      this.player.muted = false;
+    if (this.media.paused || this.media.ended) {
+      this.media.play();
+      this.state = "playing";
     } else {
-      this.player.muted = true;
+      this.media.pause();
+      this.state = "paused";
     }
+  }
+
+  pause = () => this.media.pause();
+
+  get duration() {
+    return this.media.duration || -1;
   }
 
   get position() {
-    try {
-      return this.player.currentTime;
-    } catch (err) {
-      // $.oiplayer.msg(self, "Error: " + err);
-    }
-    return -1;
-  }
-
-  seek(sec) {
-    // TODO: investigate pause() and play() needed?
-    // this.player.pause();
-    console.log("SEEK", sec);
-    if (this.player.fastSeek) {
-      this.player.fastSeek(sec);
-    } else {
-      this.player.currentTime = sec;
-    }
-    // this.player.play();
-  }
-
-  volume(v) {
-    // html5 has range 0.0 to 1.0, we use as in flowplayer 0 - 100
-    if (v === undefined) {
-      return this.player.volume * 100;
-    } else {
-      this.player.volume = Math.min(Math.max(v / 100, 0), 1);
-    }
-  }
-  info() {
-    /*  duration able in webkit,
-              unable in mozilla without: https://developer.mozilla.org/en/Configuring_servers_for_Ogg_media
-          */
-    //return "Duration: " + this.player.duration + " readyState: " + this.player.readyState;
+    return this.media.currentTime || -1;
   }
 }
 
 (function () {
-  class OIPlayer {
-    constructor(elem, config) {
-      this.id = elem.id || "id" + Math.random().toString(16).slice(2);
-      this.type = elem.tagName.toLowerCase();
-      this.elem = elem;
-      this.following = null;
-
-      this.config = {
-        server: "http://www.openimages.eu",
-        jar: "/oiplayer/plugins/cortado-ovt-stripped-0.6.0.jar",
-        flash: "/oiplayer/plugins/flowplayer-3.2.7.swf",
-        controls: true,
-        ctrls: {},
-        show: true,
-        log: "error",
-        ...config,
-      };
+  class Oplayer {
+    constructor(media, config) {
+      this.media = media;
+      this.config = config;
 
       this.init();
     }
 
     init() {
-      // wrap mediatag
-      this.div = document.createElement("div");
-      const figure = document.createElement("figure");
-      this.div.classList.add("oiplayer");
-      figure.classList.add("player");
+      // hide default controls
+      this.media.controls = false;
 
-      this.elem.replaceWith(this.div);
-      figure.appendChild(this.elem);
-      this.div.appendChild(figure);
+      const figure = document.createElement("div");
+      figure.classList.add("oiplayer");
 
-      const proposal = this.selectPlayer(this.types, this.urls);
-      console.log("INIT - proposal", proposal.type, proposal.url);
-      this.config.url = proposal.url;
-      this.config.proposalType = proposal.type;
+      const controls = document.createElement("div");
+      controls.classList.add("controls");
 
-      // this.div.append(this.createPoster(this.player));
-      this.div.append(this.controlsHtml());
+      const button = document.createElement("button");
+      button.classList.add("play");
+      button.setAttribute("data-button-play", "paused");
+      button.innerText = "Play";
 
-      const ctrls = {};
-      ctrls.buttonPlay = this.div.querySelector('[data-button="play"]');
-      ctrls.buttonScreen = this.div.querySelector('[data-button="screen"]');
-      ctrls.progressTime = this.div.querySelector('[data-progress="time"]');
-      ctrls.progressTotal = this.div.querySelector('[data-progress="total"]');
-      ctrls.progressBack = this.div.querySelector('[data-progress="back"]');
-      ctrls.progressLoaded = this.div.querySelector('[data-progress="loaded"]');
-      ctrls.progressPlayed = this.div.querySelector('[data-progress="played"]');
-      ctrls.progressPush = this.div.querySelector('[data-progress="push"]');
+      const progress = document.createElement("progress");
+      progress.classList.add("progress");
+      progress.setAttribute("data-progress", "");
+      progress.value = 0;
 
-      this.ctrls = ctrls;
-      console.log("config", this.config);
+      controls.appendChild(button);
+      controls.appendChild(progress);
 
-      switch (proposal.type) {
-        case "media":
-          this.elem.setAttribute("preload", "metadata");
-          this.player = new MediaPlayer(this.elem, this, this.config);
-          break;
+      this.media.replaceWith(figure);
+      figure.appendChild(this.media);
+      figure.appendChild(controls);
+      this.ocontrols = controls;
 
-        default:
-          break;
-      }
+      this.playerInfo();
+      this.player = new MediaPlayer(this.media, this);
 
-      this.ctrls.buttonPlay.addEventListener("click", (ev) => this.play(ev));
-      this.ctrls.buttonScreen.addEventListener("click", (ev) => this.fullscreen(ev));
-      // this.ctrls.progressLoaded.addEventListener("click", (ev) => this.scrub(ev));
-      this.ctrls.progressBack.addEventListener("click", (ev) => this.scrub(ev));
-    }
+      this.handlers();
+      this.events();
 
-    play(ev) {
-      ev.preventDefault();
-      console.log("play: ", this.player.state);
-
-      if (this.player.state === "init") {
-        this.player.play();
-        this.follow();
-        this.ctrls.buttonPlay.classList.add("pause");
-      } else if (this.player.state === "playing") {
-        this.player.pause();
-        // this.follow(false);
-        this.ctrls.buttonPlay.classList.remove("pause");
-      } else {
-        this.player.play();
-        this.follow();
-        this.ctrls.buttonPlay.classList.add("pause");
-      }
-    }
-
-    fullscreen(ev) {
-      ev.preventDefault();
-      console.log("fullscreen");
-    }
-
-    scrub(ev) {
-      ev.preventDefault();
-      if (!Number.isFinite(this.player.duration)) {
-        return;
-      }
-
-      const box = this.ctrls.progressBack.getBoundingClientRect();
-      const pos = (ev.pageX - box.left) / this.ctrls.progressBack.offsetWidth;
-      const sec = Math.round(pos * this.player.duration * 100) / 100;
-      this.player.seek(sec);
+      console.log("STATE", this.player.state);
     }
 
     follow() {
-      if (this.player.duration < 1) {
+      const followProgress = () => {
+        const duration = this.player.duration;
+        if (!duration) {
+          console.log("no duration");
+          return;
+        }
+
+        this.progress.value = this.player.position;
+        if (this.player.state === "playing") {
+          requestAnimationFrame(followProgress);
+        }
+      };
+
+      requestAnimationFrame(followProgress);
+    }
+
+    scrub(ev) {
+      const duration = this.player.duration;
+      console.log("srub", duration);
+      if (!duration) {
+        console.log("no duration");
         return;
       }
 
-      const perc = (this.player.currentTime / this.player.duration) * 100;
-      this.ctrls.progressPlayed.style.width = `${1 + Number(perc)}%`;
-      this.ctrls.progressPush.style.left = `${perc}%`;
-
-      this.ctrls.progressTotal.innerText = this._totime(this.player.position);
-      this.ctrls.progressTime.innerText = this._totime(this.player.duration - this.player.position);
-
-      // const followProgress = () => {
-      //   var perc = ((this.player.position / this.player.duration) * 100).toFixed(1);
-
-      //   this.ctrls.progressPlayed.style.width = `${1 + Number(perc)}%`;
-      //   this.ctrls.progressPush.style.left = `${perc}%`;
-
-      //   this.ctrls.progressTotal.innerText = this._totime(this.player.position);
-      //   this.ctrls.progressTime.innerText = `- ${this._totime(this.player.duration - this.player.position)}`;
-
-      //   if (this.player.state === "playing") {
-      //     requestAnimationFrame(followProgress);
-      //   }
-      // };
-
-      // requestAnimationFrame(followProgress);
+      const rect = this.progress.getBoundingClientRect();
+      const pos = (ev.pageX - rect.left) / this.progress.offsetWidth;
+      this.progress.value = pos * duration;
+      this.media.currentTime = pos * duration;
     }
 
-    /*
-     * Selects which player to use and returns a proposal.type and proposal.url.
-     * Adapt this to change the prefered order, here the order is: video/audio, cortado, msie_cortado, flash.
-     * @param el    video or audio element
-     * @param types mimetype (and codec) attributes
-     * @param urls  media links
-     */
-    selectPlayer = (types, urls) => {
-      const proposal = {};
-      let probably = this.canPlayMedia(types, urls);
-      console.log("probably", probably);
-
-      if (probably) {
-        proposal.type = "media";
-        proposal.url = probably;
-
-        return proposal; // optimization
-      } else {
-        probably = this.canPlayCortado(types, urls);
-
-        if (!probably && (this._supportMimetype("application/x-java-applet") || navigator.javaEnabled())) {
-          // @TODO replace this
-          if ($.browser.msie) {
-            // Argh! A browser check!
-            /* IE always reports true on navigator.javaEnabled(),
-                that's why we need to check for the java plugin IE style. 
-                It needs an element with id 'clientcaps' somewhere in the page. 
-            */
-            const javaVersionIE = clientcaps.getComponentVersion("{08B0E5C0-4FCB-11CF-AAA5-00401C608500}", "ComponentID");
-            if (javaVersionIE) {
-              proposal.type = "msie_cortado";
-              proposal.url = probably;
-            }
-            if (el.tagName.toLowerCase() == "audio") {
-              // always use cortado on msie
-              proposal.type = "msie_cortado";
-              proposal.url = probably;
-            }
-          } else {
-            proposal.type = "cortado";
-            proposal.url = probably;
-          }
+    playerInfo() {
+      const sources = this.media.querySelectorAll("source");
+      let canPlay = false;
+      sources.forEach((src) => {
+        // const mtype = src.getAttribute('type');
+        // console.log("info src", src.type, this.media.canPlayType(src.type));
+        if (this.media.canPlayType(src.type)) {
+          canPlay = true;
         }
-      }
+      });
 
-      console.log("proposal here", proposal);
-      // still no valid proposal try flash
-      if (!proposal.type) {
-        let flash_url;
-        for (let i = 0; i < types.length; i++) {
-          if (types[i].indexOf("video/flv") > -1 || types[i].indexOf("video/x-flv") > -1) {
-            proposal.url = urls[i];
-            proposal.type = "flash";
-            return proposal;
-          }
-        }
+      return canPlay;
+      /* type
+A string specifying the MIME type of the media and (optionally) a codecs parameter containing a comma-separated list of the supported codecs.
 
-        for (let j = 0; j < types.length; j++) {
-          if (
-            types[j].indexOf("video/mp4") > -1
-            /* || types[i].indexOf("video/mpeg") > -1 */
-          ) {
-            proposal.url = urls[j];
-            proposal.type = "flash";
-            return proposal;
-          }
-        }
-      }
+Return value
+A string indicating how likely it is that the media can be played. The string will be one of the following values:
 
-      /* try anyway with media tag */
-      if (types.length > 0 && types[0] == "unknown") {
-        proposal.url = urls[0];
-        proposal.type = "media";
-        return proposal;
-      }
-      return proposal;
-    };
+"" (empty string)
+The media cannot be played on the current device.
 
-    /*
-     * Returns (first) url it expects to be able to play with html5 video- or audiotag based on mimetype.
-     */
-    canPlayMedia = (types, urls) => {
-      var vEl = document.createElement("video");
-      var aEl = document.createElement("audio");
-      if (vEl.canPlayType || aEl.canPlayType) {
-        for (var i = 0; i < types.length; i++) {
-          if (vEl.canPlayType(types[i]) == "probably" || aEl.canPlayType(types[i]) == "probably") {
-            return urls[i]; // this is the best we can do
-          }
-          if (vEl.canPlayType(types[i]) == "maybe" || aEl.canPlayType(types[i]) == "maybe") {
-            return urls[i]; // if we find nothing better
-          }
-        }
-      }
-    };
+probably
+The media is probably playable on this device.
 
-    /*
-     * Examines mimetypes and returns belonging ogg url it expects to be able to play.
-     */
-    canPlayCortado = (types, urls) => {
-      for (var i = 0; i < types.length; i++) {
-        if (
-          types[i].indexOf("video/ogg") > -1 ||
-          types[i].indexOf("audio/ogg") > -1 ||
-          types[i].indexOf("application/ogg") > -1 ||
-          types[i].indexOf("application/x-ogg") > -1
-        ) {
-          return urls[i];
-        }
-      }
-
-      return null;
-    };
-
-    controlsHtml = () => {
-      const html = `<div class="play">
-          <button data-button="play" title="play"></button>
-        </div>
-        <div data-progress="total" class="time">00:00</div>
-        <div class="progress">
-          <div class="oiprogress">
-            <div data-progress="back" class="back bar"></div>
-            <div data-progress="loaded" class="loaded bar"></div>
-            <div data-progress="played" class="played bar"></div>
-            <div class="oiprogress-container">
-              <div data-progress="push" class="oiprogress-push">
-                <div class="pos"><span title="position"></span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div data-progress="time" class="timeleft">00:00</div>
-        ${
-          this.type === "video" && !this._isIphone()
-            ? `<div class="screen"><button data-button="screen" title="fullscreen"></button></div>`
-            : ""
-        }`;
-
-      const div = document.createElement("div");
-      div.classList.add("oipcontrols");
-      div.innerHTML = html;
-      return div;
-
-      /* var html =
-        '<div class="oipcontrols">' +
-        '<div class="play"><a href="#play" title="play"></a></div>' +
-        '<div class="time">00:00</div>' +
-        '<div class="progress">' +
-        '<div class="oiprogress"><div class="back bar"></div><div class="loaded bar"></div><div class="played bar"></div><div class="oiprogress-container"><div class="oiprogress-push"><div class="pos"><a href="#pos" title="position"></a></div></div></div></div>' +
-        "</div>" +
-        '<div class="timeleft">-' +
-        (player.position() > 0
-          ? this._totime(player.duration - player.position())
-          : this._totime(player.duration)) +
-        "</div>" +
-        (player.type == "video" && !this._isIphone()
-          ? '<div class="screen"><a href="#fullscreen" title="fullscreen"></a></div>'
-          : "") +
-        (this._isIpad()
-          ? ""
-          : '<div class="sound">' +
-            '<a href="#sound" title="sound"></a>' +
-            (this.config?.controls?.indexOf("volume") > -1
-              ? '<div class="volume"><div class="slider">' +
-                '<div class="fill"></div><div class="thumb"><div></div></div>' +
-                "</div></div>"
-              : "") +
-            "</div>") +
-        "</div>"; */
-    };
-
-    /**
-     * Copies poster and puts it in front, in case of an audio tag it searches for
-     * an image and presents that.
-     *
-     * @param {OIPlayer} player
-     * @returns html
-     * @memberof OIPlayer
-     */
-    createPoster(player) {
-      let poster = player.poster; // src
-      console.log("createPoster", poster);
-      if (!poster && player.type === "audio") {
-        // for audio-tags (no attribute poster but image inside audio-tag)
-        const pic = this.elem.querySelector("img");
-        player.width = pic.getAttribute("width") || player.width;
-        player.height = pic.getAttribute("height") || player.height;
-        console.log("pic", pic);
-
-        /* make height and width of audio those of img inside audio body */
-        // var img = $(el).find("img")[0];
-        // player.width =
-        //   $(img).attr("width") > 0
-        //     ? parseInt($(img).attr("width"))
-        //     : player.width;
-        // player.height =
-        //   $(img).attr("height") > 0
-        //     ? parseInt($(img).attr("height"))
-        //     : player.height;
-        // src = $(img).attr("src");
-        // $(img).remove();
-      }
-
-      if (poster) {
-        return `<img class="preview ${player.type}"
-          src="${poster}" width="${player.width}" height="${player.height}" 
-          alt="click to play" title="click to play" />`;
-        // return (
-        //   '<img class="preview ' +
-        //   player.type +
-        //   '" src="' +
-        //   poster +
-        //   '" width="' +
-        //   player.width +
-        //   '" height="' +
-        //   player.height +
-        //   '" alt="click to play" title="click to play" />'
-        // );
-      }
+maybe
+There is not enough information to determine whether the media can play (until playback is actually attempted). */
+      // console.log("canplaytype", canPlay);
     }
 
-    /*
-     * Returns time formatted as 00:00
-     * @param pos Seconds
-     */
-    _totime = (pos) => {
-      if (pos < 0) {
-        pos = 0;
-      }
+    handlers() {
+      this.button = this.ocontrols.querySelector("[data-button-play]");
+      this.progress = this.ocontrols.querySelector("[data-progress]");
+      this.progress.max = this.player.duration;
 
-      function toTime(sec) {
-        var h = Math.floor(sec / 3600);
-        var min = Math.floor(sec / 60);
-        sec = Math.floor(sec - min * 60);
-
-        if (h >= 1) {
-          min -= h * 60;
-          return h + ":" + addZero(min) + ":" + addZero(sec);
-        }
-
-        return addZero(min) + ":" + addZero(sec);
-      }
-
-      function addZero(time) {
-        time = parseInt(time, 10);
-        return time < 10 ? "0" + time : time;
-      }
-
-      return toTime(Math.floor(pos));
-    };
-
-    /* sorry about these :-( could not find suitable abilities checks */
-    _isIphone() {
-      // iPhone and iPod act the same
-      return navigator.userAgent.match(/iPhone|iPod/i) !== null;
+      this.ocontrols.setAttribute("data-state", "visible");
     }
 
-    _isIpad() {
-      return navigator.userAgent.match(/iPad/i) !== null;
+    play() {
+      this.player.play();
+      this.follow();
     }
 
-    _supportMimetype(mt) {
-      var support = false; /* navigator.mimeTypes is unsupported by MSIE ! */
-      if (navigator.mimeTypes && navigator.mimeTypes.length > 0) {
-        for (var i = 0; i < navigator.mimeTypes.length; i++) {
-          if (navigator.mimeTypes[i].type.indexOf(mt) > -1) {
-            support = true;
-          }
-        }
-      }
-      return support;
-    }
-
-    get sources() {
-      const srcs = this.elem.querySelectorAll("source");
-      if (!srcs) {
-        srcs[0] = this.elem.getAttribute("src");
-      }
-
-      return srcs;
-    }
-
-    get types() {
-      const results = [];
-      this.sources.forEach((src) => results.push(src.type));
-      return results;
-    }
-
-    get urls() {
-      const results = [];
-      this.sources.forEach((src) => results.push(src.src));
-      return results;
+    events() {
+      this.button.addEventListener("click", (ev) => this.play(ev));
+      this.progress.addEventListener("click", (ev) => this.scrub(ev));
     }
   }
 
   const elements = document.querySelectorAll(".testplayer");
   elements.forEach((elem) => {
     const media = elem.querySelectorAll("video, audio");
-    media.forEach((mt) => {
-      const player = new OIPlayer(mt);
-      console.log("player", player);
-    });
+    media.forEach((mt) => new Oplayer(mt));
   });
 })();

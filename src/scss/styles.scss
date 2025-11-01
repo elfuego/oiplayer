@@ -12,6 +12,11 @@ $button-size: 32px;
 $slider-height: 12px;
 $slider-border-radius: 6px;
 
+.progress {
+  height: 48px;;
+  min-width: 360px;
+}
+
 .oiplayer {
   // Set the base box-sizing that will be inherited by all other elements
   box-sizing: border-box;
