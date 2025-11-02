@@ -143,40 +143,18 @@ class MediaPlayer extends Player {
       // hide default controls
       this.media.controls = false;
 
-      const figure = document.createElement("div");
+      const figure = document.createElement("figure");
       figure.classList.add("oiplayer");
 
-      const controls = document.createElement("div");
-      controls.classList.add("controls");
-
-      const button = document.createElement("button");
-      button.classList.add("play");
-      button.setAttribute("data-button-play", "paused");
-      button.innerText = "Play";
-
-      const progress = document.createElement("progress");
-      progress.classList.add("progress");
-      progress.setAttribute("data-progress", "");
-      progress.value = 0;
-
-      const time = document.createElement("div");
-      time.classList.add("time");
-      time.setAttribute("data-time", "0:00");
-
-      const yaHtml = this.controlsHtml();
-      const divHtml = yaHtml;
-      const yadiv = document.createElement("div");
-      yadiv.innerHTML = divHtml;
-
-      controls.appendChild(button);
-      controls.appendChild(progress);
-      controls.appendChild(time);
-      controls.appendChild(yadiv);
+      const ctrlsHtml = this.controlsHtml();
+      const div = document.createElement("div");
+      div.innerHTML = ctrlsHtml;
+      div.classList.add("oipcontrols");
 
       this.media.replaceWith(figure);
       figure.appendChild(this.media);
-      figure.appendChild(controls);
-      this.ocontrols = controls;
+      figure.appendChild(div);
+      this.ocontrols = div;
 
       // this.playerInfo();
       this.player = new MediaPlayer(this.media, this);
@@ -196,7 +174,7 @@ class MediaPlayer extends Player {
         }
 
         this.progress.value = this.player.position;
-        this.updateTime();
+        this.updateTime(duration, this.player.position);
 
         if (this.player.state === "playing") {
           requestAnimationFrame(followProgress);
@@ -218,20 +196,28 @@ class MediaPlayer extends Player {
       const pos = (ev.pageX - rect.left) / this.progress.offsetWidth;
       this.progress.value = pos * duration;
       this.player.seek(pos * duration);
+      this.updateTime(duration, pos * duration);
     }
 
     updateMetaData(data) {
       const { duration } = data;
-      console.log("updateMetaData", this.player.length, duration, data);
+      console.log("updateMetaData", this.player.length, data);
 
       // update ui
       this.progress.max = duration;
-      this.time.innerText = this._totime(duration);
+      this.updateTime(duration);
     }
 
-    updateTime() {
-      this.time.innerText = this._totime(this.player.position);
-      // this.timeleft.innerText = this._totime(this.player.position - this.player.duration);
+    /**
+     * Update UI with time and time left.
+     *
+     * @param {number} duration total time
+     * @param {number} [pos=0] current position in player
+     * @memberof Oplayer
+     */
+    updateTime(duration, pos = 0) {
+      this.timeleft.innerText = this._totime(pos);
+      this.time.innerText = this._totime(duration - pos);
     }
 
     playerInfo() {
@@ -262,6 +248,7 @@ There is not enough information to determine whether the media can play (until p
       this.button = this.ocontrols.querySelector("[data-button-play]");
       this.progress = this.ocontrols.querySelector("[data-progress]");
       this.time = this.ocontrols.querySelector("[data-time]");
+      this.timeleft = this.ocontrols.querySelector("[data-timeleft]");
 
       this.ocontrols.setAttribute("data-state", "visible");
     }
@@ -278,11 +265,21 @@ There is not enough information to determine whether the media can play (until p
 
     controlsHtml() {
       const html = `<ul class="controls">
-          <li><div data-controls-time class="time">0:00</div></li>
-          <li><button data-controls-button-play>Play</button></li>
-          <li><progress data-controls-progress max="0" value="0" /></li>
-          <li><div data-controls-timeleft class="timeleft">0:00</div></li>
-        </ul>`;
+        <li>
+          <button data-button-play class="play"><span>Play</span></button>
+        </li>
+        <li><div data-timeleft="0" class="timeleft">00:00</div></li>
+        <li class="prog">
+          <progress data-progress="0" class="progress" max="0" value="0">
+            <span data-progress-bar="0"></span>
+          </progress>
+        </li>
+        <li><div data-time="0" class="time">00:00</div></li>
+        <li><button data-button-screen class="screen">
+          <span>Screen</span></button>
+        </li>
+        <li><div data-volume class="volume">-/+</div></li>
+      </ul>`;
 
       return html;
     }
