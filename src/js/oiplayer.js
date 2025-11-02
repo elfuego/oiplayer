@@ -141,6 +141,12 @@ class MediaPlayer extends Player {
     }
   };
 
+  volume = (vol) => {
+    console.log("volume", vol);
+    this.media.muted = !this.media.muted;
+    this.oiplayer.muted = this.media.muted;
+  };
+
   get length() {
     return this.media.duration;
   }
@@ -174,6 +180,7 @@ class MediaPlayer extends Player {
       this.media.replaceWith(figure);
       figure.appendChild(this.media);
       figure.appendChild(div);
+      this.figure = figure;
       this.ocontrols = div;
 
       // this.playerInfo();
@@ -246,8 +253,8 @@ class MediaPlayer extends Player {
 
     updateProgress(duration, sec = 0) {
       const width = Math.round((sec / duration) * 100);
-      this.progressPlayed.style.width = `${width}%`;
-      this.progressPush.style.width = `${width}%`;      
+      this.progressPlayed.style.width = `calc(1rem + ${width}%)`;
+      this.progressPush.style.width = `calc(1rem + ${width}%)`;
     }
 
     playerInfo() {
@@ -276,6 +283,9 @@ There is not enough information to determine whether the media can play (until p
 
     handlers() {
       this.buttonPlay = this.ocontrols.querySelector("[data-button-play]");
+      this.buttonScreen = this.ocontrols.querySelector("[data-button-screen]");
+      this.buttonVolume = this.ocontrols.querySelector("[data-button-volume]");
+
       this.progressPush = this.ocontrols.querySelector("[data-progress='push']");
       this.progressPlayed = this.ocontrols.querySelector("[data-progress='played']");
       this.progressLoaded = this.ocontrols.querySelector("[data-progress='loaded']");
@@ -291,8 +301,32 @@ There is not enough information to determine whether the media can play (until p
       this.follow();
     }
 
+    fullscreen() {
+      if (!document?.fullscreenEnabled) {
+        // fullscreen.style.display = "none";
+        console.log("no fullscreen");
+      }
+      console.log("fullscreen");
+
+      if (document.fullscreenElement !== null) {
+        // The document is in fullscreen mode
+        document.exitFullscreen();
+      } else {
+        // The document is not in fullscreen mode
+        this.figure.requestFullscreen();
+      }
+    }
+
+    volume() {
+      console.log("volume", this.muted);
+      this.player.volume();
+      this.buttonVolume.setAttribute("data-button-volume", this.muted ? "muted" : "playing");
+    }
+
     events() {
       this.buttonPlay.addEventListener("click", () => this.play());
+      this.buttonScreen.addEventListener("click", () => this.fullscreen());
+      this.buttonVolume.addEventListener("click", () => this.volume());
       this.progressBack.addEventListener("click", (ev) => this.scrub(ev));
     }
 
@@ -319,7 +353,7 @@ There is not enough information to determine whether the media can play (until p
           <button data-button-screen><span>Screen</span></button>
         </li>
         <li class="sound">
-          <button data-button-volume="-1"><span>Volume</span></button>
+          <button data-button-volume=""><span>Volume</span></button>
         </li>
       </ul>`;
 

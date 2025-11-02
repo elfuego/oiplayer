@@ -37,31 +37,32 @@ $slider-border-radius: 0.6rem;
   padding: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
-  @import 'controls.scss';
+  @import "controls.scss";
 
-  &.fullscreen {
-    position: fixed;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    overflow: hidden;
-    z-index: 1000;
-    width: 100%;
+  &:fullscreen {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    max-width: 100%;
     height: 100%;
-    background-color: #000;
+    background-color: transparent;
 
-    .player {
-      display: inline-block;
+    video {
+      margin-top: auto;
+      margin-bottom: auto;
       width: 100%;
       height: 100%;
-      z-index: 1001;
+    }
 
-      video,
-      object,
-      embed {
-        z-index: 1002;
-      }
+    .oipcontrols {
+      position: static;
+      margin: 0 auto;
+      max-width: 80%;
+    }
+
+    figcaption {
+      display: none;
     }
   }
 
@@ -178,8 +179,7 @@ body.oiplayer-example {
     }
   }
 
-    .license {
-      font: 400 1rem/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-
+  .license {
+    font: 400 1rem/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
 }
