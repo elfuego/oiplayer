@@ -20,6 +20,8 @@ class Player {
     this.state = "init";
     // this.url = config.url;
 
+    this.duration = -1;
+
     this.poster = this.media.getAttribute("poster");
     this.autoplay = this.media.getAttribute("autoplay");
     if (!this.autoplay) this.autoplay = false;
@@ -41,12 +43,8 @@ class Player {
     return parseInt(this.media.getAttribute("width")) || 512;
   }
 
-  get duration() {
-    return -1;
-  }
-
   get position() {
-    return -1;
+    return 0;
   }
 
   get type() {
@@ -69,13 +67,32 @@ class MediaPlayer extends Player {
 
   eventHandlers() {
     this.media.addEventListener("loadedmetadata", () => {
-      console.log("duration", this.myname, this.media.duration);
-      // if (!progress.getAttribute("max")) progress.setAttribute("max", this.media.duration);
+      console.log("loadedmetadata", this.media.duration);
+      this.duration = this.media.duration;
+
+      const meta = {
+        duration: this.duration,
+        height: this.media.videoHeight ? this.media.videoHeight : -1,
+        width: this.media.videoWidth ? this.media.videoWidth : -1,
+      };
+
+      this.oiplayer.updateMetaData(meta);
     });
 
     this.media.addEventListener("timeupdate", () => {
-      // console.log("timeupdate", this.media.duration);
-      // if (!progress.getAttribute("max")) progress.setAttribute("max", this.media.duration);
+      if (this.duration < 0) {
+        // on some (mobile) browsers 'loadedmetadata' does not succeed in a correct value
+        console.log("timeupdate duration", this.media.duration);
+        this.duration = this.media.duration;
+
+        const meta = {
+          duration: this.duration,
+          height: this.media.videoHeight ? this.media.videoHeight : -1,
+          width: this.media.videoWidth ? this.media.videoWidth : -1,
+        };
+
+        this.oiplayer.updateMetaData(meta);
+      }
     });
 
     this.media.addEventListener("ended", () => (this.state = "ended"));
@@ -96,12 +113,8 @@ class MediaPlayer extends Player {
 
   pause = () => this.media.pause();
 
-  get duration() {
-    return this.media.duration || -1;
-  }
-
   get position() {
-    return this.media.currentTime || -1;
+    return this.media.currentTime;
   }
 }
 
@@ -134,8 +147,19 @@ class MediaPlayer extends Player {
       progress.setAttribute("data-progress", "");
       progress.value = 0;
 
+      const time = document.createElement("div");
+      time.classList.add("time");
+      time.setAttribute("data-time", "0:00");
+
+      const yaHtml = this.controlsHtml();
+      const divHtml = yaHtml;
+      const yadiv = document.createElement("div");
+      yadiv.innerHTML = divHtml;
+
       controls.appendChild(button);
       controls.appendChild(progress);
+      controls.appendChild(time);
+      controls.appendChild(yadiv);
 
       this.media.replaceWith(figure);
       figure.appendChild(this.media);
@@ -148,18 +172,20 @@ class MediaPlayer extends Player {
       this.handlers();
       this.events();
 
-      console.log("STATE", this.player.state);
+      console.log("STATE", this.player.state, this.player.duration);
     }
 
     follow() {
       const followProgress = () => {
         const duration = this.player.duration;
-        if (!duration) {
-          console.log("no duration");
+        if (duration < 0) {
+          console.log("no duration", duration);
           return;
         }
 
         this.progress.value = this.player.position;
+        this.updateTime();
+
         if (this.player.state === "playing") {
           requestAnimationFrame(followProgress);
         }
@@ -168,11 +194,20 @@ class MediaPlayer extends Player {
       requestAnimationFrame(followProgress);
     }
 
+    updateMetaData(data) {
+      console.log("updateMetaData", data);
+      const { duration } = data;
+
+      // update ui
+      this.progress.max = duration;
+      this.time.innerText = this._totime(duration);
+    }
+
     scrub(ev) {
       const duration = this.player.duration;
-      console.log("srub", duration);
-      if (!duration) {
-        console.log("no duration");
+      console.log("scrub", duration);
+      if (duration < 0) {
+        console.log("no duration", duration);
         return;
       }
 
@@ -180,6 +215,11 @@ class MediaPlayer extends Player {
       const pos = (ev.pageX - rect.left) / this.progress.offsetWidth;
       this.progress.value = pos * duration;
       this.media.currentTime = pos * duration;
+    }
+
+    updateTime() {
+      this.time.innerText = this._totime(this.player.position);
+      // this.timeleft.innerText = this._totime(this.player.position - this.player.duration);
     }
 
     playerInfo() {
@@ -214,7 +254,7 @@ There is not enough information to determine whether the media can play (until p
     handlers() {
       this.button = this.ocontrols.querySelector("[data-button-play]");
       this.progress = this.ocontrols.querySelector("[data-progress]");
-      this.progress.max = this.player.duration;
+      this.time = this.ocontrols.querySelector("[data-time]");
 
       this.ocontrols.setAttribute("data-state", "visible");
     }
@@ -227,6 +267,47 @@ There is not enough information to determine whether the media can play (until p
     events() {
       this.button.addEventListener("click", (ev) => this.play(ev));
       this.progress.addEventListener("click", (ev) => this.scrub(ev));
+    }
+
+    controlsHtml() {
+      const html = `<ul class="controls">
+          <li><div data-controls-time class="time">0:00</div></li>
+          <li><button data-controls-button-play>Play</button></li>
+          <li><progress data-controls-progress max="0" value="0" /></li>
+          <li><div data-controls-timeleft class="timeleft">0:00</div></li>
+        </ul>`;
+
+      return html;
+    }
+
+    /*
+     * Returns time formatted as 00:00
+     * @param pos Seconds
+     */
+    _totime(pos) {
+      if (pos < 0) {
+        pos = 0;
+      }
+
+      function toTime(sec) {
+        var h = Math.floor(sec / 3600);
+        var min = Math.floor(sec / 60);
+        sec = Math.floor(sec - min * 60);
+
+        if (h >= 1) {
+          min -= h * 60;
+          return h + ":" + addZero(min) + ":" + addZero(sec);
+        }
+
+        return addZero(min) + ":" + addZero(sec);
+      }
+
+      function addZero(time) {
+        time = parseInt(time, 10);
+        return time < 10 ? "0" + time : time;
+      }
+
+      return toTime(Math.floor(pos));
     }
   }
 

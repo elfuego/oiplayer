@@ -12,8 +12,18 @@ $button-size: 32px;
 $slider-height: 12px;
 $slider-border-radius: 6px;
 
+.controls {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  width: 100%;
+  height: 4rem;
+  position: relative;
+  gap: 0.5rem;
+}
+
 .progress {
-  height: 48px;;
+  height: 2rem;
   min-width: 360px;
 }
 
