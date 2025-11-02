@@ -72,26 +72,40 @@ class MediaPlayer extends Player {
   eventHandlers() {
     this.media.addEventListener("loadedmetadata", () => {
       // console.log("loadedmetadata", this.media.duration);
-      this.metadataUpdate();
+      this.metadataLoaded();
     });
 
     this.media.addEventListener("timeupdate", () => {
       if (this.updatedMetadata < 1) {
         // on some (mobile) browsers 'loadedmetadata' does not succeed in a correct value
         // console.log("timeupdate duration", this.media.duration);
-        this.metadataUpdate();
+        this.metadataLoaded();
+      }
+    });
+
+    this.media.addEventListener("progress", () => {
+      const duration = this.media.duration;
+      if (duration > 0) {
+        for (let i = 0; i < this.media.buffered.length; i++) {
+          if (this.media.buffered.start(this.media.buffered.length - 1 - i) < this.media.currentTime) {
+            // document.getElementById("buffered-amount").style.width = `${
+            console.log("progress", (this.media.buffered.end(this.media.buffered.length - 1 - i) * 100) / duration);
+            // }%`;
+            break;
+          }
+        }
       }
     });
 
     this.media.addEventListener("ended", () => (this.state = "ended"));
-    // this.media.addEventListener("playing", () => (this.state = "playing"));
-    // this.media.addEventListener("paused", () => (this.state = "paused"));
+    this.media.addEventListener("playing", () => (this.state = "playing"));
+    this.media.addEventListener("paused", () => (this.state = "paused"));
     this.media.addEventListener("canplaythrough", () => (this.state = "canplaythrough"));
   }
 
-  metadataUpdate() {
+  metadataLoaded() {
     const duration = this.media.duration;
-    console.log("updateMetaData", this.updatedMetadata, duration);
+    console.log("updateMetadata", this.updatedMetadata, duration);
     if (!Number.isFinite(duration)) {
       return;
     }
@@ -102,7 +116,7 @@ class MediaPlayer extends Player {
       width: this.media.videoWidth ? this.media.videoWidth : -1,
     };
 
-    this.oiplayer.updateMetaData(meta);
+    this.oiplayer.updateMetadata(meta);
     this.updatedMetadata += 1;
   }
 
@@ -181,11 +195,15 @@ class MediaPlayer extends Player {
         this.progress.value = this.player.position;
         this.updateTime(duration, this.player.position);
 
-        if (this.player.state === "playing") {
+        if (this.player.state === "playing" || this.player.state === "canplaythrough") {
           requestAnimationFrame(followProgress);
+        } else {
+          console.log("STATE", this.player.state);
+          this.buttonPlay.setAttribute("data-button-play", this.player.state);
         }
       };
 
+      this.buttonPlay.setAttribute("data-button-play", "playing");
       requestAnimationFrame(followProgress);
     }
 
@@ -197,20 +215,23 @@ class MediaPlayer extends Player {
         return;
       }
 
+      if (!this.progress.getAttribute("max")) {
+        this.progress.setAttribute("max", duration);
+      }
+
       const rect = this.progress.getBoundingClientRect();
       const pos = (ev.pageX - rect.left) / this.progress.offsetWidth;
-      this.progress.value = pos * duration;
       this.player.seek(pos * duration);
-      this.updateTime(duration, pos * duration);
+      this.follow();
     }
 
-    updateMetaData(data) {
+    updateMetadata(data) {
       const { duration } = data;
-      console.log("updateMetaData", this.player.length, data);
+      console.log("updateMetadata", this.player.length, data);
 
       // update ui
       this.progress.max = duration;
-      this.updateTime(duration);
+      this.updateTime(duration, this.player.position);
     }
 
     /**
@@ -221,6 +242,7 @@ class MediaPlayer extends Player {
      * @memberof Oplayer
      */
     updateTime(duration, pos = 0) {
+      // console.log("update TIME POS", duration, pos, this.player.position);
       this.timeleft.innerText = this._totime(pos);
       this.time.innerText = this._totime(duration - pos);
     }
@@ -250,7 +272,7 @@ There is not enough information to determine whether the media can play (until p
     }
 
     handlers() {
-      this.button = this.ocontrols.querySelector("[data-button-play]");
+      this.buttonPlay = this.ocontrols.querySelector("[data-button-play]");
       this.progress = this.ocontrols.querySelector("[data-progress]");
       this.time = this.ocontrols.querySelector("[data-time]");
       this.timeleft = this.ocontrols.querySelector("[data-timeleft]");
@@ -259,15 +281,12 @@ There is not enough information to determine whether the media can play (until p
     }
 
     play() {
-      console.log("play", this.player.state);
       this.player.play();
       this.follow();
-
-      console.log("play 2", this.player.state);
     }
 
     events() {
-      this.button.addEventListener("click", (ev) => this.play(ev));
+      this.buttonPlay.addEventListener("click", () => this.play());
       this.progress.addEventListener("click", (ev) => this.scrub(ev));
     }
 
@@ -281,7 +300,7 @@ There is not enough information to determine whether the media can play (until p
         </li>
         <li class="progress">
           <progress data-progress="0" max="0" value="0">
-            <span data-progress-bar="0"></span>
+            <span data-progress-bar="0" class="progress-bar"></span>
           </progress>
         </li>
         <li class="time">
