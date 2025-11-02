@@ -18,9 +18,8 @@ class Player {
   volume(vol) {}
   init() {
     this.state = "init";
+    this.updatedMetadata = 0;
     // this.url = config.url;
-
-    this.duration = -1;
 
     this.poster = this.media.getAttribute("poster");
     this.autoplay = this.media.getAttribute("autoplay");
@@ -43,8 +42,9 @@ class Player {
     return parseInt(this.media.getAttribute("width")) || 512;
   }
 
+  // media duration
   get length() {
-    return 0;
+    return -1;
   }
 
   get position() {
@@ -71,34 +71,39 @@ class MediaPlayer extends Player {
 
   eventHandlers() {
     this.media.addEventListener("loadedmetadata", () => {
-      console.log("loadedmetadata", this.media.duration);
+      // console.log("loadedmetadata", this.media.duration);
       this.metadataUpdate();
     });
 
     this.media.addEventListener("timeupdate", () => {
-      if (this.duration < 0) {
+      if (this.updatedMetadata < 1) {
         // on some (mobile) browsers 'loadedmetadata' does not succeed in a correct value
-        console.log("timeupdate duration", this.media.duration);
+        // console.log("timeupdate duration", this.media.duration);
         this.metadataUpdate();
       }
     });
 
     this.media.addEventListener("ended", () => (this.state = "ended"));
-    this.media.addEventListener("playing", () => (this.state = "playing"));
-    this.media.addEventListener("paused", () => (this.state = "paused"));
+    // this.media.addEventListener("playing", () => (this.state = "playing"));
+    // this.media.addEventListener("paused", () => (this.state = "paused"));
     this.media.addEventListener("canplaythrough", () => (this.state = "canplaythrough"));
   }
 
   metadataUpdate() {
-    this.duration = this.media.duration;
+    const duration = this.media.duration;
+    console.log("updateMetaData", this.updatedMetadata, duration);
+    if (!Number.isFinite(duration)) {
+      return;
+    }
 
     const meta = {
-      duration: this.media.duration,
+      duration,
       height: this.media.videoHeight ? this.media.videoHeight : -1,
       width: this.media.videoWidth ? this.media.videoWidth : -1,
     };
 
     this.oiplayer.updateMetaData(meta);
+    this.updatedMetadata += 1;
   }
 
   play() {
@@ -162,13 +167,13 @@ class MediaPlayer extends Player {
       this.handlers();
       this.events();
 
-      console.log("STATE", this.player.state, this.player.duration);
+      console.log("STATE", this.player.state, this.player.length);
     }
 
     follow() {
       const followProgress = () => {
         const duration = this.player.length;
-        if (duration < 0) {
+        if (!Number.isFinite(duration)) {
           console.log("no duration", duration);
           return;
         }
@@ -187,7 +192,7 @@ class MediaPlayer extends Player {
     scrub(ev) {
       const duration = this.player.length;
       console.log("scrub", duration);
-      if (duration < 0) {
+      if (!Number.isFinite(duration)) {
         console.log("no duration", duration);
         return;
       }
@@ -254,8 +259,11 @@ There is not enough information to determine whether the media can play (until p
     }
 
     play() {
+      console.log("play", this.player.state);
       this.player.play();
       this.follow();
+
+      console.log("play 2", this.player.state);
     }
 
     events() {
@@ -265,20 +273,24 @@ There is not enough information to determine whether the media can play (until p
 
     controlsHtml() {
       const html = `<ul class="controls">
-        <li>
-          <button data-button-play class="play"><span>Play</span></button>
+        <li class="play">
+          <button data-button-play="none"><span>Play</span></button>
         </li>
-        <li><div data-timeleft="0" class="timeleft">00:00</div></li>
-        <li class="prog">
-          <progress data-progress="0" class="progress" max="0" value="0">
+        <li class="timeleft">
+          <div data-timeleft="0">00:00</div>
+        </li>
+        <li class="progress">
+          <progress data-progress="0" max="0" value="0">
             <span data-progress-bar="0"></span>
           </progress>
         </li>
-        <li><div data-time="0" class="time">00:00</div></li>
-        <li><button data-button-screen class="screen">
-          <span>Screen</span></button>
+        <li class="time">
+          <div data-time="0">00:00</div>
         </li>
-        <li><div data-volume class="volume">-/+</div></li>
+        <li class="screen">
+          <button data-button-screen><span>Screen</span></button>
+        </li>
+        <li class="sound"><div data-volume>-/+</div></li>
       </ul>`;
 
       return html;
