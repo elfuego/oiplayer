@@ -22,7 +22,7 @@
 
   .controls {
     margin: 0;
-    padding: 0;
+    padding: 0 0.5rem;
     list-style: none;
     display: flex;
     align-items: center;
@@ -32,15 +32,62 @@
     position: relative;
     gap: 0.5rem;
 
-    .prog {
-      flex-grow: 1;
-    }
-  }
+    .play > button {
+      @include icon("play");
 
-  .progress {
-    height: 2rem;
-    width: 100%;
-    min-width: 120px;
+      border: none;
+      background-color: transparent;
+      color: rgba(128, 128, 128, 1);
+      width: $button-size;
+      height: $button-size;
+
+      &:hover {
+        color: rgba(10, 10, 10, 1);
+      }
+
+      &.pause {
+        @include icon("pause");
+      }
+
+      > span {
+        display: none;
+      }
+    }
+
+    .progress {
+      flex-grow: 1;
+
+      > progress {
+        height: 2rem;
+        width: 100%;
+        min-width: 120px;
+      }
+    }
+
+    .time,
+    .timeleft {
+      font: 400 12px/1 Monaco, "Courier New", monospaced;
+      text-align: right;
+    }
+
+    .screen > button {
+      @include icon("fullscreen");
+
+      border: none;
+      background-color: transparent;
+      pointer-events: all;
+      height: $button-size;
+      width: $button-size;
+      color: rgba(128, 128, 128, 1);
+
+      &:hover {
+        color: rgba(96, 96, 96, 1);
+      }
+
+      > span {
+        display: none;
+      }
+    }
   }
 
   // &.audio {
@@ -52,59 +99,6 @@
   //     right: 30px;
   //   }
   // }
-
-  button.play {
-    @include icon("play");
-
-    border: none;
-    background-color: transparent;
-    color: rgba(128, 128, 128, 1);
-    width: $button-size;
-    height: $button-size;
-
-    &:hover {
-      color: rgba(10, 10, 10, 1);
-    }
-
-    &.pause {
-      @include icon("pause");
-    }
-
-    > span {
-      display: none;
-    }
-  }
-
-  .time,
-  .timeleft {
-    font: 400 12px/1 Monaco, "Courier New", monospaced;
-    text-align: right;
-  }
-
-  .timeleft {
-    // .audio & {
-    //   right: 30px;
-    // }
-  }
-
-  button.screen {
-    @include icon("fullscreen");
-
-    border: none;
-    background-color: transparent;
-    pointer-events: all;
-    height: $button-size;
-    width: $button-size;
-    color: rgba(128, 128, 128, 1);
-
-    &:hover {
-      color: rgba(96, 96, 96, 1);
-    }
-
-    > span {
-      display: none;
-    }
-  }
 
   .sound {
     a {
@@ -189,7 +183,7 @@
   }
 
   /* ### progress bar & position ### */
-  .progress {
+  .prgress {
     position: relative;
     height: $button-size;
     width: 100%;
