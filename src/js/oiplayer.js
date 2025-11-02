@@ -28,10 +28,10 @@ class Player {
     this.autobuffer = this.media.getAttribute("autobuffer");
     if (!this.autobuffer) this.autobuffer = false;
     // this.controls = this.media.getAttribute("controls") || false;
-    if (this.type == "audio") {
-      this.el.removeAttribute("width");
-      this.el.removeAttribute("height");
-    }
+    // if (this.type == "audio") {
+    //   this.el.removeAttribute("width");
+    //   this.el.removeAttribute("height");
+    // }
   }
 
   get height() {
@@ -41,6 +41,10 @@ class Player {
 
   get width() {
     return parseInt(this.media.getAttribute("width")) || 512;
+  }
+
+  get length() {
+    return 0;
   }
 
   get position() {
@@ -62,36 +66,20 @@ class MediaPlayer extends Player {
   init() {
     super.init();
     this.eventHandlers();
-    console.log("mediaplayer", this.type);
+    console.log("mediaplayer", this);
   }
 
   eventHandlers() {
     this.media.addEventListener("loadedmetadata", () => {
       console.log("loadedmetadata", this.media.duration);
-      this.duration = this.media.duration;
-
-      const meta = {
-        duration: this.duration,
-        height: this.media.videoHeight ? this.media.videoHeight : -1,
-        width: this.media.videoWidth ? this.media.videoWidth : -1,
-      };
-
-      this.oiplayer.updateMetaData(meta);
+      this.metadataUpdate();
     });
 
     this.media.addEventListener("timeupdate", () => {
       if (this.duration < 0) {
         // on some (mobile) browsers 'loadedmetadata' does not succeed in a correct value
         console.log("timeupdate duration", this.media.duration);
-        this.duration = this.media.duration;
-
-        const meta = {
-          duration: this.duration,
-          height: this.media.videoHeight ? this.media.videoHeight : -1,
-          width: this.media.videoWidth ? this.media.videoWidth : -1,
-        };
-
-        this.oiplayer.updateMetaData(meta);
+        this.metadataUpdate();
       }
     });
 
@@ -99,6 +87,18 @@ class MediaPlayer extends Player {
     this.media.addEventListener("playing", () => (this.state = "playing"));
     this.media.addEventListener("paused", () => (this.state = "paused"));
     this.media.addEventListener("canplaythrough", () => (this.state = "canplaythrough"));
+  }
+
+  metadataUpdate() {
+    this.duration = this.media.duration;
+
+    const meta = {
+      duration: this.media.duration,
+      height: this.media.videoHeight ? this.media.videoHeight : -1,
+      width: this.media.videoWidth ? this.media.videoWidth : -1,
+    };
+
+    this.oiplayer.updateMetaData(meta);
   }
 
   play() {
@@ -112,6 +112,18 @@ class MediaPlayer extends Player {
   }
 
   pause = () => this.media.pause();
+
+  seek = (sec) => {
+    if (this.media.fastSeek) {
+      this.media.fastSeek(sec);
+    } else {
+      this.media.currentTime = sec;
+    }
+  };
+
+  get length() {
+    return this.media.duration;
+  }
 
   get position() {
     return this.media.currentTime;
@@ -166,7 +178,7 @@ class MediaPlayer extends Player {
       figure.appendChild(controls);
       this.ocontrols = controls;
 
-      this.playerInfo();
+      // this.playerInfo();
       this.player = new MediaPlayer(this.media, this);
 
       this.handlers();
@@ -177,7 +189,7 @@ class MediaPlayer extends Player {
 
     follow() {
       const followProgress = () => {
-        const duration = this.player.duration;
+        const duration = this.player.length;
         if (duration < 0) {
           console.log("no duration", duration);
           return;
@@ -194,17 +206,8 @@ class MediaPlayer extends Player {
       requestAnimationFrame(followProgress);
     }
 
-    updateMetaData(data) {
-      console.log("updateMetaData", data);
-      const { duration } = data;
-
-      // update ui
-      this.progress.max = duration;
-      this.time.innerText = this._totime(duration);
-    }
-
     scrub(ev) {
-      const duration = this.player.duration;
+      const duration = this.player.length;
       console.log("scrub", duration);
       if (duration < 0) {
         console.log("no duration", duration);
@@ -214,7 +217,16 @@ class MediaPlayer extends Player {
       const rect = this.progress.getBoundingClientRect();
       const pos = (ev.pageX - rect.left) / this.progress.offsetWidth;
       this.progress.value = pos * duration;
-      this.media.currentTime = pos * duration;
+      this.player.seek(pos * duration);
+    }
+
+    updateMetaData(data) {
+      const { duration } = data;
+      console.log("updateMetaData", this.player.length, duration, data);
+
+      // update ui
+      this.progress.max = duration;
+      this.time.innerText = this._totime(duration);
     }
 
     updateTime() {
@@ -235,11 +247,6 @@ class MediaPlayer extends Player {
 
       return canPlay;
       /* type
-A string specifying the MIME type of the media and (optionally) a codecs parameter containing a comma-separated list of the supported codecs.
-
-Return value
-A string indicating how likely it is that the media can be played. The string will be one of the following values:
-
 "" (empty string)
 The media cannot be played on the current device.
 
