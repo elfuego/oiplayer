@@ -83,19 +83,20 @@ class MediaPlayer extends Player {
       }
     });
 
-    this.media.addEventListener("progress", () => {
-      const duration = this.media.duration;
-      if (duration > 0) {
-        for (let i = 0; i < this.media.buffered.length; i++) {
-          if (this.media.buffered.start(this.media.buffered.length - 1 - i) < this.media.currentTime) {
-            // document.getElementById("buffered-amount").style.width = `${
-            console.log("progress", (this.media.buffered.end(this.media.buffered.length - 1 - i) * 100) / duration);
-            // }%`;
-            break;
-          }
-        }
-      }
-    });
+    // https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Audio_and_video_delivery/buffering_seeking_time_ranges
+    // this.media.addEventListener("progress", () => {
+    //   const duration = this.media.duration;
+    //   if (duration > 0) {
+    //     for (let i = 0; i < this.media.buffered.length; i++) {
+    //       if (this.media.buffered.start(this.media.buffered.length - 1 - i) < this.media.currentTime) {
+    //         // document.getElementById("buffered-amount").style.width = `${
+    //         console.log("progress", (this.media.buffered.end(this.media.buffered.length - 1 - i) * 100) / duration);
+    //         // }%`;
+    //         break;
+    //       }
+    //     }
+    //   }
+    // });
 
     this.media.addEventListener("ended", () => (this.state = "ended"));
     this.media.addEventListener("playing", () => (this.state = "playing"));
@@ -192,7 +193,8 @@ class MediaPlayer extends Player {
           return;
         }
 
-        this.progress.value = this.player.position;
+        // this.progressPlayed.value = this.player.position;
+        this.updateProgress(duration, this.player.position);
         this.updateTime(duration, this.player.position);
 
         if (this.player.state === "playing" || this.player.state === "canplaythrough") {
@@ -209,18 +211,15 @@ class MediaPlayer extends Player {
 
     scrub(ev) {
       const duration = this.player.length;
-      console.log("scrub", duration);
+      // console.log("scrub", duration);
       if (!Number.isFinite(duration)) {
         console.log("no duration", duration);
         return;
       }
 
-      if (!this.progress.getAttribute("max")) {
-        this.progress.setAttribute("max", duration);
-      }
-
-      const rect = this.progress.getBoundingClientRect();
-      const pos = (ev.pageX - rect.left) / this.progress.offsetWidth;
+      const rect = this.progressBack.getBoundingClientRect();
+      const pos = (ev.pageX - rect.left) / this.progressBack.offsetWidth;
+      console.log("scrub", ev.pageX, rect.left, this.progressBack.offsetWidth, pos);
       this.player.seek(pos * duration);
       this.follow();
     }
@@ -230,7 +229,6 @@ class MediaPlayer extends Player {
       console.log("updateMetadata", this.player.length, data);
 
       // update ui
-      this.progress.max = duration;
       this.updateTime(duration, this.player.position);
     }
 
@@ -238,13 +236,18 @@ class MediaPlayer extends Player {
      * Update UI with time and time left.
      *
      * @param {number} duration total time
-     * @param {number} [pos=0] current position in player
+     * @param {number} [sec=0] current position in player
      * @memberof Oplayer
      */
-    updateTime(duration, pos = 0) {
-      // console.log("update TIME POS", duration, pos, this.player.position);
-      this.timeleft.innerText = this._totime(pos);
-      this.time.innerText = this._totime(duration - pos);
+    updateTime(duration, sec = 0) {
+      this.timeleft.innerText = this._totime(sec);
+      this.time.innerText = this._totime(duration - sec);
+    }
+
+    updateProgress(duration, sec = 0) {
+      const width = Math.round((sec / duration) * 100);
+      this.progressPlayed.style.width = `${width}%`;
+      this.progressPush.style.width = `${width}%`;      
     }
 
     playerInfo() {
@@ -273,7 +276,10 @@ There is not enough information to determine whether the media can play (until p
 
     handlers() {
       this.buttonPlay = this.ocontrols.querySelector("[data-button-play]");
-      this.progress = this.ocontrols.querySelector("[data-progress]");
+      this.progressPush = this.ocontrols.querySelector("[data-progress='push']");
+      this.progressPlayed = this.ocontrols.querySelector("[data-progress='played']");
+      this.progressLoaded = this.ocontrols.querySelector("[data-progress='loaded']");
+      this.progressBack = this.ocontrols.querySelector("[data-progress='back']");
       this.time = this.ocontrols.querySelector("[data-time]");
       this.timeleft = this.ocontrols.querySelector("[data-timeleft]");
 
@@ -287,7 +293,7 @@ There is not enough information to determine whether the media can play (until p
 
     events() {
       this.buttonPlay.addEventListener("click", () => this.play());
-      this.progress.addEventListener("click", (ev) => this.scrub(ev));
+      this.progressBack.addEventListener("click", (ev) => this.scrub(ev));
     }
 
     controlsHtml() {
@@ -299,9 +305,12 @@ There is not enough information to determine whether the media can play (until p
           <div data-timeleft="0">00:00</div>
         </li>
         <li class="progress">
-          <progress data-progress="0" max="0" value="0">
-            <span data-progress-bar="0" class="progress-bar"></span>
-          </progress>
+          <div data-progress="push" class="bar push">
+            <div class="pos"> </div>
+          </div>
+          <div data-progress="back" class="bar back"></div>
+          <div data-progress="loaded" class="bar loaded"></div>
+          <div data-progress="played" class="bar played"></div>
         </li>
         <li class="time">
           <div data-time="0">00:00</div>
@@ -309,7 +318,9 @@ There is not enough information to determine whether the media can play (until p
         <li class="screen">
           <button data-button-screen><span>Screen</span></button>
         </li>
-        <li class="sound"><div data-volume>-/+</div></li>
+        <li class="sound">
+          <button data-button-volume="-1"><span>Volume</span></button>
+        </li>
       </ul>`;
 
       return html;
