@@ -8,9 +8,9 @@
 @import "icons";
 
 $image-path: "images";
-$button-size: 32px;
-$slider-height: 12px;
-$slider-border-radius: 6px;
+$button-size: 3rem;
+$slider-height: 1rem;
+$slider-border-radius: 0.6rem;
 
 .oiplayer {
   // Set the base box-sizing that will be inherited by all other elements
@@ -176,8 +176,10 @@ body.oiplayer-example {
     ol {
       padding-left: 20px;
     }
-    .license {
-      font-size: 0.8em;
-    }
   }
+
+    .license {
+      font: 400 1rem/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
 }

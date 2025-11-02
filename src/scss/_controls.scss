@@ -5,7 +5,6 @@
   width: 100%;
   max-width: 640px;
   margin: 0;
-  color: #555;
   z-index: 19;
   background-color: silver;
 
@@ -21,6 +20,7 @@
   }
 
   .controls {
+    color: #1a1a1a;
     margin: 0;
     padding: 0 0.5rem;
     list-style: none;
@@ -37,15 +37,14 @@
 
       border: none;
       background-color: transparent;
-      color: rgba(128, 128, 128, 1);
       width: $button-size;
       height: $button-size;
 
       &:hover {
-        color: rgba(10, 10, 10, 1);
+        color: rgba(96, 96, 96, 1);
       }
 
-      &.pause {
+      &[data-button-play="playing"] {
         @include icon("pause");
       }
 
@@ -66,7 +65,7 @@
 
     .time,
     .timeleft {
-      font: 400 12px/1 Monaco, "Courier New", monospaced;
+      font: 400 0.8rem/1 Monaco, "Courier New", monospaced;
       text-align: right;
     }
 
@@ -75,10 +74,8 @@
 
       border: none;
       background-color: transparent;
-      pointer-events: all;
       height: $button-size;
       width: $button-size;
-      color: rgba(128, 128, 128, 1);
 
       &:hover {
         color: rgba(96, 96, 96, 1);
