@@ -77,8 +77,7 @@
       margin: 0 0.5rem;
 
       .bar {
-        // pointer-events: none;
-        cursor: pointer;
+        pointer-events: none;
         height: $slider-height;
         border-radius: $slider-border-radius;
         position: absolute;
@@ -86,36 +85,41 @@
         top: 0;
 
         &.back {
+          z-index: 1;
+          cursor: pointer;
           pointer-events: all;
           background-color: rgba(255, 255, 255, 1);
           width: 100%;
         }
 
         &.loaded {
+          z-index: 2;
           background-color: rgba(204, 204, 204, 1);
-          width: 0;
+          min-width: $slider-height;
         }
 
         &.played {
-          pointer-events: none;
+          z-index: 3;
           background-color: rgba(24, 24, 24, 0.8);
-          // width: 0;
           min-width: $slider-height;
         }
 
         &.push {
-          z-index: 1;
-          pointer-events: none;
+          z-index: 4;
           background-color: transparent;
           min-width: $slider-height;
 
+          display: flex;
+          align-items: center;
+          justify-content: end;
+
           .pos {
             display: block;
-            float: right;
             width: $slider-height;
             height: $slider-height;
             border-radius: $slider-border-radius;
             background-color: #1a1a1a;
+            // transform: translateX(-#{$slider-height / 2});
           }
         }
       }

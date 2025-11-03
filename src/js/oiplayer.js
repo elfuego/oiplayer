@@ -253,8 +253,10 @@ class MediaPlayer extends Player {
 
     updateProgress(duration, sec = 0) {
       const width = Math.round((sec / duration) * 100);
-      this.progressPlayed.style.width = `calc(1rem + ${width}%)`;
-      this.progressPush.style.width = `calc(1rem + ${width}%)`;
+      // const pusherWidth = Math.round((sec / (duration - )) * 100);
+      this.progressPlayed.style.width = `${width}%`;
+      this.progressPush.style.width = `${width}%`;
+      // this.progressPush.style.width = `calc(${width}% - 0.5rem)`;
     }
 
     playerInfo() {
@@ -339,12 +341,12 @@ There is not enough information to determine whether the media can play (until p
           <div data-timeleft="0">00:00</div>
         </li>
         <li class="progress">
-          <div data-progress="push" class="bar push">
-            <div class="pos"> </div>
+          <div class="bar push" data-progress="push">
+            <button class="pos"><span>Position</span></button>
           </div>
-          <div data-progress="back" class="bar back"></div>
-          <div data-progress="loaded" class="bar loaded"></div>
           <div data-progress="played" class="bar played"></div>
+          <div data-progress="loaded" class="bar loaded"></div>
+          <div data-progress="back" class="bar back"></div>
         </li>
         <li class="time">
           <div data-time="0">00:00</div>
