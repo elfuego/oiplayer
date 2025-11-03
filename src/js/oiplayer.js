@@ -155,6 +155,41 @@ class MediaPlayer extends Player {
   }
 }
 
+class CortadoPlayer extends Player {
+  constructor(media, oiplayer, config) {
+    super(media, oiplayer, config);
+
+    this.myname = "cortadoplayer";
+  }
+
+  init() {
+    super.init();
+  }
+
+  play() {
+    this.player.doPlay();
+    this.state = "playing";
+  }
+
+  pause() {
+    this.player.doPause();
+    this.state = "paused";
+  }
+
+  seek(sec) {
+    this.player.doSeek(sec / this.duration);
+  }
+
+  get position() {
+    if (this.state !== "init") {
+      this.pos = this.player.getPlayPosition();
+      return this.pos;
+    } else {
+      return 0;
+    }
+  }
+}
+
 (function () {
   class Oplayer {
     constructor(media, config) {
@@ -182,7 +217,7 @@ class MediaPlayer extends Player {
       this.figure = figure;
       this.ocontrols = div;
 
-      // this.playerInfo();
+      this.playerInfo();
       this.player = new MediaPlayer(this.media, this);
 
       this.handlers();
@@ -274,17 +309,18 @@ class MediaPlayer extends Player {
 
     playerInfo() {
       const sources = this.media.querySelectorAll("source");
-      let canPlay = false;
+      let proposal = "";
       sources.forEach((src) => {
-        // const mtype = src.getAttribute('type');
-        // console.log("info src", src.type, this.media.canPlayType(src.type));
-        if (this.media.canPlayType(src.type)) {
-          canPlay = true;
+        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canPlayType
+        const canPlay = this.media.canPlayType(src.type);
+        if (canPlay) {
+          // console.log("FOUND ONE", src.type, this.media.canPlayType(src.type));
+          proposal = proposal !== "probably" ? canPlay : proposal;
         }
       });
 
-      // https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canPlayType
-      return canPlay;
+      console.log("proposal", proposal);
+      return proposal;
     }
 
     handlers() {
