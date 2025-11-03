@@ -120,6 +120,39 @@ class MediaPlayer extends Player {
     this.updatedMetadata += 1;
   }
 
+  static canPlay(media) {
+    const sources = media.querySelectorAll("source");
+    let proposal = { canplay: "" };
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canPlayType
+    sources.forEach((src) => {
+      switch (media.canPlayType(src.type)) {
+        case "probably":
+          if (proposal.canplay !== "probably") {
+            proposal = {
+              canplay: "probably",
+              type: src.type,
+              url: src.src,
+            };
+          }
+          break;
+        case "maybe":
+          if (proposal.canplay !== "probably") {
+            proposal = {
+              canplay: "maybe",
+              type: src.type,
+              url: src.src,
+            };
+          }
+          break;
+        default:
+          break;
+      }
+    });
+
+    return proposal;
+  }
+
   play() {
     if (this.media.paused || this.media.ended) {
       this.media.play();
@@ -166,6 +199,31 @@ class CortadoPlayer extends Player {
     super.init();
   }
 
+  static canPlay(media) {
+    const sources = media.querySelectorAll("source");
+    let proposal = { canplay: "" };
+
+    for (let index = 0; index < sources.length; index++) {
+      const type = sources[index].type;
+      if (
+        type.indexOf("video/ogg") > -1 ||
+        type.indexOf("audio/ogg") > -1 ||
+        type.indexOf("application/ogg") > -1 ||
+        type.indexOf("application/ogg") > -1
+      ) {
+        proposal = {
+          canplay: "probably",
+          type,
+          url: sources[index].src,
+        };
+
+        break;
+      }
+    }
+
+    return proposal;
+  }
+
   play() {
     this.player.doPlay();
     this.state = "playing";
@@ -194,7 +252,12 @@ class CortadoPlayer extends Player {
   class Oplayer {
     constructor(media, config) {
       this.media = media;
-      this.config = config;
+      this.config = {
+        server: "http://www.openimages.eu",
+        jar: "/oiplayer/plugins/cortado-ovt-stripped-0.6.0.jar",
+        flash: "/oiplayer/plugins/flowplayer-3.2.7.swf",
+        ...config,
+      };
 
       this.init();
     }
@@ -217,13 +280,13 @@ class CortadoPlayer extends Player {
       this.figure = figure;
       this.ocontrols = div;
 
-      this.playerInfo();
+      // select player
+      console.log("init");
+      console.log("PROPOSAL", CortadoPlayer.canPlay(this.media));
       this.player = new MediaPlayer(this.media, this);
 
       this.handlers();
       this.events();
-
-      console.log("STATE", this.player.state, this.player.length);
     }
 
     follow() {
@@ -233,10 +296,6 @@ class CortadoPlayer extends Player {
           console.log("no duration", duration);
           return;
         }
-
-        // if (this.buttonPlay.getAttribute("data-button-play") !== "playing") {
-        //   this.buttonPlay.setAttribute("data-button-play", "playing");
-        // }
 
         this.updateProgress(duration, this.player.position);
         this.updateTime(duration, this.player.position);
@@ -309,13 +368,33 @@ class CortadoPlayer extends Player {
 
     playerInfo() {
       const sources = this.media.querySelectorAll("source");
-      let proposal = "";
+      let proposal = {
+        canplay: "",
+      };
+
       sources.forEach((src) => {
         // https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canPlayType
-        const canPlay = this.media.canPlayType(src.type);
-        if (canPlay) {
-          // console.log("FOUND ONE", src.type, this.media.canPlayType(src.type));
-          proposal = proposal !== "probably" ? canPlay : proposal;
+        switch (this.media.canPlayType(src.type)) {
+          case "probably":
+            if (proposal.canplay !== "probably") {
+              proposal = {
+                canplay: "probably",
+                type: src.type,
+                url: src.src,
+              };
+            }
+            break;
+          case "maybe":
+            if (proposal.canplay !== "probably") {
+              proposal = {
+                canplay: "maybe",
+                type: src.type,
+                url: src.src,
+              };
+            }
+            break;
+          default:
+            break;
         }
       });
 
