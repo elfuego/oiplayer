@@ -98,10 +98,9 @@ class MediaPlayer extends Player {
     //   }
     // });
 
-    this.media.addEventListener("ended", () => (this.state = "ended"));
     this.media.addEventListener("playing", () => (this.state = "playing"));
     this.media.addEventListener("paused", () => (this.state = "paused"));
-    this.media.addEventListener("canplaythrough", () => (this.state = "canplaythrough"));
+    this.media.addEventListener("ended", () => (this.state = "ended"));
   }
 
   metadataLoaded() {
@@ -200,19 +199,19 @@ class MediaPlayer extends Player {
           return;
         }
 
-        // this.progressPlayed.value = this.player.position;
+        // if (this.buttonPlay.getAttribute("data-button-play") !== "playing") {
+        //   this.buttonPlay.setAttribute("data-button-play", "playing");
+        // }
+
         this.updateProgress(duration, this.player.position);
         this.updateTime(duration, this.player.position);
+        this.updatePlayButton(this.player.state);
 
-        if (this.player.state === "playing" || this.player.state === "canplaythrough") {
+        if (this.player.state === "playing") {
           requestAnimationFrame(followProgress);
-        } else {
-          console.log("STATE", this.player.state);
-          this.buttonPlay.setAttribute("data-button-play", this.player.state);
         }
       };
 
-      this.buttonPlay.setAttribute("data-button-play", "playing");
       requestAnimationFrame(followProgress);
     }
 
@@ -242,8 +241,8 @@ class MediaPlayer extends Player {
     /**
      * Update UI with time and time left.
      *
-     * @param {number} duration total time
-     * @param {number} [sec=0] current position in player
+     * @param {number} duration total time in seconds
+     * @param {number} [sec=0] player position or current time
      * @memberof Oplayer
      */
     updateTime(duration, sec = 0) {
@@ -251,12 +250,26 @@ class MediaPlayer extends Player {
       this.time.innerText = this._totime(duration - sec);
     }
 
+    updatePlayButton(state) {
+      // console.log("updatePlayButton", state);
+      if (state === "playing") {
+        this.buttonPlay.setAttribute("data-button-play", "playing");
+      } else {
+        this.buttonPlay.setAttribute("data-button-play", "paused");
+      }
+    }
+
+    /**
+     * Update UI of the progress played bar.
+     *
+     * @param {*} duration total time in seconds
+     * @param {number} [sec=0] player position
+     * @memberof Oplayer
+     */
     updateProgress(duration, sec = 0) {
       const width = Math.round((sec / duration) * 100);
-      // const pusherWidth = Math.round((sec / (duration - )) * 100);
       this.progressPlayed.style.width = `${width}%`;
       this.progressPush.style.width = `${width}%`;
-      // this.progressPush.style.width = `calc(${width}% - 0.5rem)`;
     }
 
     playerInfo() {
@@ -270,17 +283,8 @@ class MediaPlayer extends Player {
         }
       });
 
+      // https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canPlayType
       return canPlay;
-      /* type
-"" (empty string)
-The media cannot be played on the current device.
-
-probably
-The media is probably playable on this device.
-
-maybe
-There is not enough information to determine whether the media can play (until playback is actually attempted). */
-      // console.log("canplaytype", canPlay);
     }
 
     handlers() {
