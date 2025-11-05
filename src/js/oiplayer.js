@@ -193,121 +193,12 @@ class MediaPlayer extends Player {
   }
 }
 
-class CortadoPlayer extends Player {
-  constructor(media, oiplayer, config) {
-    super(media, oiplayer, config);
-
-    this.myname = "cortadoplayer";
-  }
-
-  init() {
-    super.init();
-
-    this.player = this.createPlayerObject();
-  }
-
-  createPlayerObject() {
-    const { jar, server, url }  = this.config;
-    const jarArchive = server + jar;
-    console.log("createPlayerObject cortado", jarArchive, this.length);
-
-    const player = document.createElement("object");
-    player.setAttribute("classid", "java:com.fluendo.player.Cortado.class");
-    // player.setAttribute("style", "display:block;width:" + this.width + "px;height:" + useheight + "px;");
-    player.setAttribute("type", "application/x-java-applet");
-    player.setAttribute("archive", jar);
-    player.setAttribute("height", this.height);
-    player.setAttribute("width", this.width);
-
-    const params = {
-      code: "com.fluendo.player.Cortado.class",
-      archive: jarArchive,
-      url: url,
-      // 'local': 'false',
-      duration: Math.round(this.length),
-      keepAspect: "true",
-      showStatus: "true",
-      video: "true",
-      audio: "true",
-      seekable: "auto",
-      autoPlay: this.autoplay || false,
-      bufferSize: "256",
-      bufferHigh: "50",
-      bufferLow: "5",
-    };
-
-    for (var name in params) {
-      var param = document.createElement("param");
-      param.setAttribute("name", name);
-      param.setAttribute("value", params[name]);
-      player.appendChild(param);
-    }
-
-    this.oiplayer.figure.appendChild(player);
-    return player;
-  }
-
-  static canPlay(media) {
-    const sources = media.querySelectorAll("source");
-    let proposal = {
-      proposal: "cortado",
-      canplay: "",
-    };
-
-    for (let index = 0; index < sources.length; index++) {
-      const type = sources[index].type;
-      if (
-        type.indexOf("video/ogg") > -1 ||
-        type.indexOf("audio/ogg") > -1 ||
-        type.indexOf("application/ogg") > -1 ||
-        type.indexOf("application/ogg") > -1
-      ) {
-        proposal = {
-          ...proposal,
-          canplay: "maybe",
-          mimetype: type,
-          url: sources[index].src,
-        };
-
-        break;
-      }
-    }
-
-    return proposal;
-  }
-
-  play() {
-    this.player.doPlay();
-    this.state = "playing";
-  }
-
-  pause() {
-    this.player.doPause();
-    this.state = "paused";
-  }
-
-  seek(sec) {
-    this.player.doSeek(sec / this.duration);
-  }
-
-  get position() {
-    if (this.state !== "init") {
-      this.pos = this.player.getPlayPosition();
-      return this.pos;
-    } else {
-      return 0;
-    }
-  }
-}
-
 (function () {
-  class Oplayer {
+  class OIPlayer {
     constructor(media, config) {
       this.media = media;
       this.config = {
         server: "http://www.openimages.eu",
-        jar: "/oiplayer/plugins/cortado-ovt-stripped-0.6.0.jar",
-        flash: "/oiplayer/plugins/flowplayer-3.2.7.swf",
         ...config,
       };
 
@@ -334,7 +225,7 @@ class CortadoPlayer extends Player {
 
       // select player
       console.log("init");
-      const proposal = CortadoPlayer.canPlay(this.media);
+      const proposal = MediaPlayer.canPlay(this.media);
       const conf = this.config;
       this.config = {
         ...conf,
@@ -342,7 +233,7 @@ class CortadoPlayer extends Player {
       }
       console.log("PROPOSAL", proposal, this.config);
 
-      this.player = new CortadoPlayer(this.media, this, this.config);
+      this.player = new MediaPlayer(this.media, this, this.config);
 
       this.handlers();
       this.events();
@@ -396,7 +287,7 @@ class CortadoPlayer extends Player {
      *
      * @param {number} duration total time in seconds
      * @param {number} [sec=0] player position or current time
-     * @memberof Oplayer
+     * @memberof OIPlayer
      */
     updateTime(duration, sec = 0) {
       this.timeleft.innerText = this._totime(sec);
@@ -417,7 +308,7 @@ class CortadoPlayer extends Player {
      *
      * @param {*} duration total time in seconds
      * @param {number} [sec=0] player position
-     * @memberof Oplayer
+     * @memberof OIPlayer
      */
     updateProgress(duration, sec = 0) {
       const width = Math.round((sec / duration) * 100);
@@ -538,6 +429,6 @@ class CortadoPlayer extends Player {
   const elements = document.querySelectorAll(".testplayer");
   elements.forEach((elem) => {
     const media = elem.querySelectorAll("video, audio");
-    media.forEach((mt) => new Oplayer(mt));
+    media.forEach((mt) => new OIPlayer(mt));
   });
 })();
