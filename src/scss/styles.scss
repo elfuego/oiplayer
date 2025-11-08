@@ -75,6 +75,18 @@
     }
   }
 
+  .preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9;
+    cursor: pointer;
+
+    &[data-preview="hidden"] {
+      display: none;
+    }
+  }
+
   &:fullscreen {
     display: flex;
     flex-direction: column;
@@ -95,6 +107,7 @@
       max-width: 80%;
     }
 
+    .preview,
     figcaption {
       display: none;
     }
@@ -128,14 +141,6 @@
   //     bottom: 0;
   //   }
   // }
-
-  .preview {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 11;
-    cursor: pointer;
-  }
 
   &.inavailable {
     // &.video {

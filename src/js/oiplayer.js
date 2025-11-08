@@ -19,18 +19,9 @@ class Player {
   init() {
     this.state = "init";
     this.updatedMetadata = 0;
-    // this.url = config.url;
     this.bufferedSeconds = 0;
 
     this.poster = this.media.getAttribute("poster");
-    this.autoplay = this.media.getAttribute("autoplay");
-    if (!this.autoplay) this.autoplay = false;
-    this.autobuffer = this.media.getAttribute("autobuffer");
-    if (!this.autobuffer) this.autobuffer = false;
-    // if (this.type == "audio") {
-    //   this.el.removeAttribute("width");
-    //   this.el.removeAttribute("height");
-    // }
   }
 
   get height() {
@@ -103,7 +94,7 @@ class MediaPlayer extends Player {
 
   metadataLoaded() {
     const duration = this.media.duration;
-    console.log("updateMetadata", this.updatedMetadata, duration);
+    // console.log("updateMetadata", this.updatedMetadata, duration);
     if (!Number.isFinite(duration)) {
       return;
     }
@@ -207,27 +198,14 @@ class MediaPlayer extends Player {
     init() {
       // hide default controls
       this.media.controls = false;
-      const { controls } = this.config;
 
       const figure = document.createElement("figure");
       figure.classList.add("oiplayer");
-      if (controls === "top") {
-        figure.classList.add("top");
-      }
-
-      const ctrlsHtml = this.controlsHtml();
-      const div = document.createElement("div");
-      div.innerHTML = ctrlsHtml;
-      div.classList.add("oipcontrols");
-
       this.media.replaceWith(figure);
       figure.appendChild(this.media);
-      figure.appendChild(div);
       this.figure = figure;
-      this.ocontrols = div;
 
       // select player
-      console.log("init");
       const proposal = MediaPlayer.canPlay(this.media);
       const conf = this.config;
       this.config = {
@@ -238,39 +216,63 @@ class MediaPlayer extends Player {
 
       this.player = new MediaPlayer(this.media, this, this.config);
 
+      this.makeUI();
       this.updateUI();
       this.handlers();
       this.events();
+    }
+
+    makeUI() {
+      this.figure.classList.add(this.player.type);
+      this.height = this.player.height;
+      this.width = this.player.width;
+
+      const ctrlsHtml = this.controlsHtml();
+      const div = document.createElement("div");
+
+      div.innerHTML = ctrlsHtml;
+      div.classList.add("oipcontrols");
+      this.figure.appendChild(div);
+      this.oipcontrols = div;
+
+      if (this.player.type === "audio") {
+        console.log("AUDIO");
+        this.config.controls = "";
+      } else if (this.config.controls === "top") {
+        this.figure.classList.add("top");
+      }
+
+      const preview = this.previewImage();
+      if (preview) {
+        this.figure.appendChild(preview);
+      }
     }
 
     updateUI() {
       if (this.player.height === this.height && this.player.width === this.width) {
         return;
       }
-      this.height = this.player.height;
-      this.width = this.player.width;
 
-      let height = this.height;
+      const height = this.config.controls == "top" ? this.height : this.height + 48;
       const width = this.width;
-      if (this.config.controls !== "top") {
-        height = this.height + 48;
-      }
 
       this.figure.style.setProperty("--oiplayer-height", `${height}px`);
       this.figure.style.setProperty("--oiplayer-width", `${width}px`);
     }
 
     handlers() {
-      this.buttonPlay = this.ocontrols.querySelector("[data-button-play]");
-      this.buttonScreen = this.ocontrols.querySelector("[data-button-screen]");
-      this.buttonVolume = this.ocontrols.querySelector("[data-button-volume]");
+      this.buttonPlay = this.oipcontrols.querySelector("[data-button-play]");
+      this.buttonScreen = this.oipcontrols.querySelector("[data-button-screen]");
+      this.buttonVolume = this.oipcontrols.querySelector("[data-button-volume]");
 
-      this.progressPush = this.ocontrols.querySelector("[data-progress='push']");
-      this.progressPlayed = this.ocontrols.querySelector("[data-progress='played']");
-      this.progressLoaded = this.ocontrols.querySelector("[data-progress='loaded']");
-      this.progressBack = this.ocontrols.querySelector("[data-progress='back']");
-      this.time = this.ocontrols.querySelector("[data-time]");
-      this.timeleft = this.ocontrols.querySelector("[data-timeleft]");
+      this.progressPush = this.oipcontrols.querySelector("[data-progress='push']");
+      this.progressPlayed = this.oipcontrols.querySelector("[data-progress='played']");
+      this.progressLoaded = this.oipcontrols.querySelector("[data-progress='loaded']");
+      this.progressBack = this.oipcontrols.querySelector("[data-progress='back']");
+      this.time = this.oipcontrols.querySelector("[data-time]");
+      this.timeleft = this.oipcontrols.querySelector("[data-timeleft]");
+
+      this.previewScreen = this.figure.querySelector("[data-preview]");
     }
 
     events() {
@@ -282,8 +284,10 @@ class MediaPlayer extends Player {
       if (this.config.controls === "top") {
         this.figure.addEventListener("mouseover", () => this.showControls(true));
         this.figure.addEventListener("mouseout", () => this.showControls(false));
-        this.showControls(false);
+        this.showControls(true);
       }
+
+      this.previewScreen?.addEventListener("click", () => this.play());
     }
 
     follow() {
@@ -305,6 +309,9 @@ class MediaPlayer extends Player {
       };
 
       requestAnimationFrame(followProgress);
+
+      // and make sure this is hidden
+      this.hidePreviewImage();
     }
 
     scrub(ev) {
@@ -317,14 +324,14 @@ class MediaPlayer extends Player {
 
       const rect = this.progressBack.getBoundingClientRect();
       const pos = (ev.pageX - rect.left) / this.progressBack.offsetWidth;
-      console.log("scrub", ev.pageX, rect.left, this.progressBack.offsetWidth, pos);
+      // console.log("scrub", ev.pageX, rect.left, this.progressBack.offsetWidth, pos);
       this.player.seek(pos * duration);
       this.follow();
     }
 
     updateMetadata(data) {
       const { duration, height, width } = data;
-      console.log("updateMetadata", data, height, width);
+      // console.log("updateMetadata", data, height, width);
 
       // update ui
       this.updateTime(duration, this.player.position);
@@ -392,7 +399,6 @@ class MediaPlayer extends Player {
         // fullscreen.style.display = "none";
         console.log("no fullscreen");
       }
-      console.log("fullscreen");
 
       if (document.fullscreenElement !== null) {
         // The document is in fullscreen mode
@@ -404,16 +410,16 @@ class MediaPlayer extends Player {
     }
 
     volume() {
-      console.log("volume", this.muted);
+      // console.log("volume", this.muted);
       this.player.volume();
       this.buttonVolume.setAttribute("data-button-volume", this.muted ? "muted" : "playing");
     }
 
     showControls(show) {
       if (show) {
-        this.ocontrols.setAttribute("data-show", "show");
-      } else {
-        this.ocontrols.setAttribute("data-show", "hidden");
+        this.oipcontrols.setAttribute("data-show", "show");
+      } else if (this.player.state !== "init") {
+        this.oipcontrols.setAttribute("data-show", "hidden");
       }
     }
 
@@ -445,6 +451,35 @@ class MediaPlayer extends Player {
       </ul>`;
 
       return html;
+    }
+
+    previewImage() {
+      const img = this.media.querySelector("img");
+      if (img) {
+        img.setAttribute("data-preview", "shown");
+        img.classList.add("preview");
+        return img;
+      }
+
+      const poster = this.media.getAttribute("poster");
+      if (!poster) {
+        return;
+      }
+
+      const image = document.createElement("img");
+      image.src = poster;
+      image.width = this.width;
+      image.height = this.height;
+      image.setAttribute("data-preview", "shown");
+      image.classList.add("preview");
+
+      return image;
+    }
+
+    hidePreviewImage() {
+      if (this.player.type === "video" && this.previewScreen?.getAttribute("data-preview") === "shown") {
+        this.previewScreen.setAttribute("data-preview", "hidden");
+      }
     }
 
     /*
@@ -488,4 +523,9 @@ class MediaPlayer extends Player {
     const media = elem.querySelectorAll("video, audio");
     media.forEach((mt) => new OIPlayer(mt, { controls: "top" }));
   });
+
+  const audio = document.getElementById("my-audio");
+  if (audio) {
+    new OIPlayer(audio, { controls: "top" });
+  }
 })();
