@@ -17,7 +17,7 @@
   --oiplayer-border-radius: 0.2rem;
   --oiplayer-box-shadow: 0rem 0.2rem 0.6rem rgba(0, 0, 0, 0.5);
   --oiplayer-background-color: #ddd;
-  --oiplayer-background-color-top: rgba(255, 255, 255, 0.85);
+  --oiplayer-background-color-top: rgba(255, 255, 255, 0.9);
   --oiplayer-bar-background-color: #ffffff;
   --oiplayer-loaded-background-color: #cccccc;
   --oiplayer-played-background-color: #a6a6a6;
@@ -42,8 +42,10 @@
   display: inline-block;
   margin: 0;
   padding: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 400 1rem/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: var(--oiplayer-figure-background-color);
+  height: var(--oiplayer-height, auto);
+  width: var(--oiplayer-width, auto);
 
   @import "controls.scss";
 

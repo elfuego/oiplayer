@@ -20,6 +20,7 @@ class Player {
     this.state = "init";
     this.updatedMetadata = 0;
     // this.url = config.url;
+    this.bufferedSeconds = 0;
 
     this.poster = this.media.getAttribute("poster");
     this.autoplay = this.media.getAttribute("autoplay");
@@ -83,19 +84,17 @@ class MediaPlayer extends Player {
     });
 
     // https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Audio_and_video_delivery/buffering_seeking_time_ranges
-    // this.media.addEventListener("progress", () => {
-    //   const duration = this.media.duration;
-    //   if (duration > 0) {
-    //     for (let i = 0; i < this.media.buffered.length; i++) {
-    //       if (this.media.buffered.start(this.media.buffered.length - 1 - i) < this.media.currentTime) {
-    //         // document.getElementById("buffered-amount").style.width = `${
-    //         console.log("progress", (this.media.buffered.end(this.media.buffered.length - 1 - i) * 100) / duration);
-    //         // }%`;
-    //         break;
-    //       }
-    //     }
-    //   }
-    // });
+    this.media.addEventListener("progress", () => {
+      const duration = this.media.duration;
+      if (duration > 0) {
+        for (let i = 0; i < this.media.buffered.length; i++) {
+          if (this.media.buffered.start(this.media.buffered.length - 1 - i) < this.media.currentTime) {
+            this.bufferedSeconds = this.media.buffered.end(this.media.buffered.length - 1 - i);
+            break;
+          }
+        }
+      }
+    });
 
     this.media.addEventListener("playing", () => (this.state = "playing"));
     this.media.addEventListener("paused", () => (this.state = "paused"));
@@ -239,8 +238,26 @@ class MediaPlayer extends Player {
 
       this.player = new MediaPlayer(this.media, this, this.config);
 
+      this.updateUI();
       this.handlers();
       this.events();
+    }
+
+    updateUI() {
+      if (this.player.height === this.height && this.player.width === this.width) {
+        return;
+      }
+      this.height = this.player.height;
+      this.width = this.player.width;
+
+      let height = this.height;
+      const width = this.width;
+      if (this.config.controls !== "top") {
+        height = this.height + 48;
+      }
+
+      this.figure.style.setProperty("--oiplayer-height", `${height}px`);
+      this.figure.style.setProperty("--oiplayer-width", `${width}px`);
     }
 
     handlers() {
@@ -280,6 +297,7 @@ class MediaPlayer extends Player {
         this.updateProgress(duration, this.player.position);
         this.updateTime(duration, this.player.position);
         this.updatePlayButton(this.player.state);
+        this.updateLoaded(duration);
 
         if (this.player.state === "playing") {
           requestAnimationFrame(followProgress);
@@ -305,11 +323,13 @@ class MediaPlayer extends Player {
     }
 
     updateMetadata(data) {
-      const { duration } = data;
-      console.log("updateMetadata", this.player.length, data);
+      const { duration, height, width } = data;
+      console.log("updateMetadata", data, height, width);
 
       // update ui
       this.updateTime(duration, this.player.position);
+      this.updateLoaded(duration);
+      this.updateUI();
     }
 
     /**
@@ -344,6 +364,22 @@ class MediaPlayer extends Player {
       const width = Math.round((sec / duration) * 100);
       this.progressPlayed.style.width = `${width}%`;
       this.progressPush.style.width = `${width}%`;
+    }
+
+    /**
+     * Seconds loaded from player.
+     *
+     * @param {*} duration
+     * @memberof OIPlayer
+     */
+    updateLoaded(duration) {
+      const sec = this.player.bufferedSeconds;
+      if (sec < 1) {
+        return;
+      }
+
+      const width = Math.round((sec / duration) * 100);
+      this.progressLoaded.style.width = `${width}%`;
     }
 
     play() {
@@ -442,14 +478,14 @@ class MediaPlayer extends Player {
     }
   }
 
+  const youth = document.getElementById("sonic-youth");
+  if (youth) {
+    new OIPlayer(youth, { controls: "" });
+  }
+
   const elements = document.querySelectorAll(".testplayer");
   elements.forEach((elem) => {
     const media = elem.querySelectorAll("video, audio");
     media.forEach((mt) => new OIPlayer(mt, { controls: "top" }));
   });
-
-  const youth = document.getElementById("sonic-youth");
-  if (youth) {
-    new OIPlayer(youth, { controls: "" });
-  }
 })();
