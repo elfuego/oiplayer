@@ -26,7 +26,6 @@ class Player {
     if (!this.autoplay) this.autoplay = false;
     this.autobuffer = this.media.getAttribute("autobuffer");
     if (!this.autobuffer) this.autobuffer = false;
-    // this.controls = this.media.getAttribute("controls") || false;
     // if (this.type == "audio") {
     //   this.el.removeAttribute("width");
     //   this.el.removeAttribute("height");
@@ -199,6 +198,7 @@ class MediaPlayer extends Player {
       this.media = media;
       this.config = {
         server: "http://www.openimages.eu",
+        controls: "top",
         ...config,
       };
 
@@ -208,9 +208,13 @@ class MediaPlayer extends Player {
     init() {
       // hide default controls
       this.media.controls = false;
+      const { controls } = this.config;
 
       const figure = document.createElement("figure");
       figure.classList.add("oiplayer");
+      if (controls === "top") {
+        figure.classList.add("top");
+      }
 
       const ctrlsHtml = this.controlsHtml();
       const div = document.createElement("div");
@@ -230,13 +234,39 @@ class MediaPlayer extends Player {
       this.config = {
         ...conf,
         ...proposal,
-      }
+      };
       console.log("PROPOSAL", proposal, this.config);
 
       this.player = new MediaPlayer(this.media, this, this.config);
 
       this.handlers();
       this.events();
+    }
+
+    handlers() {
+      this.buttonPlay = this.ocontrols.querySelector("[data-button-play]");
+      this.buttonScreen = this.ocontrols.querySelector("[data-button-screen]");
+      this.buttonVolume = this.ocontrols.querySelector("[data-button-volume]");
+
+      this.progressPush = this.ocontrols.querySelector("[data-progress='push']");
+      this.progressPlayed = this.ocontrols.querySelector("[data-progress='played']");
+      this.progressLoaded = this.ocontrols.querySelector("[data-progress='loaded']");
+      this.progressBack = this.ocontrols.querySelector("[data-progress='back']");
+      this.time = this.ocontrols.querySelector("[data-time]");
+      this.timeleft = this.ocontrols.querySelector("[data-timeleft]");
+    }
+
+    events() {
+      this.buttonPlay.addEventListener("click", () => this.play());
+      this.buttonScreen.addEventListener("click", () => this.fullscreen());
+      this.buttonVolume.addEventListener("click", () => this.volume());
+      this.progressBack.addEventListener("click", (ev) => this.scrub(ev));
+
+      if (this.config.controls === "top") {
+        this.figure.addEventListener("mouseover", () => this.showControls(true));
+        this.figure.addEventListener("mouseout", () => this.showControls(false));
+        this.showControls(false);
+      }
     }
 
     follow() {
@@ -316,21 +346,6 @@ class MediaPlayer extends Player {
       this.progressPush.style.width = `${width}%`;
     }
 
-    handlers() {
-      this.buttonPlay = this.ocontrols.querySelector("[data-button-play]");
-      this.buttonScreen = this.ocontrols.querySelector("[data-button-screen]");
-      this.buttonVolume = this.ocontrols.querySelector("[data-button-volume]");
-
-      this.progressPush = this.ocontrols.querySelector("[data-progress='push']");
-      this.progressPlayed = this.ocontrols.querySelector("[data-progress='played']");
-      this.progressLoaded = this.ocontrols.querySelector("[data-progress='loaded']");
-      this.progressBack = this.ocontrols.querySelector("[data-progress='back']");
-      this.time = this.ocontrols.querySelector("[data-time]");
-      this.timeleft = this.ocontrols.querySelector("[data-timeleft]");
-
-      this.ocontrols.setAttribute("data-state", "visible");
-    }
-
     play() {
       this.player.play();
       this.follow();
@@ -358,11 +373,12 @@ class MediaPlayer extends Player {
       this.buttonVolume.setAttribute("data-button-volume", this.muted ? "muted" : "playing");
     }
 
-    events() {
-      this.buttonPlay.addEventListener("click", () => this.play());
-      this.buttonScreen.addEventListener("click", () => this.fullscreen());
-      this.buttonVolume.addEventListener("click", () => this.volume());
-      this.progressBack.addEventListener("click", (ev) => this.scrub(ev));
+    showControls(show) {
+      if (show) {
+        this.ocontrols.setAttribute("data-show", "show");
+      } else {
+        this.ocontrols.setAttribute("data-show", "hidden");
+      }
     }
 
     controlsHtml() {
@@ -429,6 +445,11 @@ class MediaPlayer extends Player {
   const elements = document.querySelectorAll(".testplayer");
   elements.forEach((elem) => {
     const media = elem.querySelectorAll("video, audio");
-    media.forEach((mt) => new OIPlayer(mt));
+    media.forEach((mt) => new OIPlayer(mt, { controls: "top" }));
   });
+
+  const youth = document.getElementById("sonic-youth");
+  if (youth) {
+    new OIPlayer(youth, { controls: "" });
+  }
 })();

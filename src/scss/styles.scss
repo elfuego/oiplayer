@@ -4,17 +4,28 @@
  * @name     Stylesheet, scss version, to style OIPlayer and its controls
  */
 
-/* webfont with icons */
 @import "icons";
 
-$image-path: "images";
-$button-size: 3rem;
-$slider-height: 1rem;
-$slider-border-radius: 0.6rem;
-
 .oiplayer {
+  $image-path: "images";
+  $button-size: 3rem;
+  $slider-height: 1rem;
+  $slider-border-radius: 0.6rem;
+
+  --oiplayer-color: #808080;
+  --oiplayer-color-hover: #606060;
+  --oiplayer-border-radius: 0.2rem;
+  --oiplayer-box-shadow: 0rem 0.2rem 0.6rem rgba(0, 0, 0, 0.5);
+  --oiplayer-background-color: #ddd;
+  --oiplayer-background-color-top: rgba(255, 255, 255, 0.85);
+  --oiplayer-bar-background-color: #ffffff;
+  --oiplayer-loaded-background-color: #cccccc;
+  --oiplayer-played-background-color: #a6a6a6;
+  --oiplayer-figure-background-color: rgba(0, 0, 0, 0.85);
+
   // Set the base box-sizing that will be inherited by all other elements
   box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
 
   *,
   *::before,
@@ -27,17 +38,40 @@ $slider-border-radius: 0.6rem;
     background-color: transparent;
   }
 
-  // Add cross-browser antialiasing
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
   position: relative;
   display: inline-block;
   margin: 0;
   padding: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: var(--oiplayer-figure-background-color);
 
   @import "controls.scss";
+
+  &.top {
+    overflow: hidden;
+
+    .oipcontrols {
+      bottom: 0;
+      left: 0;
+      background-color: var(--oiplayer-background-color-top);
+      border-radius: var(--oiplayer-border-radius);
+      box-shadow: var(--oiplayer-box-shadow);
+      margin: 0 2rem 1rem 2rem;
+      width: calc(100% - 4rem);
+      transition: opacity 0.35s, transform 0.35s;
+
+      &[data-show="show"] {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      &[data-show="hidden"] {
+        opacity: 0;
+        transform: translateY(3rem);
+        transition-delay: 0.5s;
+      }
+    }
+  }
 
   &:fullscreen {
     display: flex;
@@ -49,8 +83,6 @@ $slider-border-radius: 0.6rem;
     background-color: transparent;
 
     video {
-      margin-top: auto;
-      margin-bottom: auto;
       width: 100%;
       height: 100%;
     }
