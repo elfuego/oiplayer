@@ -13,13 +13,16 @@ module.exports = {
   output: {
     // filename: devMode ? "[name].js" : "[name].[hash].js",
     filename: "[name].js",
-    path: devMode
-      ? path.resolve(__dirname, "./build")
-      : path.resolve(__dirname, "./dist"),
+    path: devMode ? path.resolve(__dirname, "./build") : path.resolve(__dirname, "./dist"),
   },
   devServer: {
     static: "./build",
-    open: { app: { name: "Google Chrome" } },
+    open: {
+      app: {
+        // or 'google-chrome', match with package.json
+        name: "Google Chrome",
+      },
+    },
     port: 3000,
     // hot: true,
     watchFiles: {
@@ -34,11 +37,7 @@ module.exports = {
     rules: [
       {
         test: /\.scss$/i,
-        use: [
-          devMode ? "style-loader" : MiniCssExtractPlugin.loader,
-          "css-loader",
-          "sass-loader",
-        ],
+        use: [devMode ? "style-loader" : MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
       },
       {
         test: /\.html$/i,
