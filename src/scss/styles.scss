@@ -18,10 +18,26 @@
   --oiplayer-box-shadow: 0rem 0.2rem 0.6rem rgba(0, 0, 0, 0.5);
   --oiplayer-background-color: #ddd;
   --oiplayer-background-color-top: rgba(255, 255, 255, 0.9);
+
   --oiplayer-bar-background-color: #ffffff;
   --oiplayer-loaded-background-color: #cccccc;
   --oiplayer-played-background-color: #a6a6a6;
+  --oiplayer-played-position-color: #808080;
+
   --oiplayer-figure-background-color: rgba(0, 0, 0, 0.85);
+
+  &.dark {
+    --oiplayer-color: whitesmoke;
+    --oiplayer-color-hover: #555;
+    --oiplayer-box-shadow: 0rem 0.2rem 0.6rem rgba(250, 250, 250, 0.5);
+    --oiplayer-background-color: #1a1a1a;
+    --oiplayer-background-color-top: rgba(0, 0, 0, 0.85);
+
+    --oiplayer-bar-background-color: whitesmoke;
+    --oiplayer-loaded-background-color: #cccccc;
+    --oiplayer-played-background-color: #a6a6a6;
+    --oiplayer-player-position-color: #1a1a1a;
+  }
 
   // Set the base box-sizing that will be inherited by all other elements
   box-sizing: border-box;

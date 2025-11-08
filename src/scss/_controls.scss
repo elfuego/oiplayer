@@ -113,7 +113,7 @@
             width: $slider-height;
             height: $slider-height;
             border-radius: $slider-border-radius;
-            background-color: var(--oiplayer-color);
+            background-color: var(--oiplayer-played-position-color);
             pointer-events: all;
 
             &:hover {

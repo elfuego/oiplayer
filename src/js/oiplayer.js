@@ -235,10 +235,14 @@ class MediaPlayer extends Player {
       this.figure.appendChild(div);
       this.oipcontrols = div;
 
+      if (this.controlsDark) {
+        this.figure.classList.add("dark");
+      }
+
       if (this.player.type === "audio") {
         console.log("AUDIO");
         this.config.controls = "";
-      } else if (this.config.controls === "top") {
+      } else if (this.controlsTop) {
         this.figure.classList.add("top");
       }
 
@@ -253,7 +257,7 @@ class MediaPlayer extends Player {
         return;
       }
 
-      const height = this.config.controls == "top" ? this.height : this.height + 48;
+      const height = this.controlsTop ? this.height : this.height + 48;
       const width = this.width;
 
       this.figure.style.setProperty("--oiplayer-height", `${height}px`);
@@ -281,7 +285,7 @@ class MediaPlayer extends Player {
       this.buttonVolume.addEventListener("click", () => this.volume());
       this.progressBack.addEventListener("click", (ev) => this.scrub(ev));
 
-      if (this.config.controls === "top") {
+      if (this.controlsTop) {
         this.figure.addEventListener("mouseover", () => this.showControls(true));
         this.figure.addEventListener("mouseout", () => this.showControls(false));
         this.showControls(true);
@@ -476,6 +480,9 @@ class MediaPlayer extends Player {
       return image;
     }
 
+    /**
+     * Hide preview, not for audio if we have one.
+     */
     hidePreviewImage() {
       if (this.player.type === "video" && this.previewScreen?.getAttribute("data-preview") === "shown") {
         this.previewScreen.setAttribute("data-preview", "hidden");
@@ -511,11 +518,19 @@ class MediaPlayer extends Player {
 
       return toTime(Math.floor(pos));
     }
+
+    get controlsDark() {
+      return this.config.controls.indexOf("dark") > -1;
+    }
+
+    get controlsTop() {
+      return this.config.controls.indexOf("top") > -1;
+    }
   }
 
   const youth = document.getElementById("sonic-youth");
   if (youth) {
-    new OIPlayer(youth, { controls: "" });
+    new OIPlayer(youth, { controls: "dark" });
   }
 
   const elements = document.querySelectorAll(".testplayer");
