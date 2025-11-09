@@ -20,7 +20,7 @@
 
   .controls {
     margin: 0;
-    padding: 0 0.5rem;
+    padding: 0 0.25rem;
     list-style: none;
     display: flex;
     align-items: center;
@@ -28,7 +28,6 @@
     overflow: hidden;
     width: 100%;
     position: relative;
-    gap: 0.5rem;
 
     button {
       cursor: pointer;
@@ -73,7 +72,7 @@
 
       .bar {
         pointer-events: none;
-        transition: width 100ms;
+        transition: width 125ms;
         height: $slider-height;
         border-radius: $slider-border-radius;
         position: absolute;

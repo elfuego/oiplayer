@@ -337,24 +337,6 @@ class MediaPlayer extends Player {
       this.changedState(this.player.state);
     }
 
-    changedState(state) {
-      console.log("changedState", this.state, state);
-
-      if (this.state === "init" && state === "playing") {
-        window.dispatchEvent(
-          new CustomEvent("oiplayerplay", {
-            detail: {
-              id: this.id,
-              start: this.player.position,
-              state,
-            },
-          })
-        );
-      }
-
-      this.state = state;
-    }
-
     scrub(ev) {
       let duration = this.mediaDuration;
       if (!duration) {
@@ -364,7 +346,7 @@ class MediaPlayer extends Player {
 
       const rect = this.progressBack.getBoundingClientRect();
       const pos = (ev.pageX - rect.left) / this.progressBack.offsetWidth;
-      console.log("scrub", ev.pageX, rect.left, this.progressBack.offsetWidth, pos);
+      // console.log("scrub", ev.pageX, rect.left, this.progressBack.offsetWidth, pos);
       this.player.seek(pos * duration);
       this.follow();
     }
@@ -428,7 +410,7 @@ class MediaPlayer extends Player {
      * @memberof OIPlayer
      */
     updateProgress(duration, sec = 0) {
-      const width = Math.round((sec / duration) * 100);
+      const width = Math.round((sec / duration) * 10000) / 100;
       this.progressPlayed.style.width = `${width}%`;
       this.progressPush.style.width = `${width}%`;
     }
@@ -445,7 +427,7 @@ class MediaPlayer extends Player {
         return;
       }
 
-      const width = Math.round((sec / duration) * 100);
+      const width = Math.round((sec / duration) * 10000) / 100;
       this.progressLoaded.style.width = `${width}%`;
     }
 
@@ -550,6 +532,22 @@ class MediaPlayer extends Player {
       if (this.player.type === "video" && this.previewScreen?.getAttribute("data-preview") === "shown") {
         this.previewScreen.setAttribute("data-preview", "hidden");
       }
+    }
+
+    changedState(state) {
+      if (this.state === "init" && state === "playing") {
+        window.dispatchEvent(
+          new CustomEvent("oiplayerplay", {
+            detail: {
+              id: this.id,
+              start: this.player.position,
+              state,
+            },
+          })
+        );
+      }
+
+      this.state = state;
     }
 
     /*
@@ -660,7 +658,7 @@ class MediaPlayer extends Player {
 
   const youth = document.getElementById("sonic-youth");
   if (youth) {
-    new OIPlayer(youth, { controls: "dark" });
+    new OIPlayer(youth, { controls: "dark top" });
   }
 
   const elements = document.querySelectorAll(".testplayer");

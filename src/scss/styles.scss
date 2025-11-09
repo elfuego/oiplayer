@@ -15,7 +15,7 @@
   --oiplayer-color: #808080;
   --oiplayer-color-hover: #606060;
   --oiplayer-border-radius: 0.2rem;
-  --oiplayer-box-shadow: 0rem 0.35rem 0.6rem rgba(0, 0, 0, 0.5);
+  --oiplayer-box-shadow: 0.1rem 0.35rem 0.6rem rgba(0, 0, 0, 0.5);
   --oiplayer-background-color: #ddd;
   --oiplayer-background-color-top: rgba(255, 255, 255, 0.9);
 
@@ -29,7 +29,6 @@
   &.dark {
     --oiplayer-color: whitesmoke;
     --oiplayer-color-hover: #555;
-    --oiplayer-box-shadow: 0rem 0.35rem 0.6rem rgba(126, 126, 126, 0.5);
     --oiplayer-background-color: #1a1a1a;
     --oiplayer-background-color-top: rgba(0, 0, 0, 0.85);
 
