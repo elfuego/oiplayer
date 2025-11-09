@@ -233,18 +233,18 @@ class MediaPlayer extends Player {
       this.figure.appendChild(div);
       this.oipcontrols = div;
 
+      const preview = this.previewImage();
+      if (preview) {
+        this.figure.appendChild(preview);
+        this.previewScreen = preview;
+      }
+
       if (this.controlsDark) {
         this.figure.classList.add("dark");
       }
 
       if (this.controlsTop) {
         this.figure.classList.add("top");
-      }
-
-      const preview = this.previewImage();
-      if (preview) {
-        this.figure.appendChild(preview);
-        this.previewScreen = preview;
       }
 
       this.updateUIDimensions(this.player.height, this.player.width);
@@ -259,16 +259,23 @@ class MediaPlayer extends Player {
      * @memberof OIPlayer
      */
     updateUIDimensions(height, width) {
-      let newHeight = this.controlsTop ? height : height + 48;
+      let newHeight = height;
       let newWidth = width;
 
       if (this.player.type === "audio") {
-        const he = this.previewScreen.getAttribute("height");
-        const wi = this.previewScreen.getAttribute("width");
+        if (this.previewScreen) {
+          newHeight = Number(this.previewScreen?.getAttribute("height"));
+          newWidth = Number(this.previewScreen?.getAttribute("width"));
+        } else {
+          this.figure.classList.remove('top');
+          newHeight = 48;
+          newWidth = 512;
+        }
+        console.log("AUDIO", height, newHeight);
+      }
 
-        newHeight = this.controlsTop ? Number(he) : Number(he) + 48;
-        newWidth = Number(wi);
-        console.log("AUDIO", he, wi, height, newHeight);
+      if (!this.controlsTop) {
+        newHeight += 48;
       }
 
       this.figure.style.setProperty("--oiplayer-height", `${newHeight}px`);
