@@ -115,6 +115,20 @@ class MediaPlayer extends Player {
       proposal: "media",
     };
 
+    if (!sources.length) {
+      // try attribute src of video or audio tag
+      const src = media.getAttribute("src");
+      if (src) {
+        proposal = {
+          ...proposal,
+          mimetype: "",
+          url: src,
+        };
+
+        return proposal;
+      }
+    }
+
     // https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canPlayType
     sources.forEach((src) => {
       switch (media.canPlayType(src.type)) {
@@ -184,8 +198,8 @@ class MediaPlayer extends Player {
 (function () {
   class OIPlayer {
     constructor(media, config) {
-      this.id = media.id || "id" + Math.random().toString(16).slice(2);
       this.media = media;
+      this.id = media.id || "id" + Math.random().toString(16).slice(2);
       this.config = {
         server: "http://www.openimages.eu",
         controls: "top",
@@ -223,9 +237,7 @@ class MediaPlayer extends Player {
     }
 
     makeUI() {
-      this.figure.classList.add(this.player.type);
-
-      const ctrlsHtml = this.controlsHtml();
+      const ctrlsHtml = this.makeControlsHtml();
       const div = document.createElement("div");
 
       div.innerHTML = ctrlsHtml;
@@ -233,12 +245,13 @@ class MediaPlayer extends Player {
       this.figure.appendChild(div);
       this.oipcontrols = div;
 
-      const preview = this.previewImage();
+      const preview = this.makePreviewHtml();
       if (preview) {
         this.figure.appendChild(preview);
         this.previewScreen = preview;
       }
 
+      this.figure.classList.add(this.type);
       if (this.controlsDark) {
         this.figure.classList.add("dark");
       }
@@ -247,7 +260,7 @@ class MediaPlayer extends Player {
         this.figure.classList.add("top");
       }
 
-      this.updateUIDimensions(this.player.height, this.player.width);
+      this.setHeightWidth();
     }
 
     /**
@@ -258,28 +271,9 @@ class MediaPlayer extends Player {
      * @param {number} width in pixels
      * @memberof OIPlayer
      */
-    updateUIDimensions(height, width) {
-      let newHeight = height;
-      let newWidth = width;
-
-      if (this.player.type === "audio") {
-        if (this.previewScreen) {
-          newHeight = Number(this.previewScreen?.getAttribute("height"));
-          newWidth = Number(this.previewScreen?.getAttribute("width"));
-        } else {
-          this.figure.classList.remove('top');
-          newHeight = 48;
-          newWidth = 512;
-        }
-        console.log("AUDIO", height, newHeight);
-      }
-
-      if (!this.controlsTop) {
-        newHeight += 48;
-      }
-
-      this.figure.style.setProperty("--oiplayer-height", `${newHeight}px`);
-      this.figure.style.setProperty("--oiplayer-width", `${newWidth}px`);
+    setHeightWidth() {
+      this.figure.style.setProperty("--oiplayer-height", `${this.height}px`);
+      this.figure.style.setProperty("--oiplayer-width", `${this.width}px`);
     }
 
     handlers() {
@@ -334,7 +328,7 @@ class MediaPlayer extends Player {
       requestAnimationFrame(followProgress);
 
       // and make sure this is hidden
-      this.hidePreviewImage();
+      this.hidePreview();
     }
 
     scrub(ev) {
@@ -438,15 +432,12 @@ class MediaPlayer extends Player {
 
     fullscreen() {
       if (!document?.fullscreenEnabled) {
-        // fullscreen.style.display = "none";
         console.log("no fullscreen");
       }
 
       if (document.fullscreenElement !== null) {
-        // The document is in fullscreen mode
         document.exitFullscreen();
       } else {
-        // The document is not in fullscreen mode
         this.figure.requestFullscreen();
       }
     }
@@ -465,7 +456,7 @@ class MediaPlayer extends Player {
       }
     }
 
-    controlsHtml() {
+    makeControlsHtml() {
       const sec = this.mediaDuration ? this.mediaDuration : 0;
 
       const html = `<ul class="controls">
@@ -505,7 +496,7 @@ class MediaPlayer extends Player {
      * @returns img element
      * @memberof OIPlayer
      */
-    previewImage() {
+    makePreviewHtml() {
       const img = this.media.querySelector("img");
       if (img) {
         img.setAttribute("data-preview", "shown");
@@ -531,7 +522,7 @@ class MediaPlayer extends Player {
     /**
      * Hide preview, not for audio if we have one.
      */
-    hidePreviewImage() {
+    hidePreview() {
       if (this.player.type === "video" && this.previewScreen?.getAttribute("data-preview") === "shown") {
         this.previewScreen.setAttribute("data-preview", "hidden");
       }
@@ -594,6 +585,11 @@ class MediaPlayer extends Player {
     }
 
     get controlsTop() {
+      if (this.type === "audio" && !this.previewScreen) {
+        // not possible
+        return false;
+      }
+
       return this.config.controls.indexOf("top") > -1;
     }
 
@@ -604,6 +600,37 @@ class MediaPlayer extends Player {
       }
 
       return duration;
+    }
+
+    get height() {
+      let height = this.player.height || 288;
+      if (!this.controlsTop) {
+        height += 48;
+      }
+
+      if (this.type === "audio") {
+        if (this.previewScreen) {
+          const previewHeight = Number(this.previewScreen.getAttribute("height"));
+          height = this.controlsTop ? previewHeight : previewHeight + 48;
+        } else {
+          height = 48;
+        }
+      }
+
+      return height;
+    }
+
+    get width() {
+      let width = this.player.width || 512;
+      if (this.type === "audio" && this.previewScreen) {
+        width = Number(this.previewScreen?.getAttribute("width"));
+      }
+
+      return width;
+    }
+
+    get type() {
+      return this.media.tagName.toLowerCase();
     }
   }
 
