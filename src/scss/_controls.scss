@@ -73,6 +73,7 @@
 
       .bar {
         pointer-events: none;
+        transition: width 100ms;
         height: $slider-height;
         border-radius: $slider-border-radius;
         position: absolute;

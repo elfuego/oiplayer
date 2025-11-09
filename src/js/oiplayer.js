@@ -198,6 +198,11 @@ class MediaPlayer extends Player {
 (function () {
   class OIPlayer {
     constructor(media, config) {
+      if (!media) {
+        console.error("OIPlayer needs at least a video or audio element!");
+        return;
+      }
+
       this.media = media;
       this.id = media.id || "id" + Math.random().toString(16).slice(2);
       this.config = {
@@ -210,9 +215,11 @@ class MediaPlayer extends Player {
     }
 
     init() {
+      this.state = "init";
       // hide default controls
       this.media.controls = false;
 
+      // wraps media in figure.oiplayer
       const figure = document.createElement("figure");
       figure.classList.add("oiplayer");
       this.media.replaceWith(figure);
@@ -226,8 +233,7 @@ class MediaPlayer extends Player {
         ...conf,
         ...proposal,
       };
-      console.log("PROPOSAL", proposal, this.config);
-
+      console.log("init", this.config, this.state);
       this.player = new MediaPlayer(this.media, this, this.config);
 
       this.oipAttributes();
@@ -239,7 +245,6 @@ class MediaPlayer extends Player {
     makeUI() {
       const ctrlsHtml = this.makeControlsHtml();
       const div = document.createElement("div");
-
       div.innerHTML = ctrlsHtml;
       div.classList.add("oipcontrols");
       this.figure.appendChild(div);
@@ -329,6 +334,25 @@ class MediaPlayer extends Player {
 
       // and make sure this is hidden
       this.hidePreview();
+      this.changedState(this.player.state);
+    }
+
+    changedState(state) {
+      console.log("changedState", this.state, state);
+
+      if (this.state === "init" && state === "playing") {
+        window.dispatchEvent(
+          new CustomEvent("oiplayerplay", {
+            detail: {
+              id: this.id,
+              start: this.player.position,
+              state,
+            },
+          })
+        );
+      }
+
+      this.state = state;
     }
 
     scrub(ev) {
@@ -645,8 +669,5 @@ class MediaPlayer extends Player {
     media.forEach((mt) => new OIPlayer(mt, { controls: "top" }));
   });
 
-  const audio = document.getElementById("my-audio");
-  if (audio) {
-    new OIPlayer(audio, { controls: "top" });
-  }
+  new OIPlayer(document.getElementById("my-audio"), { controls: "top" });
 })();

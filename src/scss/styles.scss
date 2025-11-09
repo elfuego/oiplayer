@@ -94,9 +94,10 @@
       }
 
       &[data-show="hidden"] {
+        // wait part of a second
+        transition-delay: 0.75s;
         opacity: 0;
         transform: translateY(3rem);
-        transition-delay: 0.5s;
       }
     }
   }
@@ -138,35 +139,6 @@
       display: none;
     }
   }
-
-  // video,
-  // object,
-  // embed {
-  //   display: block;
-  //   margin: 0;
-  //   padding: 0;
-  //   border: 0;
-  // }
-
-  // audio {
-  //   position: absolute;
-  //   bottom: 0;
-  //   left: 0;
-  //   display: block;
-  //   margin: 0;
-  //   padding: 0;
-  //   width: 100%; /* not sure about this */
-  // }
-
-  // .player {
-  //   margin: 0;
-  //   padding: 0;
-  //   z-index: 10;
-
-  //   .audio & {
-  //     bottom: 0;
-  //   }
-  // }
 
   &.inavailable {
     // &.video {
@@ -245,6 +217,7 @@ body.oiplayer-example {
   }
 
   .license {
+    display: block;
     font: 400 1rem/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
 }
