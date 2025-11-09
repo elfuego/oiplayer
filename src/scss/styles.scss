@@ -8,9 +8,9 @@
 
 .oiplayer {
   $image-path: "images";
-  $button-size: 3rem;
-  $slider-height: 1rem;
-  $slider-border-radius: 0.6rem;
+  // $button-size: 3rem;
+  // $slider-height: 1rem;
+  // $slider-border-radius: 0.6rem;
 
   --oiplayer-color: #808080;
   --oiplayer-color-hover: #606060;
@@ -18,6 +18,10 @@
   --oiplayer-box-shadow: 0.1rem 0.35rem 0.6rem rgba(0, 0, 0, 0.5);
   --oiplayer-background-color: #ddd;
   --oiplayer-background-color-top: rgba(255, 255, 255, 0.9);
+
+  --oiplayer-button-size: 3rem;
+  --oiplayer-bar-height: 1rem;
+  --oiplayer-bar-border-radius: 0.6rem;
 
   --oiplayer-bar-background-color: #ffffff;
   --oiplayer-loaded-background-color: #cccccc;

@@ -1,7 +1,5 @@
 .oipcontrols {
   position: absolute;
-  // bottom: 0;
-  // left: 0;
   width: 100%;
   margin: 0;
   z-index: 19;
@@ -34,8 +32,8 @@
       border: none;
       color: var(--oiplayer-color);
       background-color: transparent;
-      width: $button-size;
-      height: $button-size;
+      width: var(--oiplayer-button-size);
+      height: var(--oiplayer-button-size);
 
       &:hover {
         color: var(--oiplayer-color-hover);
@@ -62,19 +60,19 @@
     .timeleft {
       font: 400 0.8rem/1 Monaco, "Courier New", monospaced;
       text-align: center;
+      margin: 0 0.5rem;
     }
 
     .progress {
       position: relative;
       flex-grow: 1;
-      height: $slider-height;
-      margin: 0 0.5rem;
+      height: var(--oiplayer-bar-height);
 
       .bar {
         pointer-events: none;
         transition: width 125ms;
-        height: $slider-height;
-        border-radius: $slider-border-radius;
+        height: var(--oiplayer-bar-height);
+        border-radius: var(--oiplayer-bar-border-radius);
         position: absolute;
         left: 0;
         top: 0;
@@ -90,19 +88,19 @@
         &.loaded {
           z-index: 2;
           background-color: var(--oiplayer-loaded-background-color);
-          min-width: $slider-height;
+          min-width: var(--oiplayer-bar-height);
         }
 
         &.played {
           z-index: 3;
           background-color: var(--oiplayer-played-background-color);
-          min-width: $slider-height;
+          min-width: var(--oiplayer-bar-height);
         }
 
         &.push {
           z-index: 4;
           background-color: transparent;
-          min-width: $slider-height;
+          min-width: var(--oiplayer-bar-height);
 
           display: flex;
           align-items: center;
@@ -110,9 +108,9 @@
 
           .pos {
             display: block;
-            width: $slider-height;
-            height: $slider-height;
-            border-radius: $slider-border-radius;
+            width: var(--oiplayer-bar-height);
+            height: var(--oiplayer-bar-height);
+            border-radius: var(--oiplayer-bar-border-radius);
             background-color: var(--oiplayer-played-position-color);
             pointer-events: all;
 
