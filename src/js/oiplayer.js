@@ -307,16 +307,10 @@ class MediaPlayer extends Player {
 
     follow() {
       const followProgress = () => {
-        let duration = this.player.length;
-        if (!Number.isFinite(duration)) {
-          // console.log("no duration", duration);
-          if (this.duration) {
-            duration = this.duration;
-          }
-          if (!duration) {
-            console.log("no duration", duration);
-            return;
-          }
+        const duration = this.mediaDuration;
+        if (!duration) {
+          console.log("no duration", duration);
+          return;
         }
 
         // console.log("follow", duration, this.player.position, this.player.state);
@@ -337,16 +331,10 @@ class MediaPlayer extends Player {
     }
 
     scrub(ev) {
-      let duration = this.player.length;
-      if (!Number.isFinite(duration)) {
-        // console.log("no duration", duration);
-        if (this.duration) {
-          duration = this.duration;
-        }
-        if (!duration) {
-          console.log("no duration", duration);
-          return;
-        }
+      let duration = this.mediaDuration;
+      if (!duration) {
+        console.log("no duration", duration);
+        return;
       }
 
       const rect = this.progressBack.getBoundingClientRect();
@@ -471,12 +459,14 @@ class MediaPlayer extends Player {
     }
 
     controlsHtml() {
+      const sec = this.mediaDuration ? this.mediaDuration : 0;
+
       const html = `<ul class="controls">
         <li class="play">
           <button data-button-play="none"><span>Play</span></button>
         </li>
         <li class="timeleft">
-          <div data-timeleft="0">00:00</div>
+          <div data-timeleft="">00:00</div>
         </li>
         <li class="progress">
           <div class="bar push" data-progress="push">
@@ -487,7 +477,7 @@ class MediaPlayer extends Player {
           <div data-progress="back" class="bar back"></div>
         </li>
         <li class="time">
-          <div data-time="0">00:00</div>
+          <div data-time="">${this._totime(sec)}</div>
         </li>
         <li class="screen">
           <button data-button-screen><span>Screen</span></button>
@@ -572,21 +562,21 @@ class MediaPlayer extends Player {
       }
 
       function toTime(sec) {
-        var h = Math.floor(sec / 3600);
-        var min = Math.floor(sec / 60);
-        sec = Math.floor(sec - min * 60);
+        const h = Math.floor(sec / 3600);
+        let min = Math.floor(sec / 60);
+        const secs = Math.floor(sec - min * 60);
 
         if (h >= 1) {
           min -= h * 60;
-          return h + ":" + addZero(min) + ":" + addZero(sec);
+          return h + ":" + addZero(min) + ":" + addZero(secs);
         }
 
-        return addZero(min) + ":" + addZero(sec);
+        return addZero(min) + ":" + addZero(secs);
       }
 
       function addZero(time) {
-        time = parseInt(time, 10);
-        return time < 10 ? "0" + time : time;
+        const zeroTime = parseInt(time, 10);
+        return zeroTime < 10 ? "0" + zeroTime : zeroTime;
       }
 
       return toTime(Math.floor(pos));
@@ -598,6 +588,15 @@ class MediaPlayer extends Player {
 
     get controlsTop() {
       return this.config.controls.indexOf("top") > -1;
+    }
+
+    get mediaDuration() {
+      let duration = this.player.length;
+      if (!Number.isFinite(duration)) {
+        duration = this.duration;
+      }
+
+      return duration;
     }
   }
 
