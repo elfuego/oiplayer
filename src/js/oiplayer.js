@@ -25,7 +25,7 @@ class Player {
   }
 
   get height() {
-    const default_height = this.type === "audio" ? 32 : 288;
+    const default_height = this.type === "audio" ? 48 : 288;
     return parseInt(this.media.getAttribute("height")) || default_height;
   }
 
@@ -57,7 +57,6 @@ class MediaPlayer extends Player {
   init() {
     super.init();
     this.eventHandlers();
-    console.log("mediaplayer", this);
   }
 
   eventHandlers() {
@@ -185,6 +184,7 @@ class MediaPlayer extends Player {
 (function () {
   class OIPlayer {
     constructor(media, config) {
+      this.id = media.id || "id" + Math.random().toString(16).slice(2);
       this.media = media;
       this.config = {
         server: "http://www.openimages.eu",
@@ -216,16 +216,14 @@ class MediaPlayer extends Player {
 
       this.player = new MediaPlayer(this.media, this, this.config);
 
+      this.oipAttributes();
       this.makeUI();
-      this.updateUI();
       this.handlers();
       this.events();
     }
 
     makeUI() {
       this.figure.classList.add(this.player.type);
-      this.height = this.player.height;
-      this.width = this.player.width;
 
       const ctrlsHtml = this.controlsHtml();
       const div = document.createElement("div");
@@ -239,29 +237,42 @@ class MediaPlayer extends Player {
         this.figure.classList.add("dark");
       }
 
-      if (this.player.type === "audio") {
-        console.log("AUDIO");
-        this.config.controls = "";
-      } else if (this.controlsTop) {
+      if (this.controlsTop) {
         this.figure.classList.add("top");
       }
 
       const preview = this.previewImage();
       if (preview) {
         this.figure.appendChild(preview);
+        this.previewScreen = preview;
       }
+
+      this.updateUIDimensions(this.player.height, this.player.width);
     }
 
-    updateUI() {
-      if (this.player.height === this.height && this.player.width === this.width) {
-        return;
+    /**
+     * Sets height and width as css var's of `figure.oiplayer` based
+     * on sizes of video player, default audio player size or its included image.
+     *
+     * @param {number} height in pixels
+     * @param {number} width in pixels
+     * @memberof OIPlayer
+     */
+    updateUIDimensions(height, width) {
+      let newHeight = this.controlsTop ? height : height + 48;
+      let newWidth = width;
+
+      if (this.player.type === "audio") {
+        const he = this.previewScreen.getAttribute("height");
+        const wi = this.previewScreen.getAttribute("width");
+
+        newHeight = this.controlsTop ? Number(he) : Number(he) + 48;
+        newWidth = Number(wi);
+        console.log("AUDIO", he, wi, height, newHeight);
       }
 
-      const height = this.controlsTop ? this.height : this.height + 48;
-      const width = this.width;
-
-      this.figure.style.setProperty("--oiplayer-height", `${height}px`);
-      this.figure.style.setProperty("--oiplayer-width", `${width}px`);
+      this.figure.style.setProperty("--oiplayer-height", `${newHeight}px`);
+      this.figure.style.setProperty("--oiplayer-width", `${newWidth}px`);
     }
 
     handlers() {
@@ -296,12 +307,19 @@ class MediaPlayer extends Player {
 
     follow() {
       const followProgress = () => {
-        const duration = this.player.length;
+        let duration = this.player.length;
         if (!Number.isFinite(duration)) {
-          console.log("no duration", duration);
-          return;
+          // console.log("no duration", duration);
+          if (this.duration) {
+            duration = this.duration;
+          }
+          if (!duration) {
+            console.log("no duration", duration);
+            return;
+          }
         }
 
+        // console.log("follow", duration, this.player.position, this.player.state);
         this.updateProgress(duration, this.player.position);
         this.updateTime(duration, this.player.position);
         this.updatePlayButton(this.player.state);
@@ -319,28 +337,53 @@ class MediaPlayer extends Player {
     }
 
     scrub(ev) {
-      const duration = this.player.length;
-      // console.log("scrub", duration);
+      let duration = this.player.length;
       if (!Number.isFinite(duration)) {
-        console.log("no duration", duration);
-        return;
+        // console.log("no duration", duration);
+        if (this.duration) {
+          duration = this.duration;
+        }
+        if (!duration) {
+          console.log("no duration", duration);
+          return;
+        }
       }
 
       const rect = this.progressBack.getBoundingClientRect();
       const pos = (ev.pageX - rect.left) / this.progressBack.offsetWidth;
-      // console.log("scrub", ev.pageX, rect.left, this.progressBack.offsetWidth, pos);
+      console.log("scrub", ev.pageX, rect.left, this.progressBack.offsetWidth, pos);
       this.player.seek(pos * duration);
       this.follow();
     }
 
+    /**
+     * Handles extra attributes added by Open Images site to help player.
+     *
+     * @memberof OIPlayer
+     */
+    oipAttributes() {
+      const attributes = this._extraAttributes(this.media);
+      for (let i = 0; i < attributes.length; i++) {
+        const param = attributes[i];
+        if (param.name === "duration") {
+          this.duration = Number(param.value);
+        } else if (param.name === "id") {
+          this.id = `id-${param.value}`;
+        } else if (param.name === "start") {
+          this.start = Number(param.value);
+        }
+      }
+
+      // console.log("extra", this.duration, this.id, this.start);
+    }
+
     updateMetadata(data) {
       const { duration, height, width } = data;
-      // console.log("updateMetadata", data, height, width);
+      // console.log("updateMetadata", data);
 
       // update ui
       this.updateTime(duration, this.player.position);
       this.updateLoaded(duration);
-      this.updateUI();
     }
 
     /**
@@ -457,6 +500,14 @@ class MediaPlayer extends Player {
       return html;
     }
 
+    /**
+     * Creates an overlaying preview of the video from it's poster, or from an included
+     * image within the media tag, for example for an audio "preview". If an img tag is
+     * found it uses it as its poster, else it creates an image tag from attribute poster.
+     *
+     * @returns img element
+     * @memberof OIPlayer
+     */
     previewImage() {
       const img = this.media.querySelector("img");
       if (img) {
@@ -487,6 +538,28 @@ class MediaPlayer extends Player {
       if (this.player.type === "video" && this.previewScreen?.getAttribute("data-preview") === "shown") {
         this.previewScreen.setAttribute("data-preview", "hidden");
       }
+    }
+
+    /*
+     * Returns attributes and values hidden in classes of an element, f.e. oip_ea_attr_value
+     */
+    _extraAttributes(el) {
+      const attrs = el.getAttribute("class");
+      const result = [];
+      if (attrs) {
+        const classes = attrs.split(" ");
+        for (let i = 0; i < classes.length; i++) {
+          const clz = classes[i];
+          if (clz.indexOf("oip_ea") > -1) {
+            const param = clz.substring("oip_ea_".length);
+            const name = param.substring(0, param.indexOf("_"));
+            const value = param.substring(param.indexOf("_") + 1);
+            result.push({ name, value });
+          }
+        }
+      }
+
+      return result;
     }
 
     /*

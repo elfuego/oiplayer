@@ -65,6 +65,16 @@
 
   @import "controls.scss";
 
+  &.audio {
+    .oipcontrols {
+      bottom: 0;
+
+      .screen {
+        display: none;
+      }
+    }
+  }
+
   &.top {
     overflow: hidden;
 
