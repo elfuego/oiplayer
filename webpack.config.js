@@ -52,5 +52,9 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./src/index.html",
     }),
+    new HtmlWebpackPlugin({
+      filename: "storm.html",
+      template: "./src/storm.html",
+    }),
   ],
 };
