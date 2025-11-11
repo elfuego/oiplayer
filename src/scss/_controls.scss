@@ -1,0 +1,136 @@
+.oipcontrols {
+  position: absolute;
+  width: 100%;
+  margin: 0;
+  z-index: 19;
+  color: var(--oiplayer-color);
+  background-color: var(--oiplayer-background-color);
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  .fullscreen & {
+    z-index: 1003;
+    margin: 0 auto;
+  }
+
+  .controls {
+    margin: 0;
+    padding: 0 0.25rem;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+
+    button {
+      cursor: pointer;
+      border: none;
+      color: var(--oiplayer-color);
+      background-color: transparent;
+      width: var(--oiplayer-button-size);
+      height: var(--oiplayer-button-size);
+
+      &:hover {
+        color: var(--oiplayer-color-hover);
+      }
+
+      > span {
+        display: none;
+      }
+    }
+
+    .play > button {
+      @include icon("play");
+
+      &[data-button-play="playing"] {
+        @include icon("pause");
+      }
+    }
+
+    .screen > button {
+      @include icon("fullscreen");
+    }
+
+    .time,
+    .timeleft {
+      font: 400 0.8rem/1 Monaco, "Courier New", monospaced;
+      font-size: calc(var(--oiplayer-font-size) - 0.3rem);
+      text-align: center;
+      margin: 0 0.5rem;
+    }
+
+    .progress {
+      position: relative;
+      flex-grow: 1;
+      height: var(--oiplayer-bar-height);
+
+      .bar {
+        pointer-events: none;
+        transition: width 125ms;
+        height: var(--oiplayer-bar-height);
+        border-radius: var(--oiplayer-bar-border-radius);
+        position: absolute;
+        left: 0;
+        top: 0;
+
+        &.back {
+          z-index: 1;
+          cursor: pointer;
+          pointer-events: all;
+          background-color: var(--oiplayer-bar-background-color);
+          width: 100%;
+        }
+
+        &.loaded {
+          z-index: 2;
+          background-color: var(--oiplayer-loaded-background-color);
+          min-width: var(--oiplayer-bar-height);
+        }
+
+        &.played {
+          z-index: 3;
+          background-color: var(--oiplayer-played-background-color);
+          min-width: var(--oiplayer-bar-height);
+        }
+
+        &.push {
+          z-index: 4;
+          background-color: transparent;
+          min-width: var(--oiplayer-bar-height);
+
+          display: flex;
+          align-items: center;
+          justify-content: end;
+
+          .pos {
+            display: block;
+            width: var(--oiplayer-bar-height);
+            height: var(--oiplayer-bar-height);
+            border-radius: var(--oiplayer-bar-border-radius);
+            background-color: var(--oiplayer-played-position-color);
+            pointer-events: all;
+
+            &:hover {
+              background-color: var(--oiplayer-color-hover);
+            }
+          }
+        }
+      }
+    }
+
+    .sound {
+      > button {
+        @include icon("sound");
+
+        &[data-button-volume="muted"] {
+          @include icon("mute");
+        }
+      }
+    }
+  }
+}

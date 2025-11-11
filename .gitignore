@@ -1,4 +1,6 @@
 .DS_Store
 *.bbprojectd
-
+build/
+dist/
+test-media/
 node_modules/*
