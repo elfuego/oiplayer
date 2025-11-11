@@ -68,10 +68,8 @@
                 if (options) {
                     $.extend(config, options);
                 }
-                console.log(this);
 
                 var mediatags = $(this).find('video,audio');
-                console.log('tags ', mediatags);
                 if (mediatags.length === 0) {
                     /* navigate MSIE8 around a bug (?) introduced in jquery 1.4.4 (does not recognize audio or video) 
                     that seems partly fixed in jquery 1.5.1 (does not recognize "video, audio" but recognizes them solo) */
@@ -115,7 +113,6 @@
                     var poster = createPoster(div, player);
                     $(div).prepend(poster);
                     $(div).height(player.height).width(player.width);
-                    console.log("ctrls: " + config.controls + " , " + player.url);
                     if (config.controls && player.url !== undefined) {
 
                         if (isIphone() || isIpad()) {
@@ -176,7 +173,6 @@
 
                     /* would be fairer to attach oiplayer as data to controls? (always present?) */
                     if (mediaId !== undefined && mediaId.length > 0) {
-                        //console.log("data mediaId: " + mediaId);
                         $('#' + mediaId).data('oiplayer', {
                             player: player
                         });
@@ -205,7 +201,6 @@
                             } else {
                                 methods.start(pl);
                             }
-                            console.log("player state: " + pl.state);
                         });
 
                         $(self).find('div.sound a').click(function (ev) {
