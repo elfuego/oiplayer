@@ -656,16 +656,3 @@ class OIPlayer {
 }
 
 window.OIPlayer = OIPlayer;
-
-(function () {
-  const youth = document.getElementById("sonic-youth");
-  if (youth) {
-    new OIPlayer(youth, { controls: "dark top" });
-  }
-
-  const testplayer = document.querySelector(".testplayer");
-  const media = testplayer?.querySelectorAll("video, audio");
-  media?.forEach((el) => new OIPlayer(el, { controls: "top" }));
-
-  new OIPlayer(document.getElementById("my-audio"), { controls: "top" });
-})();
