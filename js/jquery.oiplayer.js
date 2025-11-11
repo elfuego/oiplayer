@@ -113,6 +113,7 @@
                     var poster = createPoster(div, player);
                     $(div).prepend(poster);
                     $(div).height(player.height).width(player.width);
+                    //console.log("ctrls: " + config.controls + " , " + player.url);
                     if (config.controls && player.url !== undefined) {
 
                         if (isIphone() || isIpad()) {
@@ -173,6 +174,7 @@
 
                     /* would be fairer to attach oiplayer as data to controls? (always present?) */
                     if (mediaId !== undefined && mediaId.length > 0) {
+                        //console.log("data mediaId: " + mediaId);
                         $('#' + mediaId).data('oiplayer', {
                             player: player
                         });
@@ -180,7 +182,6 @@
                 }); // end for each mt
 
                 /* html ready, bind controls */
-                var self = this;
                 $.each(players, function (i, pl) {
                     $(pl.div).find('.preview').click(function (ev) {
                         ev.preventDefault();
@@ -188,7 +189,7 @@
                     });
 
                     if (config.controls) {
-                        pl.div.find('div.play a').click(function (ev) {
+                        $(pl.ctrls).find('div.play a').click(function (ev) {
                             ev.preventDefault();
                             if (pl.state == 'pause') {
                                 pl.play();
@@ -201,37 +202,38 @@
                             } else {
                                 methods.start(pl);
                             }
+                            //console.log("player state: " + pl.state);
                         });
 
-                        $(self).find('div.sound a').click(function (ev) {
+                        $(pl.ctrls).find('div.sound a').click(function (ev) {
                             ev.preventDefault();
                             $(pl.ctrls).find('div.sound').toggleClass('muted');
                             pl.mute();
                         });
                         if (config.controls.indexOf('volume') > -1) {
                             methods.volume(pl, 80); // volume slider at 80%
-                            $(self).find('div.volume').click(function (ev) {
+                            $(pl.ctrls).find('div.volume').click(function (ev) {
                                 ev.preventDefault();
                                 setVolumeFromSliderClick(pl, ev, this);
                             });
-                            $(self).find('div.volume div.thumb > div').mousedown(function (ev) {
+                            $(pl.ctrls).find('div.volume div.thumb > div').mousedown(function (ev) {
                                 ev.preventDefault();
                                 setVolumeFromThumbScrub(pl, ev, this);
                             });
                         }
 
-                        $(self).find('div.screen a').click(function (ev) {
+                        $(pl.ctrls).find('div.screen a').click(function (ev) {
                             ev.preventDefault();
                             fullscreen(pl);
                         });
 
-                        $(self).find('div.loaded, div.back').click(function (ev) {
+                        $(pl.ctrls).find('div.loaded, div.back').click(function (ev) {
                             jumpScrubberOnClick(pl, ev);
                         });
-                        $(self).find('div.pos a').click(function (ev) {
+                        $(pl.ctrls).find('div.pos a').click(function (ev) {
                             ev.preventDefault();
                         });
-                        $(self).find('div.oiprogress-push').mousedown(function (ev) {
+                        $(pl.ctrls).find('div.oiprogress-push').mousedown(function (ev) {
                             ev.preventDefault();
                             $(this).find('a').css("background-position", "0 -100px");
                             startScrubbing(pl, ev, this);
