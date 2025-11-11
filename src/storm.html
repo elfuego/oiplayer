@@ -51,7 +51,7 @@
         OIPlayer 'attaches' itself to all video and/or audio tags it encounters. Besides the general configuration of the plugin itself, it
         uses for each individual tag the attributes the respective tag has like poster, width, controls, autoplay etc. Easy implementation:
       </p>
-      <pre>new OIPlayer(document.getElementById("my-media"));</pre>
+      <pre>  new OIPlayer(document.getElementById("my-media"));</pre>
       <h3>Download</h3>
       <ul>
         <li><a href="https://github.com/elfuego/oiplayer/">Download the most recente version</a> from GitHub.</li>
@@ -70,12 +70,16 @@
         <li>?! @TODO iOS, iPhone, iPad etc. compatible</li>
         <li>@TODO Fires events: 'oiplayerplay' and 'oiplayerended' to use f.e. for play statistics</li>
       </ul>
-      <p>OIPlayer's configuration currently has only the following - which means a dark look on top. Remove or add either to have a different look.</p>
+      <p>
+        OIPlayer's configuration currently has only the following - which means a dark look on top. Remove or add either to have a different
+        look.
+      </p>
       <pre>
-        config {
-          controls : 'top dark',
-        }
-      </pre>
+  config {
+    controls : 'top dark',
+  }
+</pre
+      >
       <p>
         OIPlayer is part of the <a href="http://www.openimages.eu/source">Open Images Platform</a> which is
         <a href="http://www.mmbase.org">MMBase</a> based. OIPlayer's most recent sources can be found on GitHub:
@@ -126,9 +130,15 @@ window.addEventListener("oiplayerplay", (ev) => {
     </div>
     <script type="text/javascript">
       (function () {
-        setTimeout(() => {
-          new OIPlayer(document.getElementById("my-media"), { controls: "top" });
-        }, 999);
+        const docReady = (cb) => {
+          if (document.readyState === "complete" || document.readyState === "interactive") {
+            setTimeout(cb, 1);
+          } else {
+            document.addEventListener("DOMContentLoaded", cb);
+          }
+        };
+
+        docReady(() => new OIPlayer(document.getElementById("my-media"), { controls: "top" }));
       })();
     </script>
   </body>

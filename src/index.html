@@ -103,7 +103,6 @@
 
       (function () {
         docReady(() => {
-          console.log("doc");
           const testplayer = document.querySelector(".testplayer");
           const media = testplayer?.querySelectorAll("video, audio");
           media?.forEach((el) => new OIPlayer(el, { controls: "top" }));
