@@ -128,18 +128,5 @@ window.addEventListener("oiplayerplay", (ev) => {
       </ol>
       <address>Have fun! <a href="http://www.toly.nl">André van Toly</a>.</address>
     </div>
-    <script type="text/javascript">
-      (function () {
-        const docReady = (cb) => {
-          if (document.readyState === "complete" || document.readyState === "interactive") {
-            setTimeout(cb, 1);
-          } else {
-            document.addEventListener("DOMContentLoaded", cb);
-          }
-        };
-
-        docReady(() => new OIPlayer(document.getElementById("my-media"), { controls: "top" }));
-      })();
-    </script>
   </body>
 </html>

@@ -89,25 +89,9 @@
       </div>
     </main>
     <script type="text/javascript">
-      const docReady = (cb) => {
-        if (document.readyState === "complete" || document.readyState === "interactive") {
-          setTimeout(cb, 1);
-        } else {
-          document.addEventListener("DOMContentLoaded", cb);
-        }
-      };
-
       window.addEventListener("oiplayerplay", (ev) => {
         console.log("oiplayerplay event", ev.detail);
       });
-
-      (function () {
-        docReady(() => {
-          const testplayer = document.querySelector(".testplayer");
-          const media = testplayer?.querySelectorAll("video, audio");
-          media?.forEach((el) => new OIPlayer(el, { controls: "top" }));
-        });
-      })();
     </script>
   </body>
 </html>

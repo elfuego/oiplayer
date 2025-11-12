@@ -7,7 +7,7 @@ module.exports = {
   mode: devMode ? "development" : "production",
   devtool: devMode ? "source-map" : "eval",
   entry: {
-    oiplayer: "./src/js/oiplayer.js",
+    oiplayer: "./src/js/scripts.js",
     styles: "./src/scss/styles.scss",
   },
   output: {
