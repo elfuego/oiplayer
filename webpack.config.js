@@ -5,14 +5,13 @@ const devMode = process.env.NODE_ENV !== "production";
 
 module.exports = {
   mode: devMode ? "development" : "production",
-  devtool: devMode ? "source-map" : "eval",
   entry: {
-    oiplayer: "./src/js/scripts.js",
+    scripts: "./src/js/scripts.js",
     styles: "./src/scss/styles.scss",
   },
   output: {
-    // filename: devMode ? "[name].js" : "[name].[hash].js",
-    filename: "[name].js",
+    filename: devMode ? "[name].js" : "[name].[hash].js",
+    // filename: "[name].js",
     path: devMode ? path.resolve(__dirname, "./build") : path.resolve(__dirname, "./dist"),
   },
   devServer: {
@@ -47,11 +46,13 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "[name].css",
+      // filename: "[name].css",
+      filename: devMode ? "[name].css" : "[name].[hash].css",
     }),
     new HtmlWebpackPlugin({
       template: "./src/index.html",
     }),
+    // page to present oiplayer
     new HtmlWebpackPlugin({
       filename: "storm.html",
       template: "./src/storm.html",
