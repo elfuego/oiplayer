@@ -195,7 +195,7 @@ class MediaPlayer extends Player {
   }
 }
 
-export default class OIPlayer {
+class OIPlayer {
   constructor(media, config) {
     if (!media) {
       console.error("OIPlayer needs at least a video or audio element!");
@@ -654,3 +654,5 @@ export default class OIPlayer {
     return this.media.tagName.toLowerCase();
   }
 }
+
+export default OIPlayer;
