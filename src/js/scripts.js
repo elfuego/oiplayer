@@ -11,10 +11,5 @@ const docReady = (cb) => {
 docReady(() => {
   const testplayer = document.querySelector(".testplayer");
   const media = testplayer?.querySelectorAll("video, audio");
-  media?.forEach((el) => new OIPlayer(el, { controls: "top" }));
-
-  const myMedia = document.getElementById("my-media");
-  if (myMedia) {
-    new OIPlayer(myMedia);
-  }
+  media?.forEach((el, i) => new OIPlayer(el, { controls: `top ${i % 2 !== 0 ? "dark" : ""}` }));
 });

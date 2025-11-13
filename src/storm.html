@@ -8,7 +8,7 @@
     <div class="main">
       <h1>OIPlayer video &amp; audio player</h1>
       <h2>Plain vanilla Javascript HTML5 audio and video player</h2>
-      <div class="tstplayer">
+      <div class="testplayer">
         <!-- video directly copied from http://www.openimages.eu/media/9728#share with added width and height attributes -->
         <div
           xmlns:dct="http://purl.org/dc/terms/"
@@ -17,7 +17,7 @@
           about="http://www.openimages.eu/files/09/88068.9730.WEEKNUMMER364-HRE0000D9C6.webm"
         >
           <video
-            id="my-media"
+            id="oip-media"
             width="512"
             height="288"
             poster="http://www.openimages.eu/images/599192/WEEKNUMMER364-HRE0000D9C6.png"
@@ -128,5 +128,10 @@ window.addEventListener("oiplayerplay", (ev) => {
       </ol>
       <address>Have fun! <a href="http://www.toly.nl">André van Toly</a>.</address>
     </div>
+    <script type="text/javascript">
+      window.addEventListener("oiplayerplay", (ev) => {
+        console.log("oiplayerplay event", ev.detail);
+      });
+    </script>
   </body>
 </html>
