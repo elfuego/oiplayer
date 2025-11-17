@@ -9,7 +9,6 @@ const docReady = (cb) => {
 };
 
 docReady(() => {
-  const testplayer = document.querySelector(".testplayer");
-  const media = testplayer?.querySelectorAll("video, audio");
-  media?.forEach((el, i) => new OIPlayer(el, { controls: `top ${i % 2 !== 0 ? "dark" : ""}` }));
+  const media = document.querySelectorAll("video, audio");
+  media?.forEach((el) => new OIPlayer(el, { controls: `top` }));
 });
