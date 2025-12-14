@@ -1,6 +1,7 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 const devMode = process.env.NODE_ENV !== "production";
 
 module.exports = {
@@ -12,7 +13,9 @@ module.exports = {
   output: {
     filename: devMode ? "[name].js" : "[name].[hash].js",
     // filename: "[name].js",
-    path: devMode ? path.resolve(__dirname, "./build") : path.resolve(__dirname, "./dist"),
+    path: devMode
+      ? path.resolve(__dirname, "./build")
+      : path.resolve(__dirname, "./dist"),
   },
   devServer: {
     static: "./build",
@@ -36,7 +39,11 @@ module.exports = {
     rules: [
       {
         test: /\.scss$/i,
-        use: [devMode ? "style-loader" : MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+        use: [
+          devMode ? "style-loader" : MiniCssExtractPlugin.loader,
+          "css-loader",
+          "sass-loader",
+        ],
       },
       {
         test: /\.html$/i,
@@ -58,4 +65,8 @@ module.exports = {
       template: "./src/storm.html",
     }),
   ],
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  },
 };
