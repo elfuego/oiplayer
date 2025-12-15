@@ -181,7 +181,7 @@ class MediaPlayer extends Player {
   };
 
   volume = (vol) => {
-    console.log("volume", vol);
+    // console.log("volume", vol);
     this.media.muted = !this.media.muted;
     this.oiplayer.muted = this.media.muted;
   };
@@ -232,7 +232,7 @@ class OIPlayer {
       ...conf,
       ...proposal,
     };
-    console.log("init", this.config, this.state);
+    // console.log("init", this.config, this.state);
     this.player = new MediaPlayer(this.media, this, this.config);
 
     this.oipAttributes();
