@@ -11,4 +11,4 @@ export const SVG_VOLUME = `<svg width="21" height="17" viewBox="0 0 21 17" fill=
 <path d="M13.5 5.073C13.5 5.073 15.5 6.073 15.5 8.073C15.5 10.073 13.5 11.073 13.5 11.073" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
 </svg>`;
 
-export const SVG_VOLUME_MUTED = `<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15.5" cy="8.073" r="2" fill="black"/><path d="M0.5 10.873V5.273H3.5L8.5 1.073V15.073L3.5 10.873H0.5Z" fill="black" stroke="black"/></svg>`;
+export const SVG_VOLUME_MUTED = `<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15.5" cy="8.073" r="2" fill="currentColor"/><path d="M0.5 10.873V5.273H3.5L8.5 1.073V15.073L3.5 10.873H0.5Z" fill="currentColor" stroke="currentColor"/></svg>`;
