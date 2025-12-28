@@ -45,15 +45,30 @@
     }
 
     .play > button {
-      @include icon("play");
+      &[data-button-play="play"] {
+        [data-button-play-icon="play"] {
+          display: block;
+        }
 
-      &[data-button-play="playing"] {
-        @include icon("pause");
+        [data-button-play-icon="paused"] {
+          display: none;
+        }
+      }
+
+      &[data-button-play="paused"] {
+        [data-button-play-icon="play"] {
+          display: none;
+        }
+        [data-button-play-icon="paused"] {
+          display: block;
+        }
       }
     }
 
     .screen > button {
-      @include icon("fullscreen");
+      // background-image: url(#{$svg-fullscreen});
+      // background-repeat: no-repeat;
+      // background-position: center;
     }
 
     .time,
@@ -125,10 +140,21 @@
 
     .sound {
       > button {
-        @include icon("sound");
-
+        &[data-button-volume="on"] {
+          [data-button-volume-icon="on"] {
+            display: block;
+          }
+          [data-button-volume-icon="muted"] {
+            display: none;
+          }
+        }
         &[data-button-volume="muted"] {
-          @include icon("mute");
+          [data-button-volume-icon="on"] {
+            display: none;
+          }
+          [data-button-volume-icon="muted"] {
+            display: block;
+          }
         }
       }
     }
