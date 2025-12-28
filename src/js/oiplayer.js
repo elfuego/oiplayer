@@ -1,3 +1,5 @@
+import { SVG_FULLSCREEN, SVG_PAUSE, SVG_PLAY, SVG_VOLUME, SVG_VOLUME_MUTED } from "./constants";
+
 class Player {
   constructor(media, oiplayer, config) {
     this.media = media;
@@ -8,14 +10,14 @@ class Player {
     this.init();
   }
 
-  mute() {}
-  play() {}
-  pause() {}
+  mute() { }
+  play() { }
+  pause() { }
   /* go to this position */
-  seek(sec) {}
-  info() {}
+  seek(sec) { }
+  info() { }
   /* value between 0 - 100 */
-  volume(vol) {}
+  volume(vol) { }
   init() {
     this.state = "init";
     this.updatedMetadata = 0;
@@ -450,7 +452,7 @@ class OIPlayer {
   volume() {
     // console.log("volume", this.muted);
     this.player.volume();
-    this.buttonVolume.setAttribute("data-button-volume", this.muted ? "muted" : "playing");
+    this.buttonVolume.setAttribute("data-button-volume", this.muted ? "muted" : "on");
   }
 
   showControls(show) {
@@ -464,29 +466,35 @@ class OIPlayer {
   makeControlsHtml() {
     const sec = this.mediaDuration ? this.mediaDuration : 0;
 
-    const html = `<ul class="controls">
+    const html = `<ul class="controls" aria-label="Media controls">
         <li class="play">
-          <button data-button-play="none"><span>Play</span></button>
+          <button data-button-play="paused" aria-label="Play/Pause">
+            <span data-button-play-icon="playing">${SVG_PAUSE}</span>
+            <span data-button-play-icon="paused">${SVG_PLAY}</span>
+          </button>
         </li>
         <li class="timeleft">
-          <div data-timeleft="">00:00</div>
+          <div data-timeleft="" aria-label="Time left" aria-live="polite">00:00</div>
         </li>
         <li class="progress">
           <div class="bar push" data-progress="push">
-            <button class="pos"><span>Position</span></button>
+            <button class="pos" aria-label="Position"><span>Position</span></button>
           </div>
-          <div data-progress="played" class="bar played"></div>
-          <div data-progress="loaded" class="bar loaded"></div>
+          <div data-progress="played" class="bar played" aria-label="Played"></div>
+          <div data-progress="loaded" class="bar loaded" aria-label="Loaded"></div>
           <div data-progress="back" class="bar back"></div>
         </li>
-        <li class="time">
+        <li class="time" aria-label="Time" aria-live="polite">
           <div data-time="">${this._totime(sec)}</div>
         </li>
         <li class="screen">
-          <button data-button-screen><span>Screen</span></button>
+          <button data-button-screen aria-label="Fullscreen">${SVG_FULLSCREEN}</button>
         </li>
         <li class="sound">
-          <button data-button-volume=""><span>Volume</span></button>
+          <button data-button-volume="on" aria-label="Mute/Unmute">
+            <span data-button-volume-icon="on">${SVG_VOLUME}</span>
+            <span data-button-volume-icon="muted">${SVG_VOLUME_MUTED}</span>
+          </button>
         </li>
       </ul>`;
 
