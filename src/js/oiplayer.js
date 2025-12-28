@@ -469,8 +469,8 @@ class OIPlayer {
     const html = `<ul class="controls" aria-description="Media controls">
         <li class="play">
           <button data-button-play="paused" aria-label="Play/Pause">
-            <span data-button-play-icon="playing">${SVG_PLAY}</span>
-            <span data-button-play-icon="paused">${SVG_PAUSE}</span>
+            <span data-button-play-icon="playing">${SVG_PAUSE}</span>
+            <span data-button-play-icon="paused">${SVG_PLAY}</span>
           </button>
         </li>
         <li class="timeleft">

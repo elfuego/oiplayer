@@ -51,22 +51,22 @@
     .play > button {
       &[data-button-play="playing"] {
         [data-button-play-icon="playing"] {
-          display: inline-block;
-          margin-left: 2px;
+          display: none;
         }
 
         [data-button-play-icon="paused"] {
-          display: none;
+          display: inline-block;
+          margin-left: 2px;
         }
       }
 
       &[data-button-play="paused"] {
         [data-button-play-icon="playing"] {
-          display: none;
+          display: inline-block;
         }
 
         [data-button-play-icon="paused"] {
-          display: inline-block;
+          display: none;
         }
       }
     }
@@ -143,6 +143,8 @@
     }
 
     .sound > button {
+      justify-content: right;
+
       &[data-button-volume="on"] {
         [data-button-volume-icon="on"] {
           display: inline-block;
@@ -160,7 +162,7 @@
 
         [data-button-volume-icon="muted"] {
           display: inline-block;
-          margin-right: 2px;
+          margin-right: 3px;
         }
       }
     }
