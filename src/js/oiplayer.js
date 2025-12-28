@@ -466,7 +466,7 @@ class OIPlayer {
   makeControlsHtml() {
     const sec = this.mediaDuration ? this.mediaDuration : 0;
 
-    const html = `<ul class="controls" aria-description="Media controls">
+    const html = `<ul class="controls" aria-label="Media controls">
         <li class="play">
           <button data-button-play="paused" aria-label="Play/Pause">
             <span data-button-play-icon="playing">${SVG_PAUSE}</span>
@@ -474,7 +474,7 @@ class OIPlayer {
           </button>
         </li>
         <li class="timeleft">
-          <div data-timeleft="" aria-label="Time left">00:00</div>
+          <div data-timeleft="" aria-label="Time left" aria-live="polite">00:00</div>
         </li>
         <li class="progress">
           <div class="bar push" data-progress="push">
@@ -484,7 +484,7 @@ class OIPlayer {
           <div data-progress="loaded" class="bar loaded" aria-label="Loaded"></div>
           <div data-progress="back" class="bar back"></div>
         </li>
-        <li class="time" aria-label="Time">
+        <li class="time" aria-label="Time" aria-live="polite">
           <div data-time="">${this._totime(sec)}</div>
         </li>
         <li class="screen">

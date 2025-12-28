@@ -143,7 +143,7 @@
     }
 
     .sound > button {
-      justify-content: right;
+      justify-content: flex-end;
 
       &[data-button-volume="on"] {
         [data-button-volume-icon="on"] {
