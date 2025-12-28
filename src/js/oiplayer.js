@@ -452,7 +452,7 @@ class OIPlayer {
   volume() {
     // console.log("volume", this.muted);
     this.player.volume();
-    this.buttonVolume.setAttribute("data-button-volume", this.muted ? "muted" : "playing");
+    this.buttonVolume.setAttribute("data-button-volume", this.muted ? "muted" : "on");
   }
 
   showControls(show) {
@@ -468,8 +468,8 @@ class OIPlayer {
 
     const html = `<ul class="controls" aria-description="Media controls">
         <li class="play">
-          <button data-button-play="play" aria-label="Play/Pause">
-            <span data-button-play-icon="play">${SVG_PLAY}</span>
+          <button data-button-play="paused" aria-label="Play/Pause">
+            <span data-button-play-icon="playing">${SVG_PLAY}</span>
             <span data-button-play-icon="paused">${SVG_PAUSE}</span>
           </button>
         </li>
