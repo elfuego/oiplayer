@@ -10,14 +10,14 @@ class Player {
     this.init();
   }
 
-  mute() {}
-  play() {}
-  pause() {}
+  mute() { }
+  play() { }
+  pause() { }
   /* go to this position */
-  seek(sec) {}
-  info() {}
+  seek(sec) { }
+  info() { }
   /* value between 0 - 100 */
-  volume(vol) {}
+  volume(vol) { }
   init() {
     this.state = "init";
     this.updatedMetadata = 0;
@@ -478,7 +478,7 @@ class OIPlayer {
         </li>
         <li class="progress">
           <div class="bar push" data-progress="push">
-            <button class="pos"><span>Position</span></button>
+            <button class="pos" aria-label="Position"><span>Position</span></button>
           </div>
           <div data-progress="played" class="bar played" aria-label="Played"></div>
           <div data-progress="loaded" class="bar loaded" aria-label="Loaded"></div>
