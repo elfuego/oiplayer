@@ -51,22 +51,22 @@
     .play > button {
       &[data-button-play="playing"] {
         [data-button-play-icon="playing"] {
+          display: inline-block;
+        }
+
+        [data-button-play-icon="paused"] {
+          display: none;
+        }
+      }
+
+      &[data-button-play="paused"] {
+        [data-button-play-icon="playing"] {
           display: none;
         }
 
         [data-button-play-icon="paused"] {
           display: inline-block;
           margin-left: 2px;
-        }
-      }
-
-      &[data-button-play="paused"] {
-        [data-button-play-icon="playing"] {
-          display: inline-block;
-        }
-
-        [data-button-play-icon="paused"] {
-          display: none;
         }
       }
     }
