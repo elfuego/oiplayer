@@ -38,6 +38,7 @@
       background-color: transparent;
       width: var(--oiplayer-button-size);
       height: var(--oiplayer-button-size);
+      padding: 0;
 
       &:hover {
         color: var(--oiplayer-color-hover);
@@ -73,7 +74,7 @@
 
     .time,
     .timeleft {
-      font: 400 0.8rem/1 Monaco, "Courier New", monospaced;
+      font: 400 0.85rem/0.9 Monaco, "Courier New", monospaced;
       font-size: calc(var(--oiplayer-font-size) - 0.3rem);
       text-align: center;
       margin: 0 0.5rem;
@@ -142,12 +143,18 @@
       }
     }
 
+    .screen > button > svg {
+      width: 24px;
+      height: 16px;
+    }
+
     .sound > button {
       justify-content: flex-end;
 
       &[data-button-volume="on"] {
         [data-button-volume-icon="on"] {
           display: inline-block;
+          margin-right: 0.3rem;
         }
 
         [data-button-volume-icon="muted"] {
@@ -162,7 +169,7 @@
 
         [data-button-volume-icon="muted"] {
           display: inline-block;
-          margin-right: 3px;
+          margin-right: 0.5rem;
         }
       }
     }
