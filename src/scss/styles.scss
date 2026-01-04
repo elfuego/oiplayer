@@ -4,6 +4,8 @@
  * @name     Stylesheet, scss version, to style OIPlayer and its controls
  */
 
+@use "controls.scss";
+
 figure.oiplayer {
   // $image-path: "images";
   --oiplayer-color: #808080;
@@ -61,8 +63,6 @@ figure.oiplayer {
   background-color: var(--oiplayer-figure-background-color);
   height: var(--oiplayer-height, auto);
   width: var(--oiplayer-width, auto);
-
-  @import "controls.scss";
 
   &.audio {
     .oipcontrols {
