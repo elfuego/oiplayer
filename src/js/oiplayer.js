@@ -89,7 +89,7 @@ class MediaPlayer extends Player {
     });
 
     this.media.addEventListener("playing", () => (this.state = "playing"));
-    this.media.addEventListener("paused", () => (this.state = "paused"));
+    this.media.addEventListener("pause", () => (this.state = "paused"));
     this.media.addEventListener("ended", () => (this.state = "ended"));
   }
 
