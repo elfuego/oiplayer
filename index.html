@@ -60,13 +60,14 @@
         </div>
       </div>
       <p>
-        Jump to 1 minute and 11 seconds where one of Scheveningen's fishing ships rides the waves and "surfs" home into the harbour.
-        You can find the video on Open Images <a href="http://www.openimages.eu/media/9728/Storm">http://www.openimages.eu/media/9728/Storm</a>.
+        Jump to 1 minute and 11 seconds where one of Scheveningen's fishing ships rides the waves and "surfs" home into
+        the harbour. You can find the video on Open Images
+        <a href="http://www.openimages.eu/media/9728/Storm">http://www.openimages.eu/media/9728/Storm</a>.
       </p>
-      <p>OIPlayer
-        'attaches' itself to all video and/or audio tags it encounters. Besides the general configuration of the plugin
-        itself, it uses for each individual tag the attributes the respective tag has like poster, width, controls,
-        autoplay etc. Easy implementation:
+      <p>
+        OIPlayer 'attaches' itself to all video and/or audio tags it encounters. Besides the general configuration of
+        the plugin itself, it uses for each individual tag the attributes the respective tag has like poster, width,
+        controls, autoplay etc. Easy implementation:
       </p>
       <pre>  new OIPlayer(document.getElementById("my-media"));</pre>
       <h3>Download</h3>
@@ -95,7 +96,8 @@ new OIPlayer(el, { controls: "top dark" });  // dark controls on top
 new OIPlayer(el, { controls: "top" });       // light controls on top
 new OIPlayer(el, { controls: "dark" });      // dark controls below
 new OIPlayer(el, {});                        // light controls below (default)
-</pre>
+</pre
+      >
       <p>
         OIPlayer is part of the <a href="http://www.openimages.eu/source">Open Images Platform</a> which is
         <a href="http://www.mmbase.org">MMBase</a> based. OIPlayer's most recent sources can be found on GitHub:
@@ -122,17 +124,14 @@ new OIPlayer(document.getElementById("my-media"), { controls: "top" });
 // all video and audio in a container
 const media = document.querySelectorAll(".my-player video, .my-player audio");
 media.forEach((el) => new OIPlayer(el, { controls: "top" }));
-</pre>
+</pre
+          >
         </li>
         <li>
-          Besides these you can identify your player with a unique id f.e. with 'oip_ea_id_myid123', which is
-          registered in 'player.id'. This can be useful for example to track the number of plays of a media item.
-          OIPlayer fires two events to this effect: 'oiplayerplay' and 'oiplayerended', f.e.:
-          <pre>
-window.addEventListener("oiplayerplay", (ev) => {
-  console.log("oiplayerplay event", ev.detail);
-});</pre
-          >
+          Besides these you can identify your player with a unique id f.e. with 'oip_ea_id_myid123', which is registered
+          in 'player.id'. This can be useful for example to track the number of plays of a media item. OIPlayer fires
+          two events to this effect: 'oiplayerplay' and 'oiplayerended', f.e.:
+          <pre>window.addEventListener("oiplayerplay", (ev) => console.log("oiplayerplay event", ev.detail));</pre>
         </li>
       </ol>
       <h2>Yesteryear</h2>
