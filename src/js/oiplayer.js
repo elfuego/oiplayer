@@ -346,8 +346,7 @@ class OIPlayer {
     }
 
     const rect = this.progressBack.getBoundingClientRect();
-    const pos = (ev.pageX - rect.left) / this.progressBack.offsetWidth;
-    // console.log("scrub", ev.pageX, rect.left, this.progressBack.offsetWidth, pos);
+    const pos = (ev.clientX - rect.left) / this.progressBack.offsetWidth;
     this.player.seek(pos * duration);
     this.follow();
   }
