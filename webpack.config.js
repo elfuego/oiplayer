@@ -12,10 +12,7 @@ module.exports = {
   },
   output: {
     filename: devMode ? "[name].js" : "[name].[hash].js",
-    // filename: "[name].js",
-    path: devMode
-      ? path.resolve(__dirname, "./build")
-      : path.resolve(__dirname, "./dist"),
+    path: path.resolve(__dirname, "./build"),
   },
   devServer: {
     static: "./build",

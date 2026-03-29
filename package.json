@@ -1,11 +1,25 @@
 {
   "name": "oiplayer",
   "version": "0.0.4",
-  "description": "OIplayer is a html5 and Javascript mediaplayer.",
-  "main": "index.js",
+  "description": "OIPlayer is a html5 and Javascript mediaplayer.",
+  "main": "dist/oiplayer.js",
+  "exports": {
+    ".": "./dist/oiplayer.js",
+    "./dist/oiplayer.css": "./dist/oiplayer.css"
+  },
+  "files": [
+    "dist/"
+  ],
+  "keywords": [
+    "mediaplayer",
+    "video",
+    "audio",
+    "html5",
+    "player"
+  ],
   "scripts": {
     "build": "webpack",
-    "dist": "NODE_ENV=production webpack",
+    "dist": "webpack --config webpack.dist.config.js",
     "start": "webpack serve --open-app-name 'Google Chrome'"
   },
   "author": "André van Toly",

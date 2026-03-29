@@ -1,15 +1,159 @@
-<!doctype html><html lang="en"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"/><title>OIPlayer video &amp; audio player - Open Images Platform</title><script defer="defer" src="./js/scripts.28534961b24100f3c8c5.js"></script><link href="./css/styles.28534961b24100f3c8c5.css" rel="stylesheet"></head><body class="oiplayer-example"><div class="main"><h1>OIPlayer video &amp; audio player</h1><h2>Plain vanilla Javascript HTML5 audio and video player</h2><div class="tstplayer"><div xmlns:dct="http://purl.org/dc/terms/" xmlns:cc="http://creativecommons.org/ns#" class="oip_media" about="http://www.openimages.eu/files/09/88068.9730.WEEKNUMMER364-HRE0000D9C6.webm"><video id="my-media" width="512" height="288" poster="http://www.openimages.eu/images/599192/WEEKNUMMER364-HRE0000D9C6.png" controls="controls"><source type="video/webm; codecs=vp8" src="http://www.openimages.eu/files/09/88068.9730.WEEKNUMMER364-HRE0000D9C6.webm"/><source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/9734.9730.WEEKNUMMER364-HRE0000D9C6.ogv"/><source type="video/ogg; codecs=theora" src="http://www.openimages.eu/files/09/88071.9730.WEEKNUMMER364-HRE0000D9C6.ogv"/><source type="video/mp4; codecs=avc1.42E01E,mp4a.40.2" src="http://www.openimages.eu/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4"/><source type="video/mp4; codecs=avc1.42E01E,mp4a.40.2" src="http://www.openimages.eu/files/09/88065.9730.WEEKNUMMER364-HRE0000D9C6.mp4"/><source type="application/x-mpegurl" src="http://www.openimages.eu/files/09/35026.9730.WEEKNUMMER364-HRE0000D9C6.m3u8"/></video><span class="license"><a href="http://www.openimages.eu/media/9728" rel="cc:attributionURL" property="dct:title">Storm</a>, by <a href="http://www.openbeelden.nl/users/beeldengeluid" rel="dct:creator" property="cc:attributionName">Polygoon-Profilti (producer) / Netherlands Institute for Sound and Vision (curator)</a>, is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/deed.en" rel="license">Creative Commons – Attribution-Share Alike</a>.</span></div></div><p>This video on Open Images <a href="http://www.openimages.eu/media/9728/Storm">http://www.openimages.eu/media/9728/Storm</a>.<br/>OIPlayer 'attaches' itself to all video and/or audio tags it encounters. Besides the general configuration of the plugin itself, it uses for each individual tag the attributes the respective tag has like poster, width, controls, autoplay etc. Easy implementation:</p><pre>  new OIPlayer(document.getElementById("my-media"));</pre><h3>Download</h3><ul><li><a href="https://github.com/elfuego/oiplayer/">Download the most recente version</a> from GitHub.</li></ul><h3>Features</h3><ul><li>Plays video as well as audio</li><li>Easy to use and implement</li><li>Consistent look between browsers, even with fallback</li><li>Multiple different players on a page</li><li>Play/pause</li><li>Mute/unmute</li><li>Full 'screen' (full window really, that is what HTML5 requires)</li><li>Dark and white controls, on top or below player</li><li>Easily skinnable with css</li><li>?! @TODO iOS, iPhone, iPad etc. compatible</li><li>@TODO Fires events: 'oiplayerplay' and 'oiplayerended' to use f.e. for play statistics</li></ul><p>OIPlayer's configuration currently has only the following - which means a dark look on top. Remove or add either to have a different look.</p><pre>
-  config {
-    controls : 'top dark',
-  }
-</pre><p>OIPlayer is part of the <a href="http://www.openimages.eu/source">Open Images Platform</a> which is <a href="http://www.mmbase.org">MMBase</a> based. OIPlayer's most recent sources can be found on GitHub: <a href="https://github.com/elfuego/oiplayer">https://github.com/elfuego/oiplayer</a>. It is licensed under <a href="http://www.gnu.org/licenses/gpl.html">GPL</a>.</p><h2>How-to</h2><ol><li><a href="https://github.com/elfuego/oiplayer/">Download</a> and copy the 'oiplayer' directory to your site. Include these Javascript and css files in the head of your html document. Note that the 'flowplayer-3.2.6.min.js' script is only needed for FlowPlayer.<pre>
-&lt;script src="js/oiplayer.min.js" type="text/javascript"&gt;&lt;!-- help ie --&gt;&lt;/script&gt;
-&lt;link href="css/oiplayer.css" rel="stylesheet" type="text/css" /&gt;
-</pre></li><li>Enable it on all HTML5 video or audio tags in a page with class 'oiplayerexample'.<pre>
-const example = document.querySelector(".oiplayerexample");
-const media = example.querySelectorAll("video, audio");
-media.forEach((elem) => new OIPlayer(elem, { controls: "top" }));            
-          </pre></li><li>Besides these you can identify your player with an unique id f.e. with 'oip_ea_id_myid123', which is registered in 'player.id'. This can be usefull for example to track the number of plays of a media item. OIPlayer fires two events to this effect: 'oiplayerplay' and 'oiplayerended', f.e.:<pre>
-window.addEventListener("oiplayerplay", (ev) => {
-  console.log("oiplayerplay event", ev.detail);
-});</pre></li></ol><h2>Yesteryear</h2><ol><li>OIPlayer had a fallback mechanism that could be made to work by installing <a href="http://www.flowplayer.org">Flowplayer</a> and <a href="http://www.theora.org/cortado/">Cortado</a>. Flowplayer needed the Flash plugin and plays h.264, flv and mp4. Cortado is a Java applet that plays Ogg video and audio (ogv, oga).<br/>The framework is still there in this version, but there is no use since Java applets and Flash are no longer supported.</li></ol><address>Have fun! <a href="http://www.toly.nl">André van Toly</a>.</address></div></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>OIPlayer video &amp; audio player - Open Images Platform</title>
+    <script defer="defer" src="./js/oiplayer.563fa832b439613f6c21.js"></script>
+    <link href="./css/oiplayer.6649287d86ad36c289c6.css" rel="stylesheet" />
+  </head>
+  <body class="oiplayer-example">
+    <div class="main">
+      <h1>OIPlayer video &amp; audio player</h1>
+      <h2>Plain vanilla Javascript HTML5 audio and video player</h2>
+      <div class="tstplayer">
+        <div
+          xmlns:dct="https://purl.org/dc/terms/"
+          xmlns:cc="https://creativecommons.org/ns#"
+          class="oip_media"
+          about="https://www.openimages.eu/files/09/88068.9730.WEEKNUMMER364-HRE0000D9C6.webm"
+        >
+          <video
+            id="my-media"
+            width="512"
+            height="288"
+            poster="https://www.openimages.eu/images/599192/WEEKNUMMER364-HRE0000D9C6.png"
+            controls="controls"
+          >
+            <source
+              type="video/webm; codecs=vp8"
+              src="https://www.openimages.eu/files/09/88068.9730.WEEKNUMMER364-HRE0000D9C6.webm"
+            />
+            <source
+              type="video/ogg; codecs=theora"
+              src="https://www.openimages.eu/files/09/9734.9730.WEEKNUMMER364-HRE0000D9C6.ogv"
+            />
+            <source
+              type="video/ogg; codecs=theora"
+              src="https://www.openimages.eu/files/09/88071.9730.WEEKNUMMER364-HRE0000D9C6.ogv"
+            />
+            <source
+              type="video/mp4; codecs=avc1.42E01E,mp4a.40.2"
+              src="https://www.openimages.eu/files/09/9740.9730.WEEKNUMMER364-HRE0000D9C6.mp4"
+            />
+            <source
+              type="video/mp4; codecs=avc1.42E01E,mp4a.40.2"
+              src="https://www.openimages.eu/files/09/88065.9730.WEEKNUMMER364-HRE0000D9C6.mp4"
+            />
+            <source
+              type="application/x-mpegurl"
+              src="https://www.openimages.eu/files/09/35026.9730.WEEKNUMMER364-HRE0000D9C6.m3u8"
+            /></video
+          ><span class="license"
+            ><a href="https://www.openimages.eu/media/9728" rel="cc:attributionURL" property="dct:title">Storm</a>, by
+            <a href="https://www.openbeelden.nl/users/beeldengeluid" rel="dct:creator" property="cc:attributionName"
+              >Polygoon-Profilti (producer) / Netherlands Institute for Sound and Vision (curator)</a
+            >, is licensed under
+            <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.en" rel="license"
+              >Creative Commons – Attribution-Share Alike</a
+            >.</span
+          >
+        </div>
+      </div>
+      <p>
+        Jump to 1 minute and 11 seconds where one of Scheveningen's fishing ships rides the waves and "surfs" home into
+        the harbour. You can find the video on Open Images
+        <a href="https://www.openimages.eu/media/9728/Storm">https://www.openimages.eu/media/9728/Storm</a>.
+      </p>
+      <p>
+        OIPlayer 'attaches' itself to all video and/or audio tags it encounters. Besides the general configuration of
+        the plugin itself, it uses for each individual tag the attributes the respective tag has like poster, width,
+        controls, autoplay etc. Easy implementation:
+      </p>
+      <pre>  new OIPlayer(document.getElementById("my-media"));</pre>
+      <h3>Download</h3>
+      <ul>
+        <li><a href="https://github.com/elfuego/oiplayer/">Download the most recent version</a> from GitHub.</li>
+      </ul>
+      <h3>Features</h3>
+      <ul>
+        <li>Plays video as well as audio</li>
+        <li>Easy to use and implement</li>
+        <li>Consistent look between browsers</li>
+        <li>Multiple different players on a page</li>
+        <li>Play/pause</li>
+        <li>Mute/unmute</li>
+        <li>Full 'screen' (full window really, that is what HTML5 requires)</li>
+        <li>Dark and light controls, on top or below player</li>
+        <li>Easily skinnable with css</li>
+        <li>Fires events: 'oiplayerplay' and 'oiplayerended' to use f.e. for play statistics</li>
+      </ul>
+      <p>
+        OIPlayer's configuration accepts the following options. The <code>controls</code> value is a space-separated
+        string combining placement (<code>top</code> or omit for below) and theme (<code>dark</code> or omit for light):
+      </p>
+      <pre>
+new OIPlayer(el, { controls: "top dark" });  // dark controls on top
+new OIPlayer(el, { controls: "top" });       // light controls on top
+new OIPlayer(el, { controls: "dark" });      // dark controls below
+new OIPlayer(el, {});                        // light controls below (default)
+</pre
+      >
+      <p>
+        OIPlayer is part of the <a href="https://www.openimages.eu/source">Open Images Platform</a> which is
+        <a href="https://www.mmbase.org">MMBase</a> based. OIPlayer's most recent sources can be found on GitHub:
+        <a href="https://github.com/elfuego/oiplayer">https://github.com/elfuego/oiplayer</a>. It is licensed under
+        <a href="https://www.gnu.org/licenses/gpl.html">GPL</a>.
+      </p>
+      <h2>How-to</h2>
+      <ol>
+        <li>
+          <a href="https://github.com/elfuego/oiplayer/">Download</a> and copy the 'oiplayer' directory to your site.
+          Include these Javascript and css files in the head of your html document.
+          <pre>
+&lt;script defer src="js/oiplayer.js"&gt;&lt;/script&gt;
+&lt;link href="css/oiplayer.css" rel="stylesheet" /&gt;
+</pre
+          >
+        </li>
+        <li>
+          Initialize OIPlayer on a specific element, or on all video/audio tags in a container.
+          <pre>
+// single element
+new OIPlayer(document.getElementById("my-media"), { controls: "top" });
+
+// all video and audio in a container
+const media = document.querySelectorAll(".my-player video, .my-player audio");
+media.forEach((el) => new OIPlayer(el, { controls: "top" }));
+</pre
+          >
+        </li>
+        <li>
+          Besides these you can identify your player with a unique id f.e. with 'oip_ea_id_myid123', which is registered
+          in 'player.id'. This can be useful for example to track the number of plays of a media item. OIPlayer fires
+          two events to this effect: 'oiplayerplay' and 'oiplayerended', f.e.:
+          <pre>window.addEventListener("oiplayerplay", (ev) => console.log("oiplayerplay event", ev.detail));</pre>
+        </li>
+      </ol>
+      <h2>Yesteryear</h2>
+      <ol>
+        <li>
+          OIPlayer had a fallback mechanism that could be made to work by installing
+          <a href="https://www.flowplayer.org">Flowplayer</a> and <a href="https://www.theora.org/cortado/">Cortado</a>.
+          Flowplayer needed the Flash plugin and plays h.264, flv and mp4. Cortado is a Java applet that plays Ogg video
+          and audio (ogv, oga).<br />The framework is still there in this version, but there is no use since Java
+          applets and Flash are no longer supported.
+        </li>
+      </ol>
+      <address>Have fun! <a href="https://www.toly.nl">André van Toly</a>.</address>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        new OIPlayer(document.getElementById("my-media"), { controls: "top" });
+
+        window.addEventListener("oiplayerplay", (ev) => {
+          console.log("oiplayerplay event", ev.detail);
+        });
+      });
+    </script>
+  </body>
+</html>
