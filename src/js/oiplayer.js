@@ -390,8 +390,8 @@ class OIPlayer {
    * @memberof OIPlayer
    */
   updateTime(duration, sec = 0) {
-    this.timeleft.innerText = this._totime(sec);
-    this.time.innerText = this._totime(duration - sec);
+    this.time.innerText = this._totime(sec);
+    this.timeleft.innerText = this._totime(duration - sec);
   }
 
   updatePlayButton(state) {
@@ -473,8 +473,8 @@ class OIPlayer {
             <span data-button-play-icon="paused">${SVG_PLAY}</span>
           </button>
         </li>
-        <li class="timeleft">
-          <div data-timeleft="" aria-label="Time left" aria-live="polite">00:00</div>
+        <li class="time">
+          <div data-time="" aria-label="Time" aria-live="polite">00:00</div>
         </li>
         <li class="progress">
           <div class="bar push" data-progress="push">
@@ -484,8 +484,8 @@ class OIPlayer {
           <div data-progress="loaded" class="bar loaded" aria-label="Loaded"></div>
           <div data-progress="back" class="bar back"></div>
         </li>
-        <li class="time" aria-label="Time" aria-live="polite">
-          <div data-time="">${this._totime(sec)}</div>
+        <li class="timeleft">
+          <div data-timeleft="" aria-label="Time left" aria-live="polite">${this._totime(sec)}</div>
         </li>
         <li class="screen">
           <button data-button-screen aria-label="Fullscreen">${SVG_FULLSCREEN}</button>
