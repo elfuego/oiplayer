@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "build": "webpack",
-    "dist": "node scripts/predist.js && webpack --config webpack.dist.config.js && node scripts/postdist.js",
+    "dist": "webpack --config webpack.dist.config.js",
     "start": "webpack serve --open-app-name 'Google Chrome'"
   },
   "author": "André van Toly",
